@@ -13,6 +13,10 @@ interface BasicUserInfo {
    */
   avatar: string;
   /**
+   * 权限标识
+   */
+  perms?: string[];
+  /**
    * 用户昵称
    */
   realName: string;

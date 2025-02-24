@@ -2,26 +2,27 @@ import { acceptHMRUpdate, defineStore } from 'pinia';
 
 interface BasicUserInfo {
   [key: string]: any;
-  /**
-   * 头像
-   */
-  avatar: string;
-  /**
-   * 用户昵称
-   */
-  realName: string;
-  /**
-   * 用户角色
-   */
+
+  // 头像
+  avatar?: string;
+
+  // 首页地址
+  homePath?: string;
+
+  // 权限集合
+  perms?: string[];
+
+  // 用户真实姓名
+  realName?: string;
+
+  // 角色集合
   roles?: string[];
-  /**
-   * 用户id
-   */
-  userId: string;
-  /**
-   * 用户名
-   */
-  username: string;
+
+  // 用户ID
+  userId?: string;
+
+  // 用户名
+  username?: string;
 }
 
 interface AccessState {
@@ -29,6 +30,10 @@ interface AccessState {
    * 用户信息
    */
   userInfo: BasicUserInfo | null;
+  /**
+   * 用户权限标识
+   */
+  userPerms: string[];
   /**
    * 用户角色
    */
@@ -46,6 +51,13 @@ export const useUserStore = defineStore('core-user', {
       // 设置角色信息
       const roles = userInfo?.roles ?? [];
       this.setUserRoles(roles);
+
+      // 设置权限标识信息
+      const perms = userInfo?.perms ?? [];
+      this.setUserPerms(perms);
+    },
+    setUserPerms(perms: string[]) {
+      this.userPerms = perms;
     },
     setUserRoles(roles: string[]) {
       this.userRoles = roles;
@@ -53,6 +65,7 @@ export const useUserStore = defineStore('core-user', {
   },
   state: (): AccessState => ({
     userInfo: null,
+    userPerms: [],
     userRoles: [],
   }),
 });
