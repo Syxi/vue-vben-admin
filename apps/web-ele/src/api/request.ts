@@ -14,7 +14,6 @@ import { useAccessStore } from '@vben/stores';
 
 import { ElMessage } from 'element-plus';
 
-import { refreshTokenApi } from '#/api';
 import { useAuthStore } from '#/store';
 
 // 采用 dev或prod 环境
@@ -48,11 +47,11 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
    * 刷新token逻辑
    */
   async function doRefreshToken() {
-    const accessStore = useAccessStore();
-    const resp = await refreshTokenApi();
-    const newToken = resp.data;
-    accessStore.setAccessToken(newToken);
-    return newToken;
+    // const accessStore = useAccessStore();
+    // const resp = await refreshTokenApi();
+    // const newToken = resp.data;
+    // accessStore.setAccessToken(newToken);
+    // return newToken;
   }
 
   function formatToken(token: null | string) {
