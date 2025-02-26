@@ -10,7 +10,7 @@ interface AccessState {
   /**
    * 权限码
    */
-  accessCodes: string[];
+  accessCodes?: string[];
   /**
    * 可访问的菜单列表
    */
@@ -61,7 +61,7 @@ export const useAccessStore = defineStore('core-access', {
       }
       return findMenu(this.accessMenus, path);
     },
-    setAccessCodes(codes: string[]) {
+    setAccessCodes(codes: string[] | undefined) {
       this.accessCodes = codes;
     },
     setAccessMenus(menus: MenuRecordRaw[]) {
