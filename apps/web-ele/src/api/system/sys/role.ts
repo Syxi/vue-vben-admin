@@ -1,4 +1,4 @@
-import { requestClient } from '#/utils/request';
+import { requestClient } from '#/api/request';
 
 /**
  * 角色查询对象

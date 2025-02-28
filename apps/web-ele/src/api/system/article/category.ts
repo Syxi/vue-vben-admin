@@ -1,4 +1,4 @@
-import type { ArticlePage } from '#/api/article/article';
+import type { ArticlePage } from '#/api/system/article/article';
 
 import { requestClient } from '#/api/request';
 
@@ -64,7 +64,7 @@ export type CategoryPageResult = PageResult<CategoryPage[]>;
  * @param categoryQuery
  */
 export async function selectCategoryPageApi(categoryQuery: CategoryQuery) {
-  return requestClient.get<CategoryPageResult>('/api/category', {
+  return requestClient.get<CategoryPageResult>('/api/category/page', {
     params: categoryQuery,
   });
 }

@@ -1,4 +1,4 @@
-import { requestClient } from '#/utils/request';
+import { requestClient } from '#/api/request';
 
 export interface VideoVO {
   id?: string;

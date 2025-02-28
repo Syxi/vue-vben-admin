@@ -27,9 +27,6 @@ catalogs:
     '@eslint/js':
       specifier: ^9.20.0
       version: 9.20.0
-    '@faker-js/faker':
-      specifier: ^9.5.0
-      version: 9.5.0
     '@iconify/json':
       specifier: ^2.2.307
       version: 2.2.307
@@ -66,9 +63,6 @@ catalogs:
     '@tailwindcss/typography':
       specifier: ^0.5.16
       version: 0.5.16
-    '@tanstack/vue-query':
-      specifier: ^5.66.3
-      version: 5.66.3
     '@tanstack/vue-store':
       specifier: ^0.7.0
       version: 0.7.0
@@ -81,9 +75,6 @@ catalogs:
     '@types/html-minifier-terser':
       specifier: ^7.0.2
       version: 7.0.2
-    '@types/jsonwebtoken':
-      specifier: ^9.0.8
-      version: 9.0.8
     '@types/lodash.clonedeep':
       specifier: ^4.5.9
       version: 4.5.9
@@ -138,9 +129,6 @@ catalogs:
     '@vueuse/motion':
       specifier: ^2.2.6
       version: 2.2.6
-    ant-design-vue:
-      specifier: ^4.2.6
-      version: 4.2.6
     archiver:
       specifier: ^7.0.1
       version: 7.0.1
@@ -267,9 +255,6 @@ catalogs:
     globals:
       specifier: ^15.15.0
       version: 15.15.0
-    h3:
-      specifier: ^1.15.0
-      version: 1.15.0
     happy-dom:
       specifier: ^16.8.1
       version: 16.8.1
@@ -285,9 +270,6 @@ catalogs:
     jsonc-eslint-parser:
       specifier: ^2.4.0
       version: 2.4.0
-    jsonwebtoken:
-      specifier: ^9.0.2
-      version: 9.0.2
     lint-staged:
       specifier: ^15.4.3
       version: 15.4.3
@@ -620,6 +602,9 @@ importers:
 
   apps/web-ele:
     dependencies:
+      '@element-plus/icons-vue':
+        specifier: ^2.3.1
+        version: 2.3.1(vue@3.5.13(typescript@5.7.3))
       '@vben/access':
         specifier: workspace:*
         version: link:../../packages/effects/access
