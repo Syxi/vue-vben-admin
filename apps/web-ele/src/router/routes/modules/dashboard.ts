@@ -1,9 +1,10 @@
-import type { RouteRecordRaw } from 'vue-router';
+import type { RouteRecordStringComponent } from '@vben/types';
 
 import { $t } from '#/locales';
 
-const routes: RouteRecordRaw[] = [
+const localRoutes: RouteRecordStringComponent[] = [
   {
+    component: 'BasicLayout',
     meta: {
       icon: 'lucide:layout-dashboard',
       order: -1,
@@ -15,7 +16,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'Analytics',
         path: '/analytics',
-        component: () => import('#/views/dashboard/analytics/index.vue'),
+        component: '/dashboard/analytics/index.vue',
         meta: {
           affixTab: true,
           icon: 'lucide:area-chart',
@@ -25,7 +26,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'Workspace',
         path: '/workspace',
-        component: () => import('#/views/dashboard/workspace/index.vue'),
+        component: '/dashboard/workspace/index.vue',
         meta: {
           icon: 'carbon:workspace',
           title: $t('page.dashboard.workspace'),
@@ -35,4 +36,4 @@ const routes: RouteRecordRaw[] = [
   },
 ];
 
-export default routes;
+export default localRoutes;
