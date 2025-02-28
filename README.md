@@ -28,3 +28,7 @@ pnpm run build:ele
 - **workflow**: 工作流改进
 - **ci**: 持续集成
 - **types**: 类型修改
+
+# 强制提交
+
+- git commit --no-verify -m '提交信息'
