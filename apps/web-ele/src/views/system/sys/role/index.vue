@@ -467,7 +467,7 @@ onMounted(() => {
 
           <el-button
             type="primary"
-            v-hasPerm="['sys:role:add']"
+            v-access:code="['sys:role:add']"
             @click="openDialog()"
           >
             <i-ep-plus />新增
@@ -475,7 +475,7 @@ onMounted(() => {
 
           <el-button
             type="primary"
-            v-hasPerm="['sys:role:enable']"
+            v-access:code="['sys:role:enable']"
             @click="enableRole()"
           >
             启用
@@ -484,7 +484,7 @@ onMounted(() => {
           <el-button
             type="danger"
             :disabled="roleIds.length === 0"
-            v-hasPerm="['sys:role:disable']"
+            v-access:code="['sys:role:disable']"
             @click="disableRole()"
           >
             禁用
@@ -493,7 +493,7 @@ onMounted(() => {
           <el-button
             type="danger"
             :disabled="roleIds.length === 0"
-            v-hasPerm="['sys:role:delete']"
+            v-access:code="['sys:role:delete']"
             @click="handleDelete()"
           >
             <i-ep-delete />删除
@@ -557,7 +557,7 @@ onMounted(() => {
               size="small"
               link
               @click="openMenuDialog(scope.row)"
-              v-hasPerm="['sys:role:menu']"
+              v-access:code="['sys:role:menu']"
             >
               <i-ep-position />菜单授权
             </el-button>
@@ -567,7 +567,7 @@ onMounted(() => {
               size="small"
               link
               @click="openUserDialog(scope.row)"
-              v-hasPerm="['sys:role:user']"
+              v-access:code="['sys:role:user']"
             >
               <el-icon><User /></el-icon>分配用户
             </el-button>
@@ -576,7 +576,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:role:edit']"
+              v-access:code="['sys:role:edit']"
               @click="openDialog(scope.row.roleId)"
             >
               <i-ep-edit />编辑
@@ -586,7 +586,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:role:delete']"
+              v-access:code="['sys:role:delete']"
               @click="handleDelete(scope.row.roleId)"
             >
               <i-ep-delete />删除

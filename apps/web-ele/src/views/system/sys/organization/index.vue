@@ -256,7 +256,7 @@ onMounted(() => {
               <el-button
                 type="primary"
                 @click="handleOpenDialog('0')"
-                v-hasPerm="['sys:organ:add']"
+                v-access:code="['sys:organ:add']"
               >
                 <template #icon><i-ep-plus /></template>
                 新增机构
@@ -352,7 +352,7 @@ onMounted(() => {
                   type="primary"
                   link
                   size="small"
-                  v-hasPerm="['sys:organ:add']"
+                  v-access:code="['sys:organ:add']"
                   @click="handleOpenDialog(scope.row.id)"
                 >
                   <i-ep-plus /> 新增
@@ -362,7 +362,7 @@ onMounted(() => {
                   type="primary"
                   link
                   size="small"
-                  v-hasPerm="['sys:organ:edit']"
+                  v-access:code="['sys:organ:edit']"
                   @click="handleOpenDialog(undefined, scope.row.id)"
                 >
                   <i-ep-edit /> 编辑
@@ -372,7 +372,7 @@ onMounted(() => {
                   type="primary"
                   link
                   size="small"
-                  v-hasPerm="['sys:organ:delete']"
+                  v-access:code="['sys:organ:delete']"
                   @click="handleDelete(scope.row.id)"
                 >
                   <i-ep-delete /> 删除

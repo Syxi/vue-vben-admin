@@ -355,7 +355,7 @@ onMounted(() => {
           <el-button
             type="danger"
             :disabled="fileIds.length === 0"
-            v-hasPerm="['sys:file:delete']"
+            v-access:code="['sys:file:delete']"
             @click="handleDeleteFile()"
           >
             <i-ep-delete />删除
@@ -363,7 +363,7 @@ onMounted(() => {
 
           <el-button
             type="primary"
-            v-hasPerm="['sys:file:upload']"
+            v-access:code="['sys:file:upload']"
             @click="handleOpenDialog()"
           >
             <el-icon><Upload /></el-icon>上传文件
@@ -404,7 +404,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:file:previewer']"
+              v-access:code="['sys:file:previewer']"
               @click="handlePreviewFile(scope.row)"
             >
               预览
@@ -414,7 +414,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:file:downloadSourceFile']"
+              v-access:code="['sys:file:downloadSourceFile']"
               @click="handleDownloadFile(scope.row)"
             >
               下载原文件
@@ -424,7 +424,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:file:downloadPdfFile']"
+              v-access:code="['sys:file:downloadPdfFile']"
               @click="handleDownloadPdfFile(scope.row)"
             >
               下载pdf文件
@@ -434,7 +434,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:file:delete']"
+              v-access:code="['sys:file:delete']"
               @click="handleDeleteFile(scope.row.id)"
             >
               删除
@@ -443,12 +443,15 @@ onMounted(() => {
         </el-table-column>
       </el-table>
 
-      <Pagination
+      <el-pagination
         v-if="total > 0"
-        v-model:total="total"
-        v-model:page="queryParams.page"
-        v-model:limit="queryParams.limit"
-        @pagination="handleQuery()"
+        v-model:current-page="queryParams.page"
+        v-model:page-size="queryParams.limit"
+        :total="total"
+        :page-sizes="[10, 20, 30, 40, 50, 100]"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleQuery"
+        @current-change="handleQuery"
       />
 
       <!-- 使用dialog查看pdf -->

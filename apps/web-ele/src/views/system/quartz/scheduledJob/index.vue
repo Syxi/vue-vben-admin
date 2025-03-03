@@ -327,14 +327,14 @@ onMounted(() => {
           <el-button
             type="primary"
             @click="openDialog()"
-            v-hasPerm="['sys:scheduledJob:add']"
+            v-access:code="['sys:scheduledJob:add']"
           >
             <i-ep-plus />新增
           </el-button>
 
           <el-button
             type="primary"
-            v-hasPerm="['sys:scheduledJob:run']"
+            v-access:code="['sys:scheduledJob:run']"
             @click="executeJobs()"
           >
             <el-icon><VideoPlay /></el-icon>启用
@@ -342,7 +342,7 @@ onMounted(() => {
 
           <el-button
             type="danger"
-            v-hasPerm="['sys:scheduledJob:pause']"
+            v-access:code="['sys:scheduledJob:pause']"
             @click="pauseJobs()"
           >
             <el-icon><CircleClose /></el-icon>暂停
@@ -350,7 +350,7 @@ onMounted(() => {
 
           <el-button
             type="danger"
-            v-hasPerm="['sys:scheduledJob:delete']"
+            v-access:code="['sys:scheduledJob:delete']"
             :disabled="jobIds.length === 0"
             @click="handleDelete()"
           >
@@ -409,7 +409,7 @@ onMounted(() => {
               type="primary"
               link
               size="small"
-              v-hasPerm="['sys:scheduledJob:edit']"
+              v-access:code="['sys:scheduledJob:edit']"
               @click="openDialog(scope.row.jobId)"
             >
               <i-ep-edit />编辑
@@ -419,7 +419,7 @@ onMounted(() => {
               type="primary"
               link
               size="small"
-              v-hasPerm="['sys:scheduledJob:run']"
+              v-access:code="['sys:scheduledJob:run']"
               @click="executeJobs(scope.row.jobId)"
             >
               <el-icon><VideoPlay /></el-icon>启用
@@ -429,7 +429,7 @@ onMounted(() => {
               type="danger"
               link
               size="small"
-              v-hasPerm="['sys:scheduledJob:pause']"
+              v-access:code="['sys:scheduledJob:pause']"
               @click="pauseJobs(scope.row.jobId)"
             >
               <el-icon><CircleClose /></el-icon>暂停
@@ -439,7 +439,7 @@ onMounted(() => {
               type="danger"
               link
               size="small"
-              v-hasPerm="['sys:scheduledJob:delete']"
+              v-access:code="['sys:scheduledJob:delete']"
               @click="handleDelete(scope.row.jobId)"
             >
               <i-ep-delete />删除

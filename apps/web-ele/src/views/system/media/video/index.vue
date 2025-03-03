@@ -312,7 +312,7 @@ onMounted(() => {
           <el-button
             type="danger"
             :disabled="videoIds.length === 0"
-            v-hasPerm="['sys:video:delete']"
+            v-access:code="['sys:video:delete']"
             @click="handleDeleteVideo()"
           >
             <i-ep-delete />删除
@@ -320,7 +320,7 @@ onMounted(() => {
 
           <el-button
             type="primary"
-            v-hasPerm="['sys:video:upload']"
+            v-access:code="['sys:video:upload']"
             @click="handleOpenUploadDialog()"
           >
             <el-icon><Upload /></el-icon>上传视频
@@ -357,7 +357,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:file:previewer']"
+              v-access:code="['sys:file:previewer']"
               @click="handlePlayVideo(scope.row.fileName, scope.row.url)"
             >
               播放
@@ -367,7 +367,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:video:download']"
+              v-access:code="['sys:video:download']"
               @click="handleDownloadVideo(scope.row.fileName)"
             >
               下载
@@ -377,7 +377,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:video:delete']"
+              v-access:code="['sys:video:delete']"
               @click="handleDeleteVideo(scope.row.id)"
             >
               删除
@@ -386,12 +386,15 @@ onMounted(() => {
         </el-table-column>
       </el-table>
 
-      <Pagination
+      <el-pagination
         v-if="total > 0"
-        v-model:total="total"
-        v-model:page="queryParams.page"
-        v-model:limit="queryParams.limit"
-        @pagination="handleQuery()"
+        v-model:current-page="queryParams.page"
+        v-model:page-size="queryParams.limit"
+        :total="total"
+        :page-sizes="[10, 20, 30, 40, 50, 100]"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleQuery"
+        @current-change="handleQuery"
       />
 
       <el-dialog

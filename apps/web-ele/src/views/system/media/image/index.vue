@@ -307,14 +307,14 @@ onMounted(() => {
             type="danger"
             :disabled="imageIds.length === 0"
             @click="handleDeleteImage()"
-            v-hasPerm="['sys:image:delete']"
+            v-access:code="['sys:image:delete']"
           >
             <i-ep-delete />删除
           </el-button>
 
           <el-button
             type="primary"
-            v-hasPerm="['sys:image:upload']"
+            v-access:code="['sys:image:upload']"
             @click="handleOpenUploadDialog()"
           >
             <el-icon><Upload /></el-icon>上传图片
@@ -363,7 +363,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:image:edit']"
+              v-access:code="['sys:image:edit']"
               @click="handleOpenDialog(scope.row.id)"
             >
               编辑
@@ -373,7 +373,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:image:download']"
+              v-access:code="['sys:image:download']"
               @click="handleDownloadImage(scope.row)"
             >
               下载
@@ -383,7 +383,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:image:delete']"
+              v-access:code="['sys:image:delete']"
               @click="handleDeleteImage(scope.row.id)"
             >
               删除
@@ -392,12 +392,15 @@ onMounted(() => {
         </el-table-column>
       </el-table>
 
-      <Pagination
+      <el-pagination
         v-if="total > 0"
-        v-model:total="total"
-        v-model:page="queryParams.page"
-        v-model:limit="queryParams.limit"
-        @pagination="handleQuery()"
+        v-model:current-page="queryParams.page"
+        v-model:page-size="queryParams.limit"
+        :total="total"
+        :page-sizes="[10, 20, 30, 40, 50, 100]"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleQuery"
+        @current-change="handleQuery"
       />
 
       <!-- 编辑图片弹框 -->

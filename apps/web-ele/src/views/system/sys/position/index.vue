@@ -237,7 +237,7 @@ onMounted(() => {
 
           <el-button
             type="primary"
-            v-hasPerm="['sys:position:add']"
+            v-access:code="['sys:position:add']"
             @click="openDialog()"
           >
             <i-ep-plus />新增
@@ -246,7 +246,7 @@ onMounted(() => {
           <el-button
             type="danger"
             :disabled="positionIds.length === 0"
-            v-hasPerm="['sys:position:delete']"
+            v-access:code="['sys:position:delete']"
             @click="handleDelete()"
           >
             <i-ep-delete />删除
@@ -309,7 +309,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:position:edit']"
+              v-access:code="['sys:position:edit']"
               @click="openDialog(scope.row.positionId)"
             >
               <i-ep-edit />编辑
@@ -319,7 +319,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:position:delete']"
+              v-access:code="['sys:position:delete']"
               @click="handleDelete(scope.row.positionId)"
             >
               <i-ep-delete />删除

@@ -250,7 +250,7 @@ onMounted(() => {
           <el-button
             type="primary"
             @click="openDialog()"
-            v-hasPerm="['article:add']"
+            v-access:code="['article:add']"
           >
             <i-ep-plus />新增
           </el-button>
@@ -258,7 +258,7 @@ onMounted(() => {
           <el-button
             type="danger"
             @click="handleDelete()"
-            v-hasPerm="['article:delete']"
+            v-access:code="['article:delete']"
           >
             <i-ep-delete />删除
           </el-button>
@@ -325,14 +325,14 @@ onMounted(() => {
               type="primary"
               link
               size="small"
-              v-hasPerm="['article:edit']"
+              v-access:code="['article:edit']"
               @click.stop="openDialog(scope.row.articleId)"
             >
               <i-ep-edit />编辑
             </el-button>
 
             <el-button
-              v-hasPerm="['article:delete']"
+              v-access:code="['article:delete']"
               type="primary"
               link
               size="small"
@@ -344,12 +344,15 @@ onMounted(() => {
         </el-table-column>
       </el-table>
 
-      <Pagination
+      <el-pagination
         v-if="total > 0"
-        v-model:total="total"
-        v-model:page="queryParams.page"
-        v-model:limit="queryParams.limit"
-        @pagination="handleQuery()"
+        v-model:current-page="queryParams.page"
+        v-model:page-size="queryParams.limit"
+        :total="total"
+        :page-sizes="[10, 20, 30, 40, 50, 100]"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleQuery"
+        @current-change="handleQuery"
       />
     </el-card>
 

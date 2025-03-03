@@ -290,7 +290,7 @@ onMounted(() => {
 
           <el-button
             type="primary"
-            v-hasPerm="['sys:notice:add']"
+            v-access:code="['sys:notice:add']"
             @click="openDialog()"
           >
             <i-ep-plus />新增
@@ -300,7 +300,7 @@ onMounted(() => {
 
           <el-button
             type="primary"
-            v-hasPerm="['sys:notice:top']"
+            v-access:code="['sys:notice:top']"
             @click="handleTopNotice"
           >
             置顶
@@ -308,7 +308,7 @@ onMounted(() => {
 
           <el-button
             type="primary"
-            v-hasPerm="['sys:notice:cancelTop']"
+            v-access:code="['sys:notice:cancelTop']"
             @click="handleCancelTopNotice"
           >
             取消置顶
@@ -316,7 +316,7 @@ onMounted(() => {
 
           <el-button
             type="primary"
-            v-hasPerm="['sys:notice:publish']"
+            v-access:code="['sys:notice:publish']"
             @click="publishNotices"
           >
             发布
@@ -324,7 +324,7 @@ onMounted(() => {
 
           <el-button
             type="primary"
-            v-hasPerm="['sys:notice:cancelPublish']"
+            v-access:code="['sys:notice:cancelPublish']"
             @click="cancelPublishNotices"
           >
             取消发布
@@ -333,7 +333,7 @@ onMounted(() => {
           <el-button
             type="danger"
             :disabled="noticeIds.length === 0"
-            v-hasPerm="['sys:notice:delete']"
+            v-access:code="['sys:notice:delete']"
             @click="handleDelete()"
           >
             <i-ep-delete />删除
@@ -415,7 +415,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:notice:edit']"
+              v-access:code="['sys:notice:edit']"
               @click="openDialog(scope.row.noticeId)"
             >
               <i-ep-edit />编辑
@@ -425,7 +425,7 @@ onMounted(() => {
               type="primary"
               size="small"
               link
-              v-hasPerm="['sys:notice:delete']"
+              v-access:code="['sys:notice:delete']"
               @click="handleDelete(scope.row.noticeId)"
             >
               <i-ep-delete />删除

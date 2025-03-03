@@ -235,7 +235,7 @@ onMounted(() => {
           </el-button>
 
           <el-button
-            v-hasPerm="['sys:menu:add']"
+            v-access:code="['sys:menu:add']"
             type="primary"
             @click="handleDialogOpen('0')"
           >
@@ -351,7 +351,7 @@ onMounted(() => {
                 scope.row.menuType === 'CATALOG' ||
                 scope.row.menuType === 'MENU'
               "
-              v-hasPerm="['sys:menu:add']"
+              v-access:code="['sys:menu:add']"
               type="primary"
               link
               size="small"
@@ -361,17 +361,17 @@ onMounted(() => {
             </el-button>
 
             <el-button
-              v-hasPerm="['sys:menu:edit']"
+              v-access:code="['sys:menu:edit']"
               type="primary"
               link
               size="small"
               @click.stop="handleDialogOpen(undefined, scope.row.menuId)"
             >
-              <i-ep-edit /> 编辑
+              编辑
             </el-button>
 
             <el-button
-              v-hasPerm="['sys:menu:delete']"
+              v-access:code="['sys:menu:delete']"
               type="primary"
               link
               size="small"
@@ -660,3 +660,4 @@ onMounted(() => {
     </el-dialog>
   </div>
 </template>
+

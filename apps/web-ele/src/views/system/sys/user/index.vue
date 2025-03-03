@@ -514,7 +514,7 @@ onMounted(() => {
             </template>
           </el-input>
 
-          <el-tree
+          <ElTree
             class="mt-5"
             ref="organTreeRef"
             :data="organTreeOptionData"
@@ -571,7 +571,7 @@ onMounted(() => {
               </el-button>
 
               <el-button
-                v-hasPerm="['sys:user:add']"
+                v-access:code="['sys:user:add']"
                 type="primary"
                 @click="openDialog('user-form')"
               >
@@ -579,7 +579,7 @@ onMounted(() => {
               </el-button>
 
               <el-button
-                v-hasPerm="['sys:user:enable']"
+                v-access:code="['sys:user:enable']"
                 type="primary"
                 @click="enableUser()"
               >
@@ -588,7 +588,7 @@ onMounted(() => {
 
               <el-button
                 :disabled="userIds.length === 0"
-                v-hasPerm="['sys:user:disable']"
+                v-access:code="['sys:user:disable']"
                 type="danger"
                 @click="disableUser()"
               >
@@ -597,7 +597,7 @@ onMounted(() => {
 
               <el-button
                 type="danger"
-                v-hasPerm="['sys:user:delete']"
+                v-access:code="['sys:user:delete']"
                 :disabled="userIds.length === 0"
                 @click="handleDelete()"
               >
@@ -607,7 +607,7 @@ onMounted(() => {
               <el-button
                 type="primary"
                 @click="resetPassword()"
-                v-hasPerm="['sys:user:password']"
+                v-access:code="['sys:user:password']"
               >
                 <i-ep-refresh-left />重置密码
               </el-button>
@@ -621,7 +621,7 @@ onMounted(() => {
                     </el-dropdown-item>
                     <el-dropdown-item
                       @click="openDialog('user-import')"
-                      v-hasPerm="['sys:user:import']"
+                      v-access:code="['sys:user:import']"
                     >
                       <i-ep-top />导入数据
                     </el-dropdown-item>
@@ -633,7 +633,7 @@ onMounted(() => {
                 type="primary"
                 class="ml-3"
                 @click="handleExport"
-                v-hasPerm="['sys:user:export']"
+                v-access:code="['sys:user:export']"
               >
                 <i-ep-download />导出用户
               </el-button>
@@ -726,7 +726,7 @@ onMounted(() => {
                   size="small"
                   link
                   @click="openDialog('user-form', scope.row.userId)"
-                  v-hasPerm="['sys:user:edit']"
+                  v-access:code="['sys:user:edit']"
                 >
                   <i-ep-edit />编辑
                 </el-button>
@@ -736,7 +736,7 @@ onMounted(() => {
                   size="small"
                   link
                   @click="handleDelete(scope.row.userId)"
-                  v-hasPerm="['sys:user:delete']"
+                  v-access:code="['sys:user:delete']"
                 >
                   <i-ep-delete />删除
                 </el-button>
@@ -744,12 +744,15 @@ onMounted(() => {
             </el-table-column>
           </el-table>
 
-          <Pagination
+          <el-pagination
             v-if="total > 0"
-            v-model:total="total"
-            v-model:page="queryParams.page"
-            v-model:limit="queryParams.limit"
-            @pagination="handleQuery"
+            v-model:current-page="queryParams.page"
+            v-model:page-size="queryParams.limit"
+            :total="total"
+            :page-sizes="[10, 20, 30, 40, 50, 100]"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleQuery"
+            @current-change="handleQuery"
           />
         </el-card>
       </el-col>
