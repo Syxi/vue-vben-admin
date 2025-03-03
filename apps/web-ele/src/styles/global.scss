@@ -1,6 +1,5 @@
-
 .app-container {
-  padding: 150px;
+  padding: 15px;
 }
 
 .search-container {
@@ -16,19 +15,6 @@
   padding: calc(var(--el-card-padding) - 8px) var(--el-card-padding);
 }
 
-.link-type,
-.link-type:focus {
-  color: #337ab7;
-  cursor: pointer;
-
-  &:hover {
-    color: rgb(32 160 255);
-  }
-}
-
-
 .search-container .el-form .el-input {
   width: 16rem !important;
 }
-
-
