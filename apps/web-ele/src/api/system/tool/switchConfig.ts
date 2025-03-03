@@ -53,9 +53,7 @@ export async function getSwitchConfigApi(id: string) {
 export async function updateSwitchConfigApi(
   switchConfigForm: SwitchConfigForm,
 ) {
-  return requestClient.put('/api/sysSwitchConfig/update', {
-    data: switchConfigForm,
-  });
+  return requestClient.put('/api/sysSwitchConfig/update', switchConfigForm);
 }
 
 /**

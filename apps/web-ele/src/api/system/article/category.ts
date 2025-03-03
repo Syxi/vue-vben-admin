@@ -74,9 +74,7 @@ export async function selectCategoryPageApi(categoryQuery: CategoryQuery) {
  * @param categoryForm
  */
 export async function saveCategoryApi(categoryForm: CategoryForm) {
-  return requestClient.post('/api/category/save', {
-    data: categoryForm,
-  });
+  return requestClient.post('/api/category/save', categoryForm);
 }
 
 /**
@@ -84,7 +82,7 @@ export async function saveCategoryApi(categoryForm: CategoryForm) {
  * @param categoryForm
  */
 export async function updateCategoryApi(categoryForm: CategoryForm) {
-  return requestClient.put('/api/category/update', { data: categoryForm });
+  return requestClient.put('/api/category/update', categoryForm);
 }
 
 /**
@@ -102,7 +100,7 @@ export async function getCategoryDetailApi(categoryId: string) {
  * @param categoryIds
  */
 export async function deleteCategoryApi(categoryIds: string[]) {
-  return requestClient.delete('/api/category/delete', { data: categoryIds });
+  return requestClient.delete('/api/category/delete', categoryIds);
 }
 
 /**

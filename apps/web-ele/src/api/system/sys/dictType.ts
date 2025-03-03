@@ -56,9 +56,7 @@ export async function selectDictTypePageApi(dictTypeQuery?: DictTypeQuery) {
  * @param dictTypeForm
  */
 export async function addDictTypeApi(dictTypeForm: DictTypeForm) {
-  return requestClient.post('/api/dictType/add', {
-    data: dictTypeForm,
-  });
+  return requestClient.post('/api/dictType/add', dictTypeForm);
 }
 
 /**
@@ -67,9 +65,7 @@ export async function addDictTypeApi(dictTypeForm: DictTypeForm) {
  * @param dictTypeForm
  */
 export async function editDictTypeApi(dictTypeForm: DictTypeForm) {
-  return requestClient.put('/api/dictType/edit', {
-    data: dictTypeForm,
-  });
+  return requestClient.put('/api/dictType/edit', dictTypeForm);
 }
 
 /**
@@ -87,7 +83,5 @@ export async function getDictTypeDetailApi(id: string) {
  * @param ids
  */
 export async function deleteDictTypeApi(ids: string[]) {
-  return requestClient.delete('/api/dictType/delete', {
-    data: ids,
-  });
+  return requestClient.delete('/api/dictType/delete', ids);
 }

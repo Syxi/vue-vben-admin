@@ -132,9 +132,7 @@ export async function menuOptionApi() {
  * @param menuForm
  */
 export async function addMenuApi(menuForm: MenuForm) {
-  return requestClient.post('/api/menu/add', {
-    data: menuForm,
-  });
+  return requestClient.post('/api/menu/add', menuForm);
 }
 
 /**
@@ -143,9 +141,7 @@ export async function addMenuApi(menuForm: MenuForm) {
  * @param menuForm
  */
 export async function editMenuApi(menuForm: MenuForm) {
-  return requestClient.put('/api/menu/edit', {
-    data: menuForm,
-  });
+  return requestClient.put('/api/menu/edit', menuForm);
 }
 
 /**
@@ -173,7 +169,5 @@ export async function deleteMenuApi(menuId: string) {
  * @returns
  */
 export async function updateRoleMenusApi(roleId: string, menus: string[]) {
-  return requestClient.put<any>(`/api/menu/${roleId}/menus`, {
-    data: menus,
-  });
+  return requestClient.put<any>(`/api/menu/${roleId}/menus`, menus);
 }

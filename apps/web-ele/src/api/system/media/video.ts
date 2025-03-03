@@ -44,17 +44,11 @@ export async function selectVideosPageApi(videoQuery: VideoQuery) {
 export async function uploadVideoApi(file: File) {
   const formData = new FormData();
   formData.append('file', file);
-  return requestClient.post(
-    '/api/video/upload',
-    {
-      data: formData,
+  return requestClient.post('/api/video/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
     },
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    },
-  );
+  });
 }
 
 /**
@@ -74,9 +68,7 @@ export async function downloadVideoApi(fileName: string) {
  * @param ids
  */
 export async function deleteVideoApi(ids: string[]) {
-  return requestClient.delete('/api/video/delete', {
-    data: ids,
-  });
+  return requestClient.delete('/api/video/delete', ids);
 }
 
 /**

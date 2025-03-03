@@ -69,9 +69,7 @@ export async function selectArticlePageApi(articleQuery: ArticleQuery) {
  * @param articleForm
  */
 export async function saveArticleApi(articleForm: ArticleForm) {
-  return requestClient.post('/api/article/save', {
-    data: articleForm,
-  });
+  return requestClient.post('/api/article/save', articleForm);
 }
 
 /**
@@ -80,9 +78,7 @@ export async function saveArticleApi(articleForm: ArticleForm) {
  * @param articleForm
  */
 export async function updateArticleApi(articleForm: ArticleForm) {
-  return requestClient.put('/api/article/update', {
-    data: articleForm,
-  });
+  return requestClient.put('/api/article/update', articleForm);
 }
 
 /**
@@ -100,7 +96,7 @@ export async function getArticleDetailApi(articleId: string) {
  * @param articleIds
  */
 export async function deleteArticleApi(articleIds: string[]) {
-  return requestClient.delete('/api/article/delete', { data: articleIds });
+  return requestClient.delete('/api/article/delete', articleIds);
 }
 
 /**

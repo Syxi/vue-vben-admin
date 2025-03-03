@@ -32,17 +32,11 @@ export interface ImageForm {
 export async function uploadImageApi(file: File) {
   const formData = new FormData();
   formData.append('file', file);
-  return requestClient.post<string>(
-    `/api/image/uploadImage`,
-    {
-      data: formData,
+  return requestClient.post<string>(`/api/image/uploadImage`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
     },
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    },
-  );
+  });
 }
 
 /**
@@ -55,17 +49,11 @@ export async function uploadImagesApi(files: File[]) {
   for (const file of files) {
     formData.append('file', file);
   }
-  return requestClient.post<string[]>(
-    '/api/image/uploadImages',
-    {
-      data: formData,
+  return requestClient.post<string[]>('/api/image/uploadImages', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
     },
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    },
-  );
+  });
 }
 
 /**
@@ -89,9 +77,7 @@ export async function getImageDetailsApi(id: string) {
  * @param imageForm
  */
 export async function updateImageApi(imageForm: ImageForm) {
-  return requestClient.put('/api/image/edit', {
-    data: imageForm,
-  });
+  return requestClient.put('/api/image/edit', imageForm);
 }
 
 /**
@@ -100,9 +86,7 @@ export async function updateImageApi(imageForm: ImageForm) {
  * @returns
  */
 export async function deleteImagesApi(ids: string[]) {
-  return requestClient.delete('/api/image/delete', {
-    data: ids,
-  });
+  return requestClient.delete('/api/image/delete', ids);
 }
 
 /**

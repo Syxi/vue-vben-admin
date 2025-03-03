@@ -55,9 +55,7 @@ export async function dictValueOptionApi(typeCode: string) {
  * @param dictValueForm
  */
 export async function addDictValueApi(dictValueForm: DictValueForm) {
-  return requestClient.post('/api/dictValue/add', {
-    data: dictValueForm,
-  });
+  return requestClient.post('/api/dictValue/add', dictValueForm);
 }
 
 /**
@@ -66,9 +64,7 @@ export async function addDictValueApi(dictValueForm: DictValueForm) {
  * @param dictValueForm
  */
 export async function editDictValueApi(dictValueForm: DictValueForm) {
-  return requestClient.put('/api/dictValue/edit', {
-    data: dictValueForm,
-  });
+  return requestClient.put('/api/dictValue/edit', dictValueForm);
 }
 
 /**
@@ -77,9 +73,7 @@ export async function editDictValueApi(dictValueForm: DictValueForm) {
  * @param ids
  */
 export async function deleteDictValuesApi(ids: string[]) {
-  return requestClient.delete('/api/dictValue/delete', {
-    data: ids,
-  });
+  return requestClient.delete('/api/dictValue/delete', ids);
 }
 
 /**

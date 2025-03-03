@@ -89,9 +89,7 @@ export async function roleOptionApi(roleQuery?: RoleQuery) {
  * @returns
  */
 export async function addRoleApi(roleForm: RoleForm) {
-  return requestClient.post('/api/role/add', {
-    data: roleForm,
-  });
+  return requestClient.post('/api/role/add', roleForm);
 }
 
 /**
@@ -109,9 +107,7 @@ export async function roleDetailApi(roleId: string) {
  * @param roleForm
  */
 export async function editRoleApi(roleForm: RoleForm) {
-  return requestClient.put('/api/role/edit', {
-    data: roleForm,
-  });
+  return requestClient.put('/api/role/edit', roleForm);
 }
 
 /**
@@ -120,9 +116,7 @@ export async function editRoleApi(roleForm: RoleForm) {
  * @returns
  */
 export async function deleteRoleApi(roleIds: string[]) {
-  return requestClient.delete('/api/role/delete', {
-    data: roleIds,
-  });
+  return requestClient.delete('/api/role/delete', roleIds);
 }
 
 /**
@@ -141,9 +135,7 @@ export async function updateRoleStatusApi(roleId: string, status: number) {
  * @param roleIds
  */
 export async function enableRoleApi(roleIds: string[]) {
-  return requestClient.put('/api/role/enable', {
-    data: roleIds,
-  });
+  return requestClient.put('/api/role/enable', roleIds);
 }
 
 /**
@@ -152,9 +144,7 @@ export async function enableRoleApi(roleIds: string[]) {
  * @param roleIds
  */
 export async function disableRoleApi(roleIds: string[]) {
-  return requestClient.put('/api/role/disable', {
-    data: roleIds,
-  });
+  return requestClient.put('/api/role/disable', roleIds);
 }
 
 /**
@@ -173,7 +163,5 @@ export async function getRoleMenuIdsApi(roleId: string) {
  * @returns
  */
 export async function updateRoleUserApi(roleId: string, userIds: string[]) {
-  return requestClient.put(`/api/role/updateRoleUser/${roleId}`, {
-    data: userIds,
-  });
+  return requestClient.put(`/api/role/updateRoleUser/${roleId}`, userIds);
 }

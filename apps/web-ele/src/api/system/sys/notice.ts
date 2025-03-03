@@ -96,9 +96,7 @@ export async function selectNoticePageApi(noticeQuery: NoticeQuery) {
  * @param noticeForm
  */
 export async function addNoticeApi(noticeForm: NoticeForm) {
-  return requestClient.post('/api/notice/add', {
-    data: noticeForm,
-  });
+  return requestClient.post('/api/notice/add', noticeForm);
 }
 
 /**
@@ -116,9 +114,7 @@ export async function getNoticeApi(noticeId: string) {
  * @param noticeForm
  */
 export async function updateNoticeApi(noticeForm: NoticeForm) {
-  return requestClient.put('/api/notice/update', {
-    data: noticeForm,
-  });
+  return requestClient.put('/api/notice/update', noticeForm);
 }
 
 /**
@@ -127,9 +123,7 @@ export async function updateNoticeApi(noticeForm: NoticeForm) {
  * @returns
  */
 export async function deleteNoticeApi(noticeIds: string[]) {
-  return requestClient.delete('/api/notice/delete', {
-    data: noticeIds,
-  });
+  return requestClient.delete('/api/notice/delete', noticeIds);
 }
 
 /**
@@ -156,9 +150,7 @@ export async function cancelTopNoticeApi(noticeId: string) {
  * @returns
  */
 export async function publishNoticesApi(noticeIds: string[]) {
-  return requestClient.post('/notice/publish', {
-    data: noticeIds,
-  });
+  return requestClient.post('/notice/publish', noticeIds);
 }
 
 /**
@@ -167,9 +159,7 @@ export async function publishNoticesApi(noticeIds: string[]) {
  * @returns
  */
 export async function cancelPublishNoticesApi(noticeIds: string[]) {
-  return requestClient.post('/notice/cancelPublish', {
-    data: noticeIds,
-  });
+  return requestClient.post('/notice/cancelPublish', noticeIds);
 }
 
 export async function getTopNoticeApi() {

@@ -84,9 +84,7 @@ export async function selectPositionPageApi(positionQuery: PositionQuery) {
  * @param positionForm
  */
 export async function addPositionApi(positionForm: PositionForm) {
-  return requestClient.post('/api/sysPosition/add', {
-    data: positionForm,
-  });
+  return requestClient.post('/api/sysPosition/add', positionForm);
 }
 
 /**
@@ -104,9 +102,7 @@ export async function getPositionApi(id: string) {
  * @param positionForm
  */
 export async function updatePositionApi(positionForm: PositionForm) {
-  return requestClient.put('/api/sysPosition/update', {
-    data: positionForm,
-  });
+  return requestClient.put('/api/sysPosition/update', positionForm);
 }
 
 /**
@@ -114,7 +110,5 @@ export async function updatePositionApi(positionForm: PositionForm) {
  * @param ids
  */
 export async function deletePositionApi(ids: string[]) {
-  return requestClient.delete('/api/sysPosition/delete', {
-    data: ids,
-  });
+  return requestClient.delete('/api/sysPosition/delete', ids);
 }

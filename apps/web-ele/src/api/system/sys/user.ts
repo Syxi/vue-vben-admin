@@ -143,9 +143,7 @@ export async function getUserDetailApi(userId: string) {
  * @param userForm
  */
 export async function addUserApi(userForm: UserForm) {
-  return requestClient.post('/api/user/add', {
-    data: userForm,
-  });
+  return requestClient.post('/api/user/add', userForm);
 }
 
 /**
@@ -154,9 +152,7 @@ export async function addUserApi(userForm: UserForm) {
  * @param userForm
  */
 export async function editUserApi(userForm: UserForm) {
-  return requestClient.put('/api/user/edit', {
-    data: userForm,
-  });
+  return requestClient.put('/api/user/edit', userForm);
 }
 
 /**
@@ -165,9 +161,7 @@ export async function editUserApi(userForm: UserForm) {
  * @returns
  */
 export async function deleteUserApi(userIds: string[]) {
-  return requestClient.delete('/api/user/delete', {
-    data: userIds,
-  });
+  return requestClient.delete('/api/user/delete', userIds);
 }
 
 /**
@@ -176,9 +170,7 @@ export async function deleteUserApi(userIds: string[]) {
  * @returns
  */
 export async function enableUserApi(userIds: string[]) {
-  return requestClient.put('/api/user/enable', {
-    data: userIds,
-  });
+  return requestClient.put('/api/user/enable', userIds);
 }
 
 /**
@@ -187,9 +179,7 @@ export async function enableUserApi(userIds: string[]) {
  * @returns
  */
 export async function disableUserApi(userIds: string[]) {
-  return requestClient.put('/api/user/disable', {
-    data: userIds,
-  });
+  return requestClient.put('/api/user/disable', userIds);
 }
 
 /**
@@ -197,9 +187,7 @@ export async function disableUserApi(userIds: string[]) {
  * @param userIds
  */
 export async function resetPwdApi(userIds: string[]) {
-  return requestClient.put('/api/user/resetPassword', {
-    data: userIds,
-  });
+  return requestClient.put('/api/user/resetPassword', userIds);
 }
 
 /**
@@ -218,15 +206,9 @@ export async function downloadTemplateApi() {
  * @param userIds
  */
 export async function exportUserApi(userIds: string[]) {
-  return requestClient.post(
-    '/api/user/export',
-    {
-      data: userIds,
-    },
-    {
-      responseType: 'arraybuffer',
-    },
-  );
+  return requestClient.post('/api/user/export', userIds, {
+    responseType: 'arraybuffer',
+  });
 }
 
 /**
@@ -237,17 +219,11 @@ export async function exportUserApi(userIds: string[]) {
 export async function importUserApi(file: File) {
   const formData = new FormData();
   formData.append('file', file);
-  return requestClient.post<string>(
-    '/api/user/import',
-    {
-      data: formData,
+  return requestClient.post<string>('/api/user/import', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
     },
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    },
-  );
+  });
 }
 
 /**
@@ -255,9 +231,7 @@ export async function importUserApi(file: File) {
  * @param userPassword
  */
 export async function updatePasswordApi(userPassword: UserPassword) {
-  return requestClient.post('/api/user/updatePassword', {
-    data: userPassword,
-  });
+  return requestClient.post('/api/user/updatePassword', userPassword);
 }
 
 /**
@@ -274,9 +248,7 @@ export async function getUserVOInfoApi() {
  * @param userForm
  */
 export async function updateUserVOInfoApi(userForm: UserForm) {
-  return requestClient.put('/api/user/updateUserInfo', {
-    data: userForm,
-  });
+  return requestClient.put('/api/user/updateUserInfo', userForm);
 }
 
 /**

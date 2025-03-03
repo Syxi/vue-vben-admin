@@ -53,15 +53,11 @@ export async function selectFilePageApi(fileRecordQuery: FileRecordQuery) {
 export async function fileUploadApi(file: File) {
   const formData = new FormData();
   formData.append('file', file);
-  return requestClient.post(
-    '/api/file/upload',
-    { data: formData },
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+  return requestClient.post('/api/file/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
     },
-  );
+  });
 }
 
 /**
@@ -92,9 +88,7 @@ export async function handleDownloadPdfFileApi(id: string) {
  * @param ids
  */
 export async function deleteFileApi(ids: string[]) {
-  return requestClient.delete('/api/file/delete', {
-    data: ids,
-  });
+  return requestClient.delete('/api/file/delete', ids);
 }
 
 /**

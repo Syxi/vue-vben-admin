@@ -134,18 +134,14 @@ export async function getOrgDetailApi(id: string) {
  * @param organizationForm
  */
 export async function addOrgApi(organizationForm: OrganizationForm) {
-  return requestClient.post('/api/organization/add', {
-    data: organizationForm,
-  });
+  return requestClient.post('/api/organization/add', organizationForm);
 }
 
 /**
  * 编辑组织
  */
 export async function editOrgApi(organizationForm: OrganizationForm) {
-  return requestClient.put('/api/organization/edit', {
-    data: organizationForm,
-  });
+  return requestClient.put('/api/organization/edit', organizationForm);
 }
 
 /**
