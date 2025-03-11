@@ -32,9 +32,9 @@ interface AccessState {
    */
   loginExpired: boolean;
   /**
-   * 登录 accessToken
+   * 登录 refreshToken
    */
-  refreshToken: AccessToken;
+  refreshToken: string;
 }
 
 /**

@@ -10,10 +10,10 @@ import {
   errorMessageResponseInterceptor,
   RequestClient,
 } from '@vben/request';
-import { useAccessStore } from '@vben/stores';
 
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
+import { refreshTokenApi } from '#/api/core';
 import { useAuthStore } from '#/store';
 
 // 采用 dev或prod 环境
@@ -28,30 +28,38 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   /**
    * 重新认证逻辑
    */
-  async function doReAuthenticate() {
+  function doReAuthenticate() {
     console.warn('Access token or refresh token is invalid or expired. ');
-    const accessStore = useAccessStore();
+    // const accessStore = useAccessStore();
     const authStore = useAuthStore();
-    accessStore.setAccessToken(null);
-    if (
-      preferences.app.loginExpiredMode === 'modal' &&
-      accessStore.isAccessChecked
-    ) {
-      accessStore.setLoginExpired(true);
-    } else {
-      await authStore.logout();
-    }
+    ElMessageBox.alert('回话已过期，请重新登录', '警告', {
+      confirmButtonText: '确认',
+      type: 'warning',
+      center: true,
+    }).then(() => {
+      authStore.logout();
+    });
+
+    // if (
+    //   preferences.app.loginExpiredMode === 'modal' &&
+    //   accessStore.isAccessChecked
+    // ) {
+    //   accessStore.setLoginExpired(true);
+    // } else {
+    //   await authStore.logout();
+    // }
   }
 
   /**
    * 刷新token逻辑
    */
   async function doRefreshToken() {
-    // const accessStore = useAccessStore();
-    // const resp = await refreshTokenApi();
-    // const newToken = resp.data;
-    // accessStore.setAccessToken(newToken);
-    // return newToken;
+    localStorage.removeItem('accessToken');
+    const token: null | string = localStorage.getItem('refreshToken');
+    const response = await refreshTokenApi(token);
+    const accessToken = response.data.data.accessToken;
+    localStorage.setItem('accessToken', accessToken);
+    return accessToken;
   }
 
   function formatToken(token: null | string) {
@@ -61,9 +69,9 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   // 请求头拦截处理
   client.addRequestInterceptor({
     fulfilled: async (config) => {
-      const accessStore = useAccessStore();
+      const accessToken = localStorage.getItem('accessToken');
 
-      config.headers.Authorization = formatToken(accessStore.accessToken);
+      config.headers.Authorization = formatToken(accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
       return config;
     },
@@ -91,25 +99,30 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     },
   });
 
-  // 处理返回错误处理
+  // 通用错误处理
   client.addResponseInterceptor(
     errorMessageResponseInterceptor((msg: string, error) => {
       // 这里可以根据业务进行定制,你可以拿到 error 内的信息进行定制化处理，根据不同的 code 做不同的提示，而不是直接使用 message.error 提示 msg
       // 当前mock接口返回的错误字段是 error 或者 message
       const responseData = error?.response?.data ?? {};
-      const errorMessage = responseData?.error ?? responseData?.message ?? '';
+      // refreshToken未过期，刷新accessToken
+      if (responseData.code === 'A320') {
+        return;
+      }
+
+      const errorMessage = responseData.msg;
       // 如果没有错误信息，则会根据状态码进行提示
       ElMessage.error(errorMessage || msg);
     }),
   );
 
-  // token过期的处理
+  // token过期的处理,过期重试刷新token和刷新token过期就登出
   client.addResponseInterceptor(
     authenticateResponseInterceptor({
       client,
       doReAuthenticate,
       doRefreshToken,
-      enableRefreshToken: preferences.app.enableRefreshToken,
+      enableRefreshToken: true,
       formatToken,
     }),
   );

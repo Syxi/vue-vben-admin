@@ -45,6 +45,9 @@ export const useAuthStore = defineStore('auth', () => {
 
         // 将 accessToken 存储到 accessStore 中
         accessStore.setAccessToken(loginResult.accessToken);
+        // 将 refreshToken 存储到 accessStore 中
+        localStorage.setItem('accessToken', loginResult.accessToken);
+        localStorage.setItem('refreshToken', loginResult.refreshToken);
         if (userInfo) {
           accessStore.setAccessCodes(userInfo.perms);
         }
@@ -74,23 +77,28 @@ export const useAuthStore = defineStore('auth', () => {
     };
   }
 
-  async function logout(redirect: boolean = true) {
-    try {
-      await logoutApi();
-    } catch {
-      // 不做任何处理
-    }
-    resetAllStores();
-    accessStore.setLoginExpired(false);
+  async function logout(redirect: boolean = false) {
+    // try {
+    //
+    // } catch {
+    //   // 不做任何处理
+    // }
+    logoutApi().then(() => {
+      resetAllStores();
+      router.removeRoute('/');
+      accessStore.setLoginExpired(false);
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
 
-    // 回登录页带上当前路由地址
-    await router.replace({
-      path: LOGIN_PATH,
-      query: redirect
-        ? {
-            redirect: encodeURIComponent(router.currentRoute.value.fullPath),
-          }
-        : {},
+      // 回登录页带上当前路由地址
+      router.replace({
+        path: LOGIN_PATH,
+        query: redirect
+          ? {
+              redirect: encodeURIComponent(router.currentRoute.value.fullPath),
+            }
+          : {},
+      });
     });
   }
 

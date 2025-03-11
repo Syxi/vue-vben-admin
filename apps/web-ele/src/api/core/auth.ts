@@ -1,4 +1,4 @@
-import { requestClient } from '#/api/request';
+import { baseRequestClient, requestClient } from '#/api/request';
 
 /**
  * 登录请求参数
@@ -75,25 +75,17 @@ export async function getSecretKeyApi() {
  * @returns
  */
 export async function refreshTokenApi(refreshToken: string) {
-  return requestClient.post<LoginResult>(
-    '/api/refreshToken',
-    {
-      data: { refreshToken },
-    },
-    {
-      headers: {
-        Authorization: 'no-auth',
-      },
-    },
-  );
+  return baseRequestClient.post<LoginResult>('/api/refreshToken', {
+    refreshToken,
+  });
 }
 
 /**
  * 注销登录
  * @returns
  */
-export async function logoutApi() {
-  return requestClient.delete('/api/logout');
+export function logoutApi() {
+  return baseRequestClient.delete('/api/logout');
 }
 
 /**
