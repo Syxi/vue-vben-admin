@@ -1,20 +1,29 @@
-import type { BasicUserInfo } from '@vben-core/typings';
-
 /** 用户信息 */
-interface UserInfo extends BasicUserInfo {
+interface UserInfo {
   /**
-   * 用户描述
+   * 头像
    */
-  desc: string;
+  avatar?: string;
   /**
-   * 首页地址
+   * 权限标识
    */
-  homePath: string;
-
+  perms?: string[];
   /**
-   * accessToken
+   * 用户角色
    */
-  token: string;
+  roles?: string[];
+  /**
+   * 用户id
+   */
+  userId: string;
+  /**
+   * 用户名
+   */
+  username: string;
+  /**
+   * 用户昵称
+   */
+  realName: string;
 }
 
 export type { UserInfo };

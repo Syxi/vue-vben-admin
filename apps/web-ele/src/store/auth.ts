@@ -39,16 +39,18 @@ export const useAuthStore = defineStore('auth', () => {
 
       // 如果成功获取到 accessToken
       if (loginResult.accessToken) {
-        // 获取用户信息并存储到 userStore 中
-        userInfo = fetchUserInfo();
-        userStore.setUserInfo(userInfo);
-
         // 将 accessToken 存储到 accessStore 中
         accessStore.setAccessToken(loginResult.accessToken);
         // 将 refreshToken 存储到 accessStore 中
         localStorage.setItem('accessToken', loginResult.accessToken);
         localStorage.setItem('refreshToken', loginResult.refreshToken);
+
+        // 获取用户信息并存储到 userStore 中
+        userInfo = await fetchUserInfo();
         if (userInfo) {
+          // 用户信息存储到 userStore 中
+          userStore.setUserInfo(userInfo);
+          // 权限信息并存储到 accessStore 中
           accessStore.setAccessCodes(userInfo.perms);
         }
 
@@ -57,7 +59,7 @@ export const useAuthStore = defineStore('auth', () => {
         } else {
           onSuccess
             ? await onSuccess?.()
-            : await router.push(userInfo?.homePath || DEFAULT_HOME_PATH);
+            : await router.push(DEFAULT_HOME_PATH);
         }
 
         if (userInfo?.realName) {
@@ -102,9 +104,9 @@ export const useAuthStore = defineStore('auth', () => {
     });
   }
 
-  function fetchUserInfo() {
+  async function fetchUserInfo() {
     let userInfo: null | UserInfo = null;
-    userInfo = getUserInfoApi();
+    userInfo = await getUserInfoApi();
     userStore.setUserInfo(userInfo);
     return userInfo;
   }

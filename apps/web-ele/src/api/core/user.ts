@@ -4,8 +4,8 @@ import { requestClient } from '#/api/request';
 
 /**
  * 登录成功后，获取用户信息（昵称、头像、权限集合、角色集合）
- * @returns
+ * @returns 用户信息
  */
 export function getUserInfoApi() {
-  return requestClient.get<UserInfo>('/api/user/me');
+  return requestClient.get<UserInfo>('/api/user/userInfo');
 }
