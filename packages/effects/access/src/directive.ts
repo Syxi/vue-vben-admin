@@ -38,5 +38,5 @@ const authDirective: Directive = {
 };
 
 export function registerAccessDirective(app: App) {
-  app.directive('hasPerm', authDirective);
+  app.directive('access', authDirective);
 }
