@@ -239,7 +239,7 @@ export async function updatePasswordApi(userPassword: UserPassword) {
  * @returns
  */
 export async function getUserVOInfoApi() {
-  return requestClient.get<UserPage>('/api/user/userInfoUpdate');
+  return requestClient.get<UserPage>('/api/user/me');
 }
 
 /**
@@ -248,7 +248,7 @@ export async function getUserVOInfoApi() {
  * @param userForm
  */
 export async function updateUserVOInfoApi(userForm: UserForm) {
-  return requestClient.put('/api/user/updateUserInfo', userForm);
+  return requestClient.put('/api/user/update/me', userForm);
 }
 
 /**
