@@ -49,6 +49,8 @@
     "vue-router": "catalog:"
   },
   "devDependencies": {
-    "unplugin-element-plus": "catalog:"
+    "@iconify/json": "^2.2.316",
+    "unplugin-element-plus": "catalog:",
+    "unplugin-icons": "^22.1.0"
   }
 }

@@ -10,6 +10,9 @@ export default defineConfig(async () => {
         ElementPlus({
           format: 'esm',
         }),
+        Icons({
+          autoInstall: true,
+        }),
       ],
       server: {
         proxy: {
