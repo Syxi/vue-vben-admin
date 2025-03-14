@@ -9,6 +9,8 @@ import '@vben/styles';
 import '@vben/styles/ele';
 
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
+import mdi from '@iconify-json/mdi/icons.json';
+import { addCollection } from '@iconify/vue';
 import { useTitle } from '@vueuse/core';
 import ElementPlus, { ElLoading } from 'element-plus';
 
@@ -57,6 +59,14 @@ async function bootstrap(namespace: string) {
 
   // 全局引入elementPlus
   app.use(ElementPlus);
+
+  /**
+   * 1注册vue的iconify: pnpm install --save-dev @iconify/vue
+   * 2按需导入icon插件: pnpm i -D unplugin-icons
+   * 3添加Material Design Icons本地图标，离线可以使用: pnpm add -D @iconify-json/mdi
+   *
+   */
+  addCollection(mdi);
 
   // 注册所有elementPlus图标
   for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
