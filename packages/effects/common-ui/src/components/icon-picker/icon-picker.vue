@@ -49,7 +49,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  prefix: 'material-symbols-light',
+  prefix: 'mdi',
   pageSize: 36,
   icons: () => [],
   iconSlot: 'default',

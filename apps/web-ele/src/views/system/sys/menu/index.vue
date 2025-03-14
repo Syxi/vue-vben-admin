@@ -3,6 +3,9 @@ import type { MenuForm, MenuQuery, MenuVO } from '#/api/system/sys/menu';
 
 import { onMounted, reactive, ref } from 'vue';
 
+import { IconPicker } from '@vben/common-ui';
+
+import { Icon } from '@iconify/vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 
 import {
@@ -62,6 +65,8 @@ const rules = reactive({
 
 // 选择表格的行菜单id
 const selectedRowMenuId = ref<string | undefined>();
+
+const buttonIcon = 'mdi:feather';
 
 /**
  * 查询
@@ -259,21 +264,11 @@ onMounted(() => {
           hasChildren: 'hasChildren',
         }"
       >
-        <el-table-column label="菜单名称" min-width="200" >
+        <el-table-column label="菜单名称" min-width="100">
           <template #default="scope">
-            <template
-              v-if="scope.row.icon && scope.row.icon.startsWith('el-icon')"
-            >
-              <el-icon style="vertical-align: -0.15em">
-                <component :is="scope.row.icon.replace('el-icon-', '')" />
-              </el-icon>
-            </template>
-            <template v-else-if="scope.row.icon">
-              <svg-icon :icon-class="scope.row.icon" />
-            </template>
-            <template v-else>
-              <svg-icon icon-class="menu" />
-            </template>
+            <span class="icon">
+              <Icon :icon="scope.row.icon ? scope.row.icon : buttonIcon" />
+            </span>
             {{ scope.row.menuName }}
           </template>
         </el-table-column>
@@ -383,7 +378,6 @@ onMounted(() => {
         </el-table-column>
       </el-table>
     </el-card>
-
     <el-dialog
       draggable
       v-model="dialog.visible"
@@ -393,12 +387,13 @@ onMounted(() => {
       top="5vh"
       center
       @close="closeDialog"
+      :z-index="100"
     >
       <ElForm
         ref="menuFormRef"
         :model="formData"
         :rules="rules"
-        label-width="160px"
+        label-width="100px"
       >
         <el-form-item label="父级菜单" prop="parentId">
           <el-tree-select
@@ -640,7 +635,7 @@ onMounted(() => {
           label="图标"
           prop="icon"
         >
-          <icon-select v-model="formData.icon" />
+          <IconPicker v-model="formData.icon" />
         </el-form-item>
 
         <el-form-item
@@ -661,3 +656,13 @@ onMounted(() => {
   </div>
 </template>
 
+<style scoped>
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+  vertical-align: -0.15em; /* 因icon大小被设置为和字体大小一致，而span等标签的下边缘会和字体的基线对齐，故需设置一个往下的偏移比例，来纠正视觉上的未对齐效果 */
+  outline: none;
+}
+</style>
