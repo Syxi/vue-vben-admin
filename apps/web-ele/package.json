@@ -41,10 +41,12 @@
     "@vben/styles": "workspace:*",
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
+    "@videojs-player/vue": "^1.0.0",
     "@vueuse/core": "catalog:",
     "dayjs": "catalog:",
     "element-plus": "catalog:",
     "pinia": "catalog:",
+    "video.js": "^8.22.0",
     "vue": "catalog:",
     "vue-router": "catalog:"
   },

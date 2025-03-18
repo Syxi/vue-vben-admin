@@ -5,6 +5,7 @@ import type { VideoQuery, VideoVO } from '#/api/system/media/video';
 
 import { nextTick, onMounted, reactive, ref } from 'vue';
 
+import { VideoPlayer } from '@videojs-player/vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 
 import {
@@ -13,6 +14,8 @@ import {
   selectVideosPageApi,
   uploadVideoApi,
 } from '#/api/system/media/video';
+
+// import 'video.js/dist/video-js.css';
 
 defineOptions({
   name: 'Video',
@@ -35,8 +38,6 @@ const queryParams = reactive<VideoQuery>({
 const queryForm = ref(ElForm);
 
 const videoIds = ref<string[]>([]);
-
-const videoPlayerRef = ref();
 
 /**
  * 行 checkbox 选中事件
@@ -232,8 +233,7 @@ function handleDeleteVideo(id?: string) {
   });
 }
 
-// VideoPlayer组件实例
-const player = videoPlayerRef.value;
+const videoPlayerRef = ref();
 
 // 视频播放源
 const videoSrc = ref('');
@@ -246,7 +246,6 @@ const playerOptions = ref({
   loop: false, // 是否视频一结束就重新开始
   fluid: true, // 按比例缩放以适应其容器
   controls: true, // 是否显示控件
-  languang: 'zh-cn',
   autoplay: true,
   poster: '', // 封面
   controlBar: {
@@ -272,13 +271,10 @@ function handlePlayVideo(fileName: string, url: string) {
   muted.value = false;
   dialog.title = fileName;
 
-  /**
-   * path: 视频文件在服务端的保存路径
-   */
+  // path: 视频文件在服务端的保存路径
   const path = url + fileName;
-
   // 构建url
-  const videoUrl = `${import.meta.env.VITE_APP_BASE_API}/${path}`;
+  const videoUrl = `${import.meta.env.VITE_GLOB_API_URL}/${path}`;
   videoSrc.value = videoUrl;
 }
 
@@ -410,6 +406,8 @@ onMounted(() => {
         v-model="dialog.visible"
         :title="dialog.title"
         @close="handleCloseDialog()"
+        center
+        draggable
       >
         <VideoPlayer
           ref="videoPlayerRef"
@@ -458,3 +456,4 @@ onMounted(() => {
     </el-card>
   </div>
 </template>
+

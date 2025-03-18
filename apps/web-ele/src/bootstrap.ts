@@ -11,6 +11,7 @@ import '@vben/styles/ele';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 import mdi from '@iconify-json/mdi/icons.json';
 import { addCollection } from '@iconify/vue';
+import VueVideoPlayer from '@videojs-player/vue';
 import { useTitle } from '@vueuse/core';
 import ElementPlus, { ElLoading } from 'element-plus';
 
@@ -20,6 +21,7 @@ import { initComponentAdapter } from './adapter/component';
 import App from './app.vue';
 import { router } from './router';
 
+import 'video.js/dist/video-js.css';
 import 'element-plus/dist/index.css';
 import './styles/global.scss';
 
@@ -67,6 +69,9 @@ async function bootstrap(namespace: string) {
    *
    */
   addCollection(mdi);
+
+  // 注册vueVideoPlayer
+  app.use(VueVideoPlayer);
 
   // 注册所有elementPlus图标
   for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
