@@ -180,7 +180,7 @@ function handleDeleteFile(id?: string) {
 
 /**
  * 下载文件
- * @param id
+ * @param row
  */
 async function handleDownloadFile(row: FileRecordVO) {
   try {
@@ -294,28 +294,11 @@ async function handleDownloadPdfFile(row: FileRecordVO) {
  }
  */
 
-const convertResult = ref();
-
-/**
- * 检查文件是否转化完成
- * @param id
- */
-function checkFileConvert(id: string) {
-  checkFileConvertStatusApi(id).then((res) => {
-    if (res === -1) {
-      ElMessage.error('文件正在转换中，请稍等');
-    }
-    convertResult.value = res;
-    ElMessage.success('文件转换成功');
-  });
-}
-
 function handlePreviewFile(row: FileRecordVO) {
   try {
     // file=dev/pdf/318c3157280bf8d33d2218d7e69f7780.pdf
-    const path = `${import.meta.env.VITE_APP_BASE_API}${row.url}${row.fileMd5}.pdf`;
-    const pdfUrl = `/lib/pdfjs/web/viewer.html?file=${path}`;
-
+    const path = `${import.meta.env.VITE_GLOB_API_URL}${row.url}${row.fileMd5}.pdf`;
+    const pdfUrl = `/static/pdfjs/web/viewer.html?file=${path}`;
     const newWindow = window.open(pdfUrl, '_blank');
     if (!newWindow) {
       ElMessage.error('未能打开新窗口预览PDF,请允许弹出窗口或调整浏览器设置');
@@ -345,11 +328,17 @@ onMounted(() => {
 
         <el-form-item>
           <el-button type="primary" @click="handleQuery()">
-            <i-ep-search />搜索
+            <template #icon>
+              <el-icon><Search /></el-icon>
+            </template>
+            搜索
           </el-button>
 
           <el-button type="primary" @click="resetQuery()">
-            <i-ep-refresh />重置
+            <template #icon>
+              <el-icon><Refresh /></el-icon>
+            </template>
+            重置
           </el-button>
 
           <el-button
@@ -358,7 +347,10 @@ onMounted(() => {
             v-access:code="['sys:file:delete']"
             @click="handleDeleteFile()"
           >
-            <i-ep-delete />删除
+            <template #icon>
+              <el-icon><Delete /></el-icon>
+            </template>
+            删除
           </el-button>
 
           <el-button
@@ -366,7 +358,7 @@ onMounted(() => {
             v-access:code="['sys:file:upload']"
             @click="handleOpenDialog()"
           >
-            <el-icon><Upload /></el-icon>上传文件
+            <el-icon> <Upload /> </el-icon>上传文件
           </el-button>
         </el-form-item>
       </ElForm>
