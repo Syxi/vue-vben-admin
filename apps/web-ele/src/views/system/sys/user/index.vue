@@ -551,23 +551,28 @@ onMounted(() => {
               </el-select>
             </el-form-item>
 
-            <!-- <el-form-item>
+            <el-form-item>
               <el-date-picker
-                class="!w-[240px]"
                 v-model="dateTimeRange"
-                type="datetimerange"
+                type="daterange"
                 start-placeholder="开始时间"
-                end-placeholder="截至时间"
+                end-placeholder="截止时间"
               />
-            </el-form-item> -->
+            </el-form-item>
 
             <el-form-item>
               <el-button type="primary" @click="handleQuery()">
-                <i-ep-search />搜索
+                <template #icon>
+                  <el-icon><Search /></el-icon>
+                </template>
+                搜索
               </el-button>
 
               <el-button type="primary" @click="resetQuery()">
-                <i-ep-refresh />重置
+                <template #icon>
+                  <el-icon><Refresh /></el-icon>
+                </template>
+                重置
               </el-button>
 
               <el-button
@@ -575,7 +580,10 @@ onMounted(() => {
                 type="primary"
                 @click="openDialog('user-form')"
               >
-                <i-ep-plus />新增
+                <template #icon>
+                  <el-icon><Plus /></el-icon>
+                </template>
+                新增
               </el-button>
 
               <el-button
@@ -583,6 +591,9 @@ onMounted(() => {
                 type="primary"
                 @click="enableUser()"
               >
+                <template #icon>
+                  <el-icon><SwitchButton /></el-icon>
+                </template>
                 启用
               </el-button>
 
@@ -592,6 +603,9 @@ onMounted(() => {
                 type="danger"
                 @click="disableUser()"
               >
+                <template #icon>
+                  <el-icon><SwitchButton /></el-icon>
+                </template>
                 禁用
               </el-button>
 
@@ -601,7 +615,10 @@ onMounted(() => {
                 :disabled="userIds.length === 0"
                 @click="handleDelete()"
               >
-                <i-ep-delete />删除
+                <template #icon>
+                  <el-icon><Delete /></el-icon>
+                </template>
+                删除
               </el-button>
 
               <el-button
@@ -609,7 +626,10 @@ onMounted(() => {
                 @click="resetPassword()"
                 v-access:code="['sys:user:password']"
               >
-                <i-ep-refresh-left />重置密码
+                <template #icon>
+                  <el-icon><RefreshRight /></el-icon>
+                </template>
+                重置密码
               </el-button>
 
               <el-dropdown split-button class="ml-3" type="primary">
@@ -617,13 +637,13 @@ onMounted(() => {
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item @click="downloadTemplate">
-                      <i-ep-download />下载模板
+                      <el-icon><Download /></el-icon>下载模板
                     </el-dropdown-item>
                     <el-dropdown-item
                       @click="openDialog('user-import')"
                       v-access:code="['sys:user:import']"
                     >
-                      <i-ep-top />导入数据
+                      <el-icon><Upload /></el-icon>导入数据
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </template>
@@ -635,7 +655,10 @@ onMounted(() => {
                 @click="handleExport"
                 v-access:code="['sys:user:export']"
               >
-                <i-ep-download />导出用户
+                <template #icon>
+                  <el-icon><Top /></el-icon>
+                </template>
+                导出用户
               </el-button>
             </el-form-item>
           </ElForm>
@@ -728,7 +751,7 @@ onMounted(() => {
                   @click="openDialog('user-form', scope.row.userId)"
                   v-access:code="['sys:user:edit']"
                 >
-                  <i-ep-edit />编辑
+                  <el-icon><Edit /></el-icon>编辑
                 </el-button>
 
                 <el-button
@@ -738,7 +761,8 @@ onMounted(() => {
                   @click="handleDelete(scope.row.userId)"
                   v-access:code="['sys:user:delete']"
                 >
-                  <i-ep-delete />删除
+                  <el-icon><Delete /></el-icon>
+                  删除
                 </el-button>
               </template>
             </el-table-column>

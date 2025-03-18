@@ -269,7 +269,7 @@ onMounted(() => {
 <template>
   <div class="app-container">
     <div class="search-container">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+      <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="roleName">
           <el-input
             v-model="queryParams.noticeTitle"
@@ -281,11 +281,17 @@ onMounted(() => {
 
         <el-form-item>
           <el-button type="primary" @click="handleQuery">
-            <i-ep-search />搜索
+            <template #icon>
+              <el-icon><Search /></el-icon>
+            </template>
+            搜索
           </el-button>
 
           <el-button type="primary" @click="resetQuery">
-            <i-ep-refresh />重置
+            <template #icon>
+              <el-icon><Refresh /></el-icon>
+            </template>
+            重置
           </el-button>
 
           <el-button
@@ -293,7 +299,10 @@ onMounted(() => {
             v-access:code="['sys:notice:add']"
             @click="openDialog()"
           >
-            <i-ep-plus />新增
+            <template #icon>
+              <el-icon><Plus /></el-icon>
+            </template>
+            新增
           </el-button>
 
           <el-button type="primary" @click="openDialog()"> 查看 </el-button>
@@ -336,10 +345,13 @@ onMounted(() => {
             v-access:code="['sys:notice:delete']"
             @click="handleDelete()"
           >
-            <i-ep-delete />删除
+            <template #icon>
+              <el-icon><Delete /></el-icon>
+            </template>
+            删除
           </el-button>
         </el-form-item>
-      </el-form>
+      </ElForm>
     </div>
 
     <el-card class="table-container">
@@ -418,7 +430,7 @@ onMounted(() => {
               v-access:code="['sys:notice:edit']"
               @click="openDialog(scope.row.noticeId)"
             >
-              <i-ep-edit />编辑
+              <el-icon><Edit /></el-icon>编辑
             </el-button>
 
             <el-button
@@ -428,7 +440,8 @@ onMounted(() => {
               v-access:code="['sys:notice:delete']"
               @click="handleDelete(scope.row.noticeId)"
             >
-              <i-ep-delete />删除
+              <el-icon><Delete /></el-icon>
+              删除
             </el-button>
           </template>
         </el-table-column>
@@ -453,7 +466,7 @@ onMounted(() => {
       @close="closeDialog"
       center
     >
-      <el-form
+      <ElForm
         ref="noticeFormRef"
         :model="formData"
         :rules="rules"
@@ -483,7 +496,7 @@ onMounted(() => {
         <el-form-item label="通知内容：">
           <WangEditor v-model:model-value="formData.noticeContent" />
         </el-form-item>
-      </el-form>
+      </ElForm>
 
       <template #footer>
         <div class="dialog-footer">

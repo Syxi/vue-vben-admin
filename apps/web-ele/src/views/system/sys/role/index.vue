@@ -458,11 +458,17 @@ onMounted(() => {
 
         <el-form-item>
           <el-button type="primary" @click="handleQuery">
-            <i-ep-search />搜索
+            <template #icon>
+              <el-icon><Search /></el-icon>
+            </template>
+            搜索
           </el-button>
 
           <el-button type="primary" @click="resetQuery">
-            <i-ep-refresh />重置
+            <template #icon>
+              <el-icon><Refresh /></el-icon>
+            </template>
+            重置
           </el-button>
 
           <el-button
@@ -470,7 +476,10 @@ onMounted(() => {
             v-access:code="['sys:role:add']"
             @click="openDialog()"
           >
-            <i-ep-plus />新增
+            <template #icon>
+              <el-icon><Plus /></el-icon>
+            </template>
+            新增
           </el-button>
 
           <el-button
@@ -478,6 +487,9 @@ onMounted(() => {
             v-access:code="['sys:role:enable']"
             @click="enableRole()"
           >
+            <template #icon>
+              <el-icon><SwitchButton /></el-icon>
+            </template>
             启用
           </el-button>
 
@@ -487,6 +499,9 @@ onMounted(() => {
             v-access:code="['sys:role:disable']"
             @click="disableRole()"
           >
+            <template #icon>
+              <el-icon><SwitchButton /></el-icon>
+            </template>
             禁用
           </el-button>
 
@@ -496,7 +511,10 @@ onMounted(() => {
             v-access:code="['sys:role:delete']"
             @click="handleDelete()"
           >
-            <i-ep-delete />删除
+            <template #icon>
+              <el-icon><Delete /></el-icon>
+            </template>
+            删除
           </el-button>
         </el-form-item>
       </ElForm>
@@ -559,7 +577,7 @@ onMounted(() => {
               @click="openMenuDialog(scope.row)"
               v-access:code="['sys:role:menu']"
             >
-              <i-ep-position />菜单授权
+              <el-icon><Promotion /></el-icon>菜单授权
             </el-button>
 
             <el-button
@@ -579,7 +597,7 @@ onMounted(() => {
               v-access:code="['sys:role:edit']"
               @click="openDialog(scope.row.roleId)"
             >
-              <i-ep-edit />编辑
+              <el-icon><Edit /></el-icon>编辑
             </el-button>
 
             <el-button
@@ -589,7 +607,7 @@ onMounted(() => {
               v-access:code="['sys:role:delete']"
               @click="handleDelete(scope.row.roleId)"
             >
-              <i-ep-delete />删除
+              <el-icon><Delete /></el-icon>删除
             </el-button>
           </template>
         </el-table-column>

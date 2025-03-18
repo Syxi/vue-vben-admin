@@ -244,12 +244,16 @@ onMounted(() => {
 
             <el-form-item>
               <el-button type="primary" @click="handleQuery()">
-                <template #icon><i-ep-search /></template>
+                <template #icon>
+                  <el-icon><Search /></el-icon>
+                </template>
                 搜索
               </el-button>
 
               <el-button type="primary" @click="resetQuery()">
-                <template #icon><i-ep-refresh /></template>
+                <template #icon>
+                  <el-icon><Refresh /></el-icon>
+                </template>
                 重置
               </el-button>
 
@@ -258,7 +262,9 @@ onMounted(() => {
                 @click="handleOpenDialog('0')"
                 v-access:code="['sys:organ:add']"
               >
-                <template #icon><i-ep-plus /></template>
+                <template #icon>
+                  <el-icon><Plus /></el-icon>
+                </template>
                 新增机构
               </el-button>
             </el-form-item>
@@ -355,7 +361,8 @@ onMounted(() => {
                   v-access:code="['sys:organ:add']"
                   @click="handleOpenDialog(scope.row.id)"
                 >
-                  <i-ep-plus /> 新增
+                  <el-icon><Plus /></el-icon>
+                  新增
                 </el-button>
 
                 <el-button
@@ -365,7 +372,7 @@ onMounted(() => {
                   v-access:code="['sys:organ:edit']"
                   @click="handleOpenDialog(undefined, scope.row.id)"
                 >
-                  <i-ep-edit /> 编辑
+                  <el-icon><Edit /></el-icon> 编辑
                 </el-button>
 
                 <el-button
@@ -375,7 +382,8 @@ onMounted(() => {
                   v-access:code="['sys:organ:delete']"
                   @click="handleDelete(scope.row.id)"
                 >
-                  <i-ep-delete /> 删除
+                  <el-icon><Delete /></el-icon>
+                  删除
                 </el-button>
               </template>
             </el-table-column>

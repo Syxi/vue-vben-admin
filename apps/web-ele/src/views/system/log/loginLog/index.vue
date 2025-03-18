@@ -59,13 +59,17 @@ onMounted(() => {
 
         <el-form-item>
           <el-button type="primary" @click="handleQuery()">
+            <template #icon>
+              <el-icon><Search /></el-icon>
+            </template>
             搜索
-            <el-icon><Search /></el-icon>
           </el-button>
 
           <el-button type="primary" @click="resetQuery()">
+            <template #icon>
+              <el-icon><Refresh /></el-icon>
+            </template>
             重置
-            <el-icon><Refresh /></el-icon>
           </el-button>
         </el-form-item>
       </el-form>

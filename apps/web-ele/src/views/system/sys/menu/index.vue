@@ -5,6 +5,7 @@ import { onMounted, reactive, ref } from 'vue';
 
 import { IconPicker } from '@vben/common-ui';
 
+import { Refresh } from '@element-plus/icons-vue';
 import { Icon } from '@iconify/vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 
@@ -230,12 +231,16 @@ onMounted(() => {
 
         <el-form-item>
           <el-button type="primary" @click="handleQuery">
-            <template #icon><i-ep-search /></template>
+            <template #icon>
+              <el-icon><Search /></el-icon>
+            </template>
             搜索
           </el-button>
 
           <el-button type="primary" @click="handleResetQuery">
-            <template #icon><i-ep-refresh /></template>
+            <template #icon>
+              <el-icon><Refresh /></el-icon>
+            </template>
             重置
           </el-button>
 
@@ -244,7 +249,9 @@ onMounted(() => {
             type="primary"
             @click="handleDialogOpen('0')"
           >
-            <template #icon><i-ep-plus /></template>
+            <template #icon>
+              <el-icon><Plus /></el-icon>
+            </template>
             新增菜单
           </el-button>
         </el-form-item>
@@ -277,7 +284,7 @@ onMounted(() => {
           <template #default="scope">
             <el-tag
               v-if="scope.row.menuType === MenuTypeEnum.CATALOG"
-              type="warning"
+              type="primary"
             >
               目录
             </el-tag>
@@ -352,7 +359,8 @@ onMounted(() => {
               size="small"
               @click.stop="handleDialogOpen(scope.row.menuId, undefined)"
             >
-              <i-ep-plus /> 新增
+              <el-icon><Plus /></el-icon>
+              新增
             </el-button>
 
             <el-button
@@ -362,7 +370,7 @@ onMounted(() => {
               size="small"
               @click.stop="handleDialogOpen(undefined, scope.row.menuId)"
             >
-              编辑
+              <el-icon><Edit /></el-icon>编辑
             </el-button>
 
             <el-button
@@ -372,7 +380,8 @@ onMounted(() => {
               size="small"
               @click.stop="handleDelete(scope.row.menuId)"
             >
-              <i-ep-delete /> 删除
+              <el-icon><Delete /></el-icon>
+              删除
             </el-button>
           </template>
         </el-table-column>
@@ -384,7 +393,6 @@ onMounted(() => {
       :title="dialog.title"
       destroy-on-close
       width="800px"
-      top="5vh"
       center
       @close="closeDialog"
       :z-index="100"

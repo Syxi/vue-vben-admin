@@ -317,11 +317,17 @@ onMounted(() => {
 
         <el-form-item>
           <el-button type="primary" @click="handleQuery">
-            <i-ep-search />搜索
+            <template #icon>
+              <el-icon><Search /></el-icon>
+            </template>
+            搜索
           </el-button>
 
           <el-button type="primary" @click="resetQuery">
-            <i-ep-refresh />重置
+            <template #icon>
+              <el-icon><Refresh /></el-icon>
+            </template>
+            重置
           </el-button>
 
           <el-button
@@ -329,7 +335,10 @@ onMounted(() => {
             @click="openDialog()"
             v-access:code="['sys:scheduledJob:add']"
           >
-            <i-ep-plus />新增
+            <template #icon>
+              <el-icon><Plus /></el-icon>
+            </template>
+            新增
           </el-button>
 
           <el-button
@@ -337,7 +346,10 @@ onMounted(() => {
             v-access:code="['sys:scheduledJob:run']"
             @click="executeJobs()"
           >
-            <el-icon><VideoPlay /></el-icon>启用
+            <template #icon>
+              <el-icon><VideoPlay /></el-icon>
+            </template>
+            启用
           </el-button>
 
           <el-button
@@ -345,7 +357,10 @@ onMounted(() => {
             v-access:code="['sys:scheduledJob:pause']"
             @click="pauseJobs()"
           >
-            <el-icon><CircleClose /></el-icon>暂停
+            <template #icon>
+              <el-icon><VideoPlay /></el-icon>
+            </template>
+            暂停
           </el-button>
 
           <el-button
@@ -354,7 +369,10 @@ onMounted(() => {
             :disabled="jobIds.length === 0"
             @click="handleDelete()"
           >
-            <i-ep-delete />删除
+            <template #icon>
+              <el-icon><Delete /></el-icon>
+            </template>
+            删除
           </el-button>
         </el-form-item>
       </ElForm>
@@ -412,7 +430,7 @@ onMounted(() => {
               v-access:code="['sys:scheduledJob:edit']"
               @click="openDialog(scope.row.jobId)"
             >
-              <i-ep-edit />编辑
+              <el-icon><Edit /></el-icon>>编辑
             </el-button>
 
             <el-button
@@ -442,7 +460,8 @@ onMounted(() => {
               v-access:code="['sys:scheduledJob:delete']"
               @click="handleDelete(scope.row.jobId)"
             >
-              <i-ep-delete />删除
+              <el-icon><Delete /></el-icon>
+              删除
             </el-button>
           </template>
         </el-table-column>

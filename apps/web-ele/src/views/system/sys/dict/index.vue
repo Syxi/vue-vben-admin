@@ -230,11 +230,17 @@ onMounted(() => {
 
         <el-form-item>
           <el-button type="primary" @click="handleQuery()">
-            <i-ep-search />搜索
+            <template #icon>
+              <el-icon><Search /></el-icon>
+            </template>
+            搜索
           </el-button>
 
           <el-button type="primary" @click="resetQuery()">
-            <i-ep-refresh />重置
+            <template #icon>
+              <el-icon><Refresh /></el-icon>
+          </template>
+            重置
           </el-button>
 
           <el-button
@@ -242,7 +248,10 @@ onMounted(() => {
             @click="openDialog()"
             v-access:code="['sys:dictType:add']"
           >
-            <i-ep-plus />新增
+            <template #icon>
+              <el-icon><Plus /></el-icon>
+            </template>
+            新增
           </el-button>
 
           <el-button
@@ -250,7 +259,10 @@ onMounted(() => {
             @click="handleDelete()"
             v-access:code="['sys:dictType:delete']"
           >
-            <i-ep-delete />删除
+            <template #icon>
+              <el-icon><Delete /></el-icon>
+            </template>
+            删除
           </el-button>
         </el-form-item>
       </ElForm>
@@ -300,7 +312,7 @@ onMounted(() => {
               v-access:code="['sys:dictValue:index']"
               @click.stop="openDictValueDialog(scope.row)"
             >
-              <i-ep-Collection /> 字典数据
+              <el-icon><Collection /></el-icon> 字典数据
             </el-button>
 
             <el-button
@@ -310,7 +322,7 @@ onMounted(() => {
               v-access:code="['sys:dictType:edit']"
               @click.stop="openDialog(scope.row.id)"
             >
-              <i-ep-edit />编辑
+              <el-icon><Edit /></el-icon>编辑
             </el-button>
 
             <el-button
@@ -320,7 +332,8 @@ onMounted(() => {
               size="small"
               @click.stop="handleDelete(scope.row.id)"
             >
-              <i-ep-delete />删除
+              <el-icon><Delete /></el-icon>
+              删除
             </el-button>
           </template>
         </el-table-column>
