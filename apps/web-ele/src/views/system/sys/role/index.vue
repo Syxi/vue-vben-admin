@@ -5,6 +5,15 @@ import type { RoleForm, RolePage, RoleQuery } from '#/api/system/sys/role';
 
 import { onMounted, reactive, ref, watch } from 'vue';
 
+import {
+  Delete,
+  Edit,
+  Plus,
+  QuestionFilled,
+  Refresh,
+  Switch,
+  SwitchButton,
+} from '@element-plus/icons-vue';
 import { ElForm, ElMessage, ElMessageBox, ElTree } from 'element-plus';
 
 import { menuOptionApi, updateRoleMenusApi } from '#/api/system/sys/menu';
