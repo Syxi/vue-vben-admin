@@ -539,6 +539,3 @@ onMounted(() => {
     </el-dialog>
   </div>
 </template>
-
-<style lang="scss" scoped>
-</style>
