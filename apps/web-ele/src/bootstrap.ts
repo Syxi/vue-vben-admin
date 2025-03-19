@@ -15,6 +15,7 @@ import VueVideoPlayer from '@videojs-player/vue';
 import { useTitle } from '@vueuse/core';
 import ElementPlus, { ElLoading } from 'element-plus';
 
+import { registerComponents } from '#/components';
 import { $t, setupI18n } from '#/locales';
 
 import { initComponentAdapter } from './adapter/component';
@@ -77,6 +78,9 @@ async function bootstrap(namespace: string) {
   for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component);
   }
+
+  // 全局注册自定义组件
+  registerComponents(app);
 
   // 动态更新标题
   watchEffect(() => {

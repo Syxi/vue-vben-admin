@@ -20,6 +20,7 @@ import {
   topNoticeApi,
   updateNoticeApi,
 } from '#/api/system/sys/notice';
+import { WangEditor } from '#/components/wang-editor';
 
 defineOptions({
   name: 'Notice',

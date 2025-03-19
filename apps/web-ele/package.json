@@ -43,6 +43,8 @@
     "@vben/utils": "workspace:*",
     "@videojs-player/vue": "^1.0.0",
     "@vueuse/core": "catalog:",
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-vue": "^5.1.12",
     "dayjs": "catalog:",
     "element-plus": "catalog:",
     "pinia": "catalog:",
