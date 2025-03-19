@@ -430,7 +430,7 @@ onMounted(() => {
               v-access:code="['sys:scheduledJob:edit']"
               @click="openDialog(scope.row.jobId)"
             >
-              <el-icon><Edit /></el-icon>>编辑
+              <el-icon><Edit /></el-icon>编辑
             </el-button>
 
             <el-button
@@ -514,29 +514,10 @@ onMounted(() => {
         </el-form-item>
 
         <el-form-item label="cron表达式" prop="cronExpression">
-          <el-input v-model="formData.cronExpression" placeholder="cron表达式">
-            <template #append>
-              <el-popover
-                :visible="formData.cronPopover"
-                width="700px"
-                trigger="click"
-              >
-                <Cron
-                  :cron-value="formData.cronExpression"
-                  @change="changeCron"
-                  @close="formData.cronPopover = false"
-                  max-height="400px"
-                />
-                <template #reference>
-                  <el-button
-                    @click="formData.cronPopover = !formData.cronPopover"
-                  >
-                    设置
-                  </el-button>
-                </template>
-              </el-popover>
-            </template>
-          </el-input>
+          <el-input
+            v-model="formData.cronExpression"
+            placeholder="cron表达式"
+          />
         </el-form-item>
 
         <el-form-item label="备注" prop="remark">
@@ -560,14 +541,4 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.cron {
-  width: 700px;
-  margin: 0 auto;
-  margin-top: 100px;
-  /* stylelint-disable-next-line rule-empty-line-before */
-  h1 {
-    font-size: 50px;
-    text-align: center;
-  }
-}
 </style>
