@@ -33,6 +33,7 @@ import {
   resetPwdApi,
   selectUserPageApi,
 } from '#/api/system/sys/user';
+import { Dictionary } from '#/components/dictionary';
 
 defineOptions({
   name: 'User',
