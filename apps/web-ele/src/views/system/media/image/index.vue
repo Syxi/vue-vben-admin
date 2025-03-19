@@ -44,7 +44,7 @@ const imageFormRef = ref(ElForm);
 
 const imageIds = ref<string[]>([]);
 
-const imgPath = `${import.meta.env.VITE_APP_BASE_API}`;
+const imgPath = `${import.meta.env.VITE_GLOB_API_URL}`;
 
 /**
  * 行 checkbox 选中事件
