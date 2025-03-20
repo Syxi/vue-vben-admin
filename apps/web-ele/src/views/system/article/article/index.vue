@@ -18,6 +18,7 @@ import {
   updateArticleApi,
 } from '#/api/system/article/article';
 import { selectCategoryOptionApi } from '#/api/system/article/category';
+import { WangEditor } from '#/components/wang-editor';
 
 defineOptions({
   name: 'Article',

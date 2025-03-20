@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
 
-import { computed } from 'vue';
+import {computed, onBeforeUnmount, onMounted, ref} from 'vue';
 
 import { AuthenticationLogin, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
 import { useAuthStore } from '#/store';
+import {getSecretKeyApi} from "#/api";
 
 defineOptions({ name: 'Login' });
 
@@ -40,6 +41,19 @@ const formSchema = computed((): VbenFormSchema[] => {
     //   }),
     // },
   ];
+});
+
+// 公钥
+const publicKeyStr = ref('');
+
+// 获取aes加密秘钥
+async function getSecretKet() {
+  publicKeyStr.value = await getSecretKeyApi();
+  localStorage.setItem('publicKey', publicKeyStr.value);
+}
+
+onMounted(() => {
+  getSecretKet();
 });
 </script>
 

@@ -13,6 +13,7 @@ import { defineStore } from 'pinia';
 
 import { getUserInfoApi, loginApi, logoutApi } from '#/api';
 import { $t } from '#/locales';
+import {JSEncrypt} from "jsencrypt";
 
 export const useAuthStore = defineStore('auth', () => {
   const accessStore = useAccessStore();
@@ -35,7 +36,28 @@ export const useAuthStore = defineStore('auth', () => {
     let userInfo: null | UserInfo = null;
     try {
       loginLoading.value = true;
-      const loginResult: LoginResult = await loginApi(params);
+      // 账号加密后的登录参数
+      const encryptData = {
+        username: '',
+        password: '',
+        captchaCode: params.captchaCode,
+      };
+      // 加密登录账号
+      const encrypt = new JSEncrypt();
+      const publicKeyStr = localStorage.getItem('publicKey');
+      // 设置加密的公钥
+      encrypt.setPublicKey(publicKeyStr);
+      const encryptUsername = encrypt.encrypt(params.username);
+      const encryptPassword = encrypt.encrypt(params.password);
+      if (encryptUsername && encryptPassword) {
+        encryptData.username = encryptUsername;
+        encryptData.password = encryptPassword;
+      } else {
+        encryptData.username = params.username;
+        encryptData.password = params.password;
+      }
+
+      const loginResult: LoginResult = await loginApi(encryptData);
 
       // 如果成功获取到 accessToken
       if (loginResult.accessToken) {
@@ -71,6 +93,7 @@ export const useAuthStore = defineStore('auth', () => {
         }
       }
     } finally {
+      localStorage.removeItem('publicKey');
       loginLoading.value = false;
     }
 

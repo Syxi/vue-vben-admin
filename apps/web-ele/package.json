@@ -47,6 +47,7 @@
     "@wangeditor/editor-for-vue": "^5.1.12",
     "dayjs": "catalog:",
     "element-plus": "catalog:",
+    "jsencrypt": "^3.3.2",
     "pinia": "catalog:",
     "video.js": "^8.22.0",
     "vue": "catalog:",
