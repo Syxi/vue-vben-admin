@@ -68,10 +68,14 @@ export async function updateStatusApi(
   configKey: string,
   configValue: boolean,
 ) {
-  return requestClient.put(`/api/sysSwitchConfig/update/${id}`, {
-    params: {
-      configKey,
-      configValue,
+  return requestClient.put(
+    `/api/sysSwitchConfig/update/${id}`,
+    {},
+    {
+      params: {
+        configKey,
+        configValue,
+      },
     },
-  });
+  );
 }
