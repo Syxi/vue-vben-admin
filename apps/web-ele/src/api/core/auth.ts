@@ -13,6 +13,10 @@ export interface LoginParams {
    */
   password: string;
   /**
+   * 验证码的key
+   */
+  captchaKey?: string;
+  /**
    * 验证码图片Base64字符串
    */
   captchaCode?: string;
@@ -58,7 +62,12 @@ export interface CaptchaResult {
  * @param loginParams
  */
 export async function loginApi(loginParams: LoginParams) {
-  return requestClient.post<LoginResult>('/api/login', loginParams);
+  return requestClient.post<LoginResult>('/api/login', loginParams, {
+    params: {
+      captchaKey: loginParams.captchaKey,
+      captchaCode: loginParams.captchaCode,
+    },
+  });
 }
 
 /**
