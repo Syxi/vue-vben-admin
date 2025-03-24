@@ -9,11 +9,11 @@ import { DEFAULT_HOME_PATH, LOGIN_PATH } from '@vben/constants';
 import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 
 import { ElNotification } from 'element-plus';
+import { JSEncrypt } from 'jsencrypt';
 import { defineStore } from 'pinia';
 
-import { getUserInfoApi, loginApi, logoutApi } from '#/api';
+import { getSecretKeyApi, getUserInfoApi, loginApi, logoutApi } from '#/api';
 import { $t } from '#/locales';
-import {JSEncrypt} from "jsencrypt";
 
 export const useAuthStore = defineStore('auth', () => {
   const accessStore = useAccessStore();
@@ -32,6 +32,12 @@ export const useAuthStore = defineStore('auth', () => {
     params: LoginParams,
     onSuccess?: () => Promise<void> | void,
   ) {
+    // 公钥
+    const publicKeyStr = ref('');
+
+    // 获取aes加密的公钥
+    publicKeyStr.value = await getSecretKeyApi();
+
     // 异步处理用户登录操作并获取 accessToken
     let userInfo: null | UserInfo = null;
     try {
@@ -40,13 +46,13 @@ export const useAuthStore = defineStore('auth', () => {
       const encryptData = {
         username: '',
         password: '',
+        captchaKey: params.captchaKey,
         captchaCode: params.captchaCode,
       };
       // 加密登录账号
       const encrypt = new JSEncrypt();
-      const publicKeyStr = localStorage.getItem('publicKey');
       // 设置加密的公钥
-      encrypt.setPublicKey(publicKeyStr);
+      encrypt.setPublicKey(publicKeyStr.value);
       const encryptUsername = encrypt.encrypt(params.username);
       const encryptPassword = encrypt.encrypt(params.password);
       if (encryptUsername && encryptPassword) {
@@ -92,9 +98,11 @@ export const useAuthStore = defineStore('auth', () => {
           });
         }
       }
+    } catch {
+      // window.location.href = LOGIN_PATH;
     } finally {
-      localStorage.removeItem('publicKey');
       loginLoading.value = false;
+      publicKeyStr.value = '';
     }
 
     return {
