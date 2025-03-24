@@ -70,8 +70,7 @@ export const useAuthStore = defineStore('auth', () => {
         // 将 accessToken 存储到 accessStore 中
         accessStore.setAccessToken(loginResult.accessToken);
         // 将 refreshToken 存储到 accessStore 中
-        localStorage.setItem('accessToken', loginResult.accessToken);
-        localStorage.setItem('refreshToken', loginResult.refreshToken);
+        accessStore.setRefreshToken(loginResult.refreshToken);
 
         // 获取用户信息并存储到 userStore 中
         userInfo = await fetchUserInfo();
@@ -120,8 +119,6 @@ export const useAuthStore = defineStore('auth', () => {
       resetAllStores();
       router.removeRoute('/');
       accessStore.setLoginExpired(false);
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
 
       // 回登录页带上当前路由地址
       router.replace({

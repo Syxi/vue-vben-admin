@@ -10,6 +10,7 @@ import {
   errorMessageResponseInterceptor,
   RequestClient,
 } from '@vben/request';
+import { useAccessStore } from '@vben/stores';
 
 import { ElMessage, ElMessageBox } from 'element-plus';
 
@@ -54,11 +55,10 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
    * 刷新token逻辑
    */
   async function doRefreshToken() {
-    localStorage.removeItem('accessToken');
-    const token: null | string = localStorage.getItem('refreshToken');
-    const response = await refreshTokenApi(token);
+    const accessStore = useAccessStore();
+    const response = await refreshTokenApi(accessStore.refreshToken);
     const accessToken = response.data.data.accessToken;
-    localStorage.setItem('accessToken', accessToken);
+    accessStore.setAccessToken(accessToken);
     return accessToken;
   }
 
@@ -69,9 +69,8 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   // 请求头拦截处理
   client.addRequestInterceptor({
     fulfilled: async (config) => {
-      const accessToken = localStorage.getItem('accessToken');
-
-      config.headers.Authorization = formatToken(accessToken);
+      const accessStore = useAccessStore();
+      config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
       return config;
     },
