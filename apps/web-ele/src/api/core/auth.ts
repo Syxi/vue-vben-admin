@@ -62,12 +62,12 @@ export interface CaptchaResult {
  * @param loginParams
  */
 export async function loginApi(loginParams: LoginParams) {
-  return requestClient.post<LoginResult>('/api/login', loginParams, {
-    params: {
-      captchaKey: loginParams.captchaKey,
-      captchaCode: loginParams.captchaCode,
-    },
-  });
+  const formData = new FormData();
+  formData.append('username', loginParams.username);
+  formData.append('password', loginParams.password);
+  formData.append('captchaKey', loginParams.captchaKey || '');
+  formData.append('captchaCode', loginParams.captchaCode || '');
+  return requestClient.post<LoginResult>('/api/login', formData);
 }
 
 /**
