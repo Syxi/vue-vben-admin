@@ -1,6 +1,6 @@
 import type { UserInfo } from '@vben/types';
 
-import type { LoginParams, LoginResult } from '#/api';
+import {getCaptchaApi, type LoginParams, type LoginResult} from '#/api';
 
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -97,8 +97,8 @@ export const useAuthStore = defineStore('auth', () => {
           });
         }
       }
-    } catch {
-      // window.location.href = LOGIN_PATH;
+    } catch (error) {
+      throw error;
     } finally {
       loginLoading.value = false;
       publicKeyStr.value = '';
