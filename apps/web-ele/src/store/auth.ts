@@ -1,6 +1,6 @@
 import type { UserInfo } from '@vben/types';
 
-import {getCaptchaApi, type LoginParams, type LoginResult} from '#/api';
+import type { LoginParams, LoginResult } from '#/api';
 
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
