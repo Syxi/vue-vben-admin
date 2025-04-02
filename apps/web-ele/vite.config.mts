@@ -6,6 +6,10 @@ export default defineConfig(async () => {
   return {
     application: {},
     vite: {
+      // sockjs-client
+      define: {
+        global: 'window',
+      },
       plugins: [
         ElementPlus({
           format: 'esm',
