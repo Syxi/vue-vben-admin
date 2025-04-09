@@ -108,5 +108,5 @@ export async function previewFileApi(id: string) {
  * @returns
  */
 export async function checkFileConvertStatusApi(id: string) {
-  return requestClient.get<string>(`/api/file/checkFileConvert/${id}`);
+  return requestClient.get<number>(`/api/file/checkFileConvert/${id}`);
 }

@@ -16,7 +16,6 @@ import {
   selectFilePageApi,
 } from '#/api/system/media/file';
 
-
 defineOptions({
   name: 'File',
   inheritAttrs: false,
@@ -303,23 +302,50 @@ const dialogView = reactive({
   visible: false,
 });
 
+const pdfUrl = ref('');
 
 function closeDialog() {
   dialogView.visible = false;
   pdfUrl.value = '';
 }
 
-const pdfUrl = ref('');
+async function handlePreviewFile(row: FileRecordVO) {
+  try {
+    // 检查文件转换状态
+    const response = await checkFileConvertStatusApi(row.id);
 
-function handlePreviewFile(row: FileRecordVO) {
-  dialogView.visible = true;
-  checkFileConvertStatusApi(row.id).catch((error) => {
-    ElMessage.error(error);
-  });
-  // file=dev/pdf/318c3157280bf8d33d2218d7e69f7780.pdf
-  dialogView.title = row.fileName;
-  const url = `${import.meta.env.VITE_GLOB_API_URL}${row.url}${row.fileMd5}.pdf`;
-  pdfUrl.value = `/static/pdfjs/web/viewer.html?file=${encodeURIComponent(url)}`;
+    // 根据响应状态处理不同的逻辑
+    switch (response) {
+      case -1: {
+        ElMessage.error('不支持该格式文件转换成pdf');
+        break;
+      }
+
+      case 0: {
+        ElMessage.warning('文件正在转换中，请稍后再打开');
+        break;
+      }
+
+      case 1: {
+        // 文件已转换成功，打开预览对话框
+        dialogView.visible = true;
+        dialogView.title = row.fileName;
+
+        const url = `${import.meta.env.VITE_GLOB_API_URL}${row.url}${row.fileMd5}.pdf`;
+        pdfUrl.value = `/static/pdfjs/web/viewer.html?file=${encodeURIComponent(url)}`;
+        break;
+      }
+
+      default: {
+        ElMessage.error('未知的文件转换状态');
+        break;
+      }
+    }
+  } catch (error) {
+    // 捕获并处理异常
+    console.error('检查文件转换状态时出错:', error);
+    ElMessage.error('检查文件转换状态时发生错误，请稍后重试');
+  }
 }
 
 onMounted(() => {
