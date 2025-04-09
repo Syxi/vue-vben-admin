@@ -16,6 +16,7 @@ import {
   selectFilePageApi,
 } from '#/api/system/media/file';
 
+
 defineOptions({
   name: 'File',
   inheritAttrs: false,
@@ -244,8 +245,6 @@ async function handleDownloadPdfFile(row: FileRecordVO) {
 
 // const pdfViewer = ref("");
 
-// const dialogVisible = ref(false);
-
 /**
  * pdf.js的viewer插件预览文件
  */
@@ -275,17 +274,6 @@ async function handleDownloadPdfFile(row: FileRecordVO) {
 // }
 
 /**
- * 关闭预览弹窗
- */
-// function handleCloseDiolog() {
-//   dialogVisible.value = false;
-//   if (pdfViewer.value) {
-//     URL.revokeObjectURL(pdfViewer.value);
-//     pdfViewer.value = "";
-//   }
-// }
-
-/**
  * 浏览器新窗口打开viewer插件预览
  *
  跨域问题 在项目的/lib/pdfjs/web/viewer.mjs中注释掉以下代码
@@ -293,19 +281,45 @@ async function handleDownloadPdfFile(row: FileRecordVO) {
  throw new Error("file origin does not match viewer's");
  }
  */
+// function handlePreviewFile(row: FileRecordVO) {
+//   try {
+//     checkFileConvertStatusApi(row.id).catch((error) => {
+//       ElMessage.error(error);
+//     });
+//     // file=dev/pdf/318c3157280bf8d33d2218d7e69f7780.pdf
+//     const path = `${import.meta.env.VITE_GLOB_API_URL}${row.url}${row.fileMd5}.pdf`;
+//     const pdfUrl = `/static/pdfjs/web/viewer.html?file=${path}`;
+//     const newWindow = window.open(pdfUrl, '_blank');
+//     if (!newWindow) {
+//       ElMessage.error('未能打开新窗口预览PDF,请允许弹出窗口或调整浏览器设置');
+//     }
+//   } catch {
+//     ElMessage.warning('文件转换错误，请联系管理员');
+//   }
+// }
+
+const dialogView = reactive({
+  title: '',
+  visible: false,
+});
+
+
+function closeDialog() {
+  dialogView.visible = false;
+  pdfUrl.value = '';
+}
+
+const pdfUrl = ref('');
 
 function handlePreviewFile(row: FileRecordVO) {
-  try {
-    // file=dev/pdf/318c3157280bf8d33d2218d7e69f7780.pdf
-    const path = `${import.meta.env.VITE_GLOB_API_URL}${row.url}${row.fileMd5}.pdf`;
-    const pdfUrl = `/static/pdfjs/web/viewer.html?file=${path}`;
-    const newWindow = window.open(pdfUrl, '_blank');
-    if (!newWindow) {
-      ElMessage.error('未能打开新窗口预览PDF,请允许弹出窗口或调整浏览器设置');
-    }
-  } catch {
-    ElMessage.warning('文件已丢失, 请重新上传');
-  }
+  dialogView.visible = true;
+  checkFileConvertStatusApi(row.id).catch((error) => {
+    ElMessage.error(error);
+  });
+  // file=dev/pdf/318c3157280bf8d33d2218d7e69f7780.pdf
+  dialogView.title = row.fileName;
+  const url = `${import.meta.env.VITE_GLOB_API_URL}${row.url}${row.fileMd5}.pdf`;
+  pdfUrl.value = `/static/pdfjs/web/viewer.html?file=${encodeURIComponent(url)}`;
 }
 
 onMounted(() => {
@@ -447,17 +461,23 @@ onMounted(() => {
       />
 
       <!-- 使用dialog查看pdf -->
-      <!-- <el-dialog
+      <el-dialog
         draggable
         center
         fullscreen
-        v-model="dialog.visible"
-        :title="dialog.title"
+        v-model="dialogView.visible"
+        :title="dialogView.title"
         width="100%"
-        @close="handleCloseDiolog()"
+        @close="closeDialog()"
       >
-        <div id="pdfViewer"></div>
-      </el-dialog> -->
+        <div style="height: 90vh; overflow: hidden">
+          <iframe
+            :src="pdfUrl"
+            style="width: 100%; height: 100%"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </el-dialog>
 
       <el-dialog
         v-model="dialog.visible"
