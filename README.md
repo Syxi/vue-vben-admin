@@ -1,3 +1,15 @@
+# 以vben5前端项目二次开发的
+
+地址：https://github.com/vbenjs/vue-vben-admin
+
+# 注册依赖
+
+cd 到 vue-vben-admin pnpm install
+
+# 注册依赖
+
+cd 到 vue-vben-admin\apps\web-ele pnpm install
+
 # 项目启动
 
 pnpm run dev:ele
