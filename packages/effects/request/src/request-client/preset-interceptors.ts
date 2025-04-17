@@ -22,6 +22,14 @@ export const defaultResponseInterceptor = ({
     fulfilled: (response) => {
       const { config, data: responseData, status } = response;
 
+      // 检查是否二进制流
+      if (
+        config.responseType === 'blob' ||
+        config.responseType === 'arraybuffer'
+      ) {
+        return response; // 直接返回原始响应
+      }
+
       if (config.responseReturn === 'raw') {
         return response;
       }
