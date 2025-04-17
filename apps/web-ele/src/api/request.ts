@@ -7,6 +7,7 @@ import { useAppConfig } from '@vben/hooks';
 import { preferences } from '@vben/preferences';
 import {
   authenticateResponseInterceptor,
+  defaultResponseInterceptor,
   errorMessageResponseInterceptor,
   RequestClient,
 } from '@vben/request';
@@ -77,26 +78,13 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   });
 
   // 处理返回的响应数据格式
-  client.addResponseInterceptor({
-    fulfilled: async (response) => {
-      const { code, msg, data } = response.data;
-      // 请求成功，返回数据
-      if (code === '200') {
-        return data;
-      }
-
-      // 响应数据为二进制流处理
-      if (
-        response.config.responseType === 'blob' ||
-        response.config.responseType === 'arraybuffer'
-      ) {
-        return response;
-      }
-
-      // 其他状态码返回
-      ElMessage.error(msg);
-    },
-  });
+  client.addResponseInterceptor(
+    defaultResponseInterceptor({
+      codeField: 'code',
+      dataField: 'data',
+      successCode: '200',
+    }),
+  );
 
   // 通用错误处理
   client.addResponseInterceptor(
@@ -104,12 +92,12 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       // 这里可以根据业务进行定制,你可以拿到 error 内的信息进行定制化处理，根据不同的 code 做不同的提示，而不是直接使用 message.error 提示 msg
       // 当前mock接口返回的错误字段是 error 或者 message
       const responseData = error?.response?.data ?? {};
+      const errorMessage = responseData.msg;
       // refreshToken未过期，刷新accessToken
       if (responseData.code === 'A320') {
         return;
       }
 
-      const errorMessage = responseData.msg;
       // 如果没有错误信息，则会根据状态码进行提示
       ElMessage.error(errorMessage || msg);
     }),
@@ -133,6 +121,8 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
 //   responseReturn: 'data',
 // });
 
-export const requestClient = createRequestClient(apiURL);
+export const requestClient = createRequestClient(apiURL, {
+  responseReturn: 'data',
+});
 
 export const baseRequestClient = new RequestClient({ baseURL: apiURL });
