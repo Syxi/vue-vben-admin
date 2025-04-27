@@ -118,6 +118,7 @@ export interface UserPassword {
   confirmPassword?: string;
 }
 
+
 /**
  * 获取用户分页列表
  * @returns
@@ -219,7 +220,7 @@ export async function exportUserApi(userIds: string[]) {
 export async function importUserApi(file: File) {
   const formData = new FormData();
   formData.append('file', file);
-  return requestClient.post<string>('/api/user/import', formData, {
+  return requestClient.post<ImportResult>('/api/user/import', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },

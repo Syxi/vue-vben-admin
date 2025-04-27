@@ -49,6 +49,14 @@ declare global {
     key: string;
     label: string;
   }
+
+  /**
+   * 批量导入结果
+   */
+  interface ImportResult {
+    validCount: number;
+    invalidCount: number;
+  }
 }
 
 export {};

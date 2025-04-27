@@ -42,47 +42,30 @@ function handleBeforeUpload(file: UploadRawFile) {
 <template>
   <el-upload
     v-model="imgUrl"
-    class="single-uploader"
+    accept=".jpg,.jpeg,.png,.gif"
     :show-file-list="false"
     :before-upload="handleBeforeUpload"
     :http-request="uploadFile"
   >
-    <el-image v-if="imgUrl" :src="imgUrl" class="single-uploader__image" />
-    <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+    <div>
+      <div>
+<!--        <el-image :src="imgUrl" class="avatar" />-->
+        <el-avatar shape="circle" :src="imgUrl" :size="140" fit="cover" />
+      </div>
+      <div class="mt-2 flex justify-center">
+        <el-icon class="mr-1"><Camera /></el-icon>
+        <el-text>上传头像</el-text>
+      </div>
+    </div>
   </el-upload>
 </template>
 
 <style scoped lang="scss">
-.single-uploader {
-  overflow: hidden;
-  cursor: pointer;
-  border: 1px var(--el-border-color) solid;
-  border-radius: 6px;
-
-  &:hover {
-    border-color: var(--el-color-primary);
-  }
-
-  &__image {
-    display: block;
-    width: 178px;
-    height: 178px;
-  }
-
-  &___icon {
-    width: 178px;
-    height: 178px;
-    font-size: 28px;
-    color: #8c939d;
-    text-align: center;
-  }
-}
-
-.avatar-uploader-icon {
-  width: 178px;
-  height: 178px;
-  font-size: 28px;
-  color: #8c939d;
-  text-align: center;
+.avatar {
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #dfdfdf;
 }
 </style>
