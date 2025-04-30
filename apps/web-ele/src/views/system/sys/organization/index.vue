@@ -116,6 +116,7 @@ async function handleOpenDialog(id?: string, parentId?: string) {
 function handleCloseDialog() {
   orgFormRef.value.resetFields();
   orgFormRef.value.clearValidate();
+  formData.id = undefined;
   dialog.visiable = false;
 }
 
@@ -365,7 +366,6 @@ onMounted(() => {
         label-width="80px"
       >
         <el-form-item
-          v-if="formData.parentId !== '0'"
           label="上级机构"
           prop="parentId"
         >
