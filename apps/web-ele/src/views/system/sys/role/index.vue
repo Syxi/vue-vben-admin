@@ -428,18 +428,35 @@ function handleRoleUserSubmit() {
   }
 }
 
+// 定义表格高度
+const tableHeight = ref(window.innerHeight - 200); // 初始高度
 
+// 监听窗口大小变化，动态调整表格高度
+watch(
+  () => window.innerHeight,
+  () => {
+    tableHeight.value = window.innerHeight - 200; // 动态计算表格高度
+  },
+);
 
 onMounted(() => {
   handleQuery();
   menuOption();
+
+  // 初始化表格高度
+  tableHeight.value = window.innerHeight - 200;
+
+  // 监听窗口大小变化
+  window.addEventListener('resize', () => {
+    tableHeight.value = window.innerHeight - 200;
+  });
 });
 </script>
 
 <template>
   <div class="app-container">
     <div class="table-container">
-      <ElForm ref="queryFormRef" :model="queryParams" :inline="true" >
+      <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="roleName">
           <el-input
             v-model="queryParams.roleName"
@@ -520,7 +537,7 @@ onMounted(() => {
         highlight-current-row
         border
         @selection-change="handleSelectionChange"
-        :max-height="700"
+        :max-height="tableHeight"
       >
         <el-table-column type="selection" width="80" align="center" />
         <el-table-column type="index" width="80" align="center" label="序号" />
@@ -546,7 +563,13 @@ onMounted(() => {
           </template>
         </el-table-column>
 
-        <el-table-column label="排序" sortable prop="sort" width="100" align="center" />
+        <el-table-column
+          label="排序"
+          sortable
+          prop="sort"
+          width="100"
+          align="center"
+        />
 
         <el-table-column
           label="创建时间"
@@ -608,7 +631,6 @@ onMounted(() => {
           </template>
         </el-table-column>
       </el-table>
-    </div>
 
       <el-pagination
         v-if="total > 0"
@@ -619,11 +641,8 @@ onMounted(() => {
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="handleQuery"
         @current-change="handleQuery"
-        class="pagination-container"
       />
-
-
-
+    </div>
 
     <!-- 角色表单弹窗 -->
     <el-dialog
@@ -794,9 +813,4 @@ onMounted(() => {
   --el-transfer-item-height: 30px;
   --el-transfer-filter-height: 32px;
 }
-
-
-
-
-
 </style>
