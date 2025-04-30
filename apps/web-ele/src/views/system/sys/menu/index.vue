@@ -155,28 +155,16 @@ function onMenuTypeChange() {
 /**
  * 提交表单
  */
-function submitForm() {
-  menuFormRef.value.validate((isValid: boolean) => {
-    if (isValid) {
-      const menuId = formData.value.menuId;
-      if (menuId) {
-        // 编辑菜单
-        editMenuApi(formData.value).then(() => {
-          ElMessage.success('修改菜单成功');
-          closeDialog();
-          handleQuery();
-        });
-      } else {
-        // 新增菜单
-        addMenuApi(formData.value).then(() => {
-          ElMessage.success('新增菜单成功');
-          closeDialog();
-          handleQuery();
-        });
-      }
-    }
-  });
-}
+const submitForm = async () => {
+  const valid = menuFormRef.value.validate();
+  if (!valid) return;
+
+  const menuId = formData.value.menuId;
+  await (menuId ? editMenuApi(formData.value) : addMenuApi(formData.value));
+  ElMessage.success(menuId ? '修改菜单成功' : '新增菜单成功');
+  closeDialog();
+  handleQuery();
+};
 
 /**
  * 删除菜单
@@ -218,13 +206,14 @@ onMounted(() => {
 
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <div class="table-container">
       <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="menuName">
           <el-input
             v-model="queryParams.menuName"
             placeholder="菜单名称"
             clearable
+            style="width: 240px"
             @keyup.enter="handleQuery"
           />
         </el-form-item>
@@ -256,9 +245,6 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
-    </div>
-
-    <el-card shadow="never" class="table-container">
       <el-table
         v-loading="loading"
         :data="menuTableData"
@@ -275,7 +261,7 @@ onMounted(() => {
           <template #default="scope">
             <span class="icon size-4">
               <Icon
-                :icon="scope.row.icon ? scope.row.icon : buttonIcon"
+                :icon="scope.row.icon ? scope.row.icon : ''"
                 class="size-full"
               />
             </span>
@@ -389,7 +375,8 @@ onMounted(() => {
           </template>
         </el-table-column>
       </el-table>
-    </el-card>
+    </div>
+
     <el-dialog
       draggable
       v-model="dialog.visible"
@@ -674,4 +661,5 @@ onMounted(() => {
   vertical-align: -0.2em; /* 因icon大小被设置为和字体大小一致，而span等标签的下边缘会和字体的基线对齐，故需设置一个往下的偏移比例，来纠正视觉上的未对齐效果 */
   outline: none;
 }
+
 </style>

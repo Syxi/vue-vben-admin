@@ -1,15 +1,5 @@
 <script setup lang="ts">
-import type {
-  PositionForm,
-  PositionQuery,
-  PositionVO,
-} from '#/api/system/sys/position';
-
-import { onMounted, reactive, ref } from 'vue';
-
-import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
-
-import { orgOptionTreeApi } from '#/api/system/sys/organiation';
+import type {PositionForm, PositionQuery, PositionVO,} from '#/api/system/sys/position';
 import {
   addPositionApi,
   deletePositionApi,
@@ -17,6 +7,12 @@ import {
   selectPositionPageApi,
   updatePositionApi,
 } from '#/api/system/sys/position';
+
+import {onMounted, reactive, ref} from 'vue';
+
+import {ElForm, ElMessage, ElMessageBox} from 'element-plus';
+
+import {orgOptionTreeApi} from '#/api/system/sys/organiation';
 
 defineOptions({
   name: 'Position',
@@ -64,8 +60,6 @@ interface CheckedPosition {
   positionId?: string;
   positionName?: string;
 }
-
-const checkedPosition: CheckedPosition = reactive({});
 
 /**
  * 行 checkbox 选中事件
@@ -118,34 +112,21 @@ async function openDialog(positionId?: string) {
 /**
  * 保存提交
  */
-function handleSubmit() {
-  positionFormRef.value.validate((valid: any) => {
-    if (valid) {
-      loading.value = true;
-      const positionId = formData.positionId;
-      if (positionId) {
-        updatePositionApi(formData)
-          .then(() => {
-            ElMessage.success('修改岗位成功');
-            closeDialog();
-            resetQuery();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      } else {
-        addPositionApi(formData)
-          .then(() => {
-            ElMessage.success('新增岗位成功');
-            closeDialog();
-            resetQuery();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      }
-    }
-  });
+async function handleSubmit() {
+  const valid = positionFormRef.value.validate();
+  if (!valid) return;
+
+  loading.value = true;
+
+  try {
+    const positionId = formData.positionId;
+    await (positionId ? updatePositionApi(formData) : addPositionApi(formData));
+    ElMessage.success(positionId ? '修改岗位成功' : '新增岗位成功');
+    closeDialog();
+    resetQuery();
+  } finally {
+    loading.value = false;
+  }
 }
 
 /**
@@ -202,9 +183,7 @@ function handleDelete(positionId?: string) {
 
 // 获取部门下拉选项
 async function getOrganTreeptions() {
-  const data = await orgOptionTreeApi();
-  organTreeOptionData.value = data;
-  organTreeOptionData.value = [{ value: '0', label: '根节点', children: data }];
+  organTreeOptionData.value = await orgOptionTreeApi();
 }
 
 onMounted(() => {
@@ -214,14 +193,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="app-container">
-    <div class="search-container">
+  <div class="m-2 flex h-full">
+    <el-card class="w-full">
       <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="roleName">
           <el-input
             v-model="queryParams.positionName"
             placeholder="岗位名称"
             clearable
+            style="width: 240px"
             @keyup.enter="handleQuery"
           />
         </el-form-item>
@@ -265,9 +245,7 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
-    </div>
 
-    <el-card class="table-container">
       <el-table
         ref="dataTableRef"
         v-loading="loading"
@@ -349,6 +327,7 @@ onMounted(() => {
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="handleQuery"
         @current-change="handleQuery"
+        class="mt-2"
       />
     </el-card>
 
@@ -379,7 +358,7 @@ onMounted(() => {
           <el-tree-select
             v-model="formData.organId"
             :data="organTreeOptionData"
-            :render-after-expand="false"
+            :default-expand-all="true"
             check-strictly
             filterable
           />

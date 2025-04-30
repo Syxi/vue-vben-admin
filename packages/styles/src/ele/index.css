@@ -1,3 +1,15 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #fff;
+}
+
+
+.table-container {
+  margin: 10px;
+}
+
 .el-card {
   --el-card-border-radius: var(--radius) !important;
 }
@@ -42,3 +54,16 @@
 html .el-loading-mask {
   z-index: 1000;
 }
+
+/* 覆盖所有 el-table 表头的字体样式 */
+.el-table th {
+  font-size: 14px; /* 设置字体大小 */
+  font-weight: bold; /* 设置字体加粗 */
+  color: #303133; /* 设置字体颜色 */
+}
+
+.el-pagination {
+  margin-top: 15px;
+}
+
+

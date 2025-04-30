@@ -209,6 +209,7 @@ onMounted(() => {
           <el-input
             placeholder="机构名称"
             clearable
+            style="width: 240px"
             v-model="queryParams.keyWord"
             @keyup.enter="handleQuery()"
           />

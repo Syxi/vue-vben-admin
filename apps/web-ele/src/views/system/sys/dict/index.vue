@@ -216,8 +216,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="app-container">
-    <div class="search-container">
+  <div class="m-2 flex h-full">
+    <el-card class="w-full">
       <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="name">
           <el-input
@@ -266,9 +266,7 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
-    </div>
 
-    <el-card shadow="never" class="table-container">
       <el-table
         v-loading="loading"
         heighlight-current-row
@@ -348,6 +346,7 @@ onMounted(() => {
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="handleQuery"
         @current-change="handleQuery"
+        class="mt-2"
       />
     </el-card>
 

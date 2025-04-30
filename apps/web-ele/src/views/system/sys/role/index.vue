@@ -151,43 +151,25 @@ async function openDialog(roleId?: string) {
 /**
  * 角色保存提交
  */
-function handleSubmit() {
-  roleFormRef.value.validate((valid: any) => {
-    if (valid) {
-      loading.value = true;
-      const roleId = formData.roleId;
-      if (roleId) {
-        editRoleApi(formData)
-          .then(() => {
-            ElMessage.success('修改角色成功');
-            closeDialog();
-            resetQuery();
-          })
-          .catch(() => {
-            ElMessage.error('角色名称或角色编码已存在，请检查');
-            closeDialog();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      } else {
-        addRoleApi(formData)
-          .then(() => {
-            ElMessage.success('新增角色成功');
-            closeDialog();
-            resetQuery();
-          })
-          .catch(() => {
-            ElMessage.error('角色名称或角色编码已存在，请检查');
-            closeDialog();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      }
-    }
-  });
-}
+const handleSubmit = async () => {
+  const valid = roleFormRef.value.validate();
+  if (!valid) return;
+
+  loading.value = true;
+
+  try {
+    const roleId = formData.roleId;
+    await (roleId ? editRoleApi(formData) : addRoleApi(formData));
+    ElMessage.success(roleId ? '修改角色成功' : '新增角色成功');
+    closeDialog();
+    resetQuery();
+  } catch {
+    ElMessage.error('角色名称或角色编码已存在，请检查');
+    closeDialog();
+  } finally {
+    loading.value = false;
+  }
+};
 
 /**
  * 关闭表单弹窗
@@ -446,6 +428,8 @@ function handleRoleUserSubmit() {
   }
 }
 
+
+
 onMounted(() => {
   handleQuery();
   menuOption();
@@ -454,13 +438,14 @@ onMounted(() => {
 
 <template>
   <div class="app-container">
-    <div class="search-container">
-      <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
+    <div class="table-container">
+      <ElForm ref="queryFormRef" :model="queryParams" :inline="true" >
         <el-form-item prop="roleName">
           <el-input
             v-model="queryParams.roleName"
             placeholder="角色名称"
             clearable
+            style="width: 240px"
             @keyup.enter="handleQuery"
           />
         </el-form-item>
@@ -527,9 +512,7 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
-    </div>
 
-    <el-card class="table-container">
       <el-table
         ref="dataTableRef"
         v-loading="loading"
@@ -537,8 +520,10 @@ onMounted(() => {
         highlight-current-row
         border
         @selection-change="handleSelectionChange"
+        :max-height="700"
       >
         <el-table-column type="selection" width="80" align="center" />
+        <el-table-column type="index" width="80" align="center" label="序号" />
 
         <el-table-column
           label="角色名称"
@@ -561,13 +546,14 @@ onMounted(() => {
           </template>
         </el-table-column>
 
-        <el-table-column label="排序" prop="sort" width="100" align="center" />
+        <el-table-column label="排序" sortable prop="sort" width="100" align="center" />
 
         <el-table-column
           label="创建时间"
           prop="createTime"
           width="250"
           align="center"
+          sortable
         />
 
         <el-table-column
@@ -575,6 +561,7 @@ onMounted(() => {
           prop="updateTime"
           width="250"
           align="center"
+          sortable
         />
 
         <el-table-column label="操作" fixed="right" align="center">
@@ -621,6 +608,7 @@ onMounted(() => {
           </template>
         </el-table-column>
       </el-table>
+    </div>
 
       <el-pagination
         v-if="total > 0"
@@ -631,8 +619,11 @@ onMounted(() => {
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="handleQuery"
         @current-change="handleQuery"
+        class="pagination-container"
       />
-    </el-card>
+
+
+
 
     <!-- 角色表单弹窗 -->
     <el-dialog
@@ -803,4 +794,9 @@ onMounted(() => {
   --el-transfer-item-height: 30px;
   --el-transfer-filter-height: 32px;
 }
+
+
+
+
+
 </style>

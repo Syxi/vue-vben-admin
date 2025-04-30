@@ -428,7 +428,7 @@ onMounted(() => {
 <template>
   <div class="flex h-full gap-2 p-2">
     <!-- 部门树 -->
-    <el-card class="w-1/4">
+    <el-card class="w-1/5">
       <el-input v-model="organName" placeholder="机构名称">
         <template #prefix>
           <el-icon class="el-input__icon"><search /></el-icon>
@@ -459,6 +459,7 @@ onMounted(() => {
             placeholder="用户名"
             @keyup.enter="handleQuery()"
             clearable
+            style="width: 240px"
           />
         </el-form-item>
 
@@ -468,6 +469,7 @@ onMounted(() => {
             placeholder="真实姓名"
             @keyup.enter="handleQuery()"
             clearable
+            style="width: 240px"
           />
         </el-form-item>
 
@@ -814,3 +816,5 @@ onMounted(() => {
     </el-dialog>
   </div>
 </template>
+
+
