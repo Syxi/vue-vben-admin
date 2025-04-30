@@ -418,7 +418,27 @@ const submitUpload = async () => {
   }
 };
 
+// 定义表格高度
+const tableHeight = ref(window.innerHeight - 300); // 初始高度
+
+// 监听窗口大小变化，动态调整表格高度
+watch(
+  () => window.innerHeight,
+  () => {
+    tableHeight.value = window.innerHeight - 300; // 动态计算表格高度
+  },
+);
+
+
 onMounted(() => {
+  // 初始化表格高度
+  tableHeight.value = window.innerHeight - 300;
+
+  // 监听窗口大小变化
+  window.addEventListener('resize', () => {
+    tableHeight.value = window.innerHeight - 300;
+  });
+
   // 初始化用户列表数据
   handleQuery();
   getOrganTreeOptions();
@@ -426,9 +446,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex h-full gap-2 p-2">
-    <!-- 部门树 -->
-    <el-card class="w-1/5">
+  <div class="flex h-full bg-white">
+    <!--部门树-->
+    <div class="side-content w-1/5 border-r border-b p-4">
       <el-input v-model="organName" placeholder="机构名称">
         <template #prefix>
           <el-icon class="el-input__icon"><search /></el-icon>
@@ -444,9 +464,9 @@ onMounted(() => {
         :filter-node-method="filterNode"
         @node-click="handleNodeClick"
       />
-    </el-card>
+    </div>
 
-    <el-card class="w-full">
+    <div class="table-container">
       <ElForm
         :model="queryParams"
         ref="queryFormRef"
@@ -597,6 +617,7 @@ onMounted(() => {
         border
         :data="userTableData"
         @selection-change="handleSelectionChange"
+        :max-height="tableHeight"
       >
         <el-table-column type="selection" width="50" align="center" />
 
@@ -687,7 +708,7 @@ onMounted(() => {
         @size-change="handleQuery"
         @current-change="handleQuery"
       />
-    </el-card>
+    </div>
 
     <!-- 表单弹窗 -->
     <el-dialog
@@ -817,4 +838,23 @@ onMounted(() => {
   </div>
 </template>
 
+<style lang="scss" scoped>
+//.app-container {
+//  display: flex;
+//  flex-direction: row;
+//  height: 100%;
+//  background-color: #fff;
+//}
+
+
+//.tree-container {
+//  width: 300px; // 设置 el-tree 容器的宽度
+//  margin-right: 20px; // 添加右边距以分离树和表格
+//}
+//
+//.table-container {
+//
+//}
+
+</style>
 
