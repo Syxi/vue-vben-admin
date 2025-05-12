@@ -59,7 +59,7 @@ const total = ref(0);
 
 const queryParams = reactive<DictValueQuery>({
   page: 1,
-  limit: 10,
+  limit: 20,
   typeCode: props.typeCode,
 });
 

@@ -32,7 +32,7 @@ const total = ref(0);
 const queryParams = reactive<SwitchConfigQuery>({
   configName: '',
   page: 1,
-  limit: 10,
+  limit: 20,
 });
 
 const tableData = ref<SwitchConfigPage[]>();

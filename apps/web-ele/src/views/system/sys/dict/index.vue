@@ -35,7 +35,7 @@ const total = ref(0);
 
 const queryParams = reactive<DictTypeQuery>({
   page: 1,
-  limit: 10,
+  limit: 20,
 });
 
 const dictTypeTableData = ref<DictTypePage[]>();

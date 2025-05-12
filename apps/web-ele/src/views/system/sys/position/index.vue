@@ -31,7 +31,7 @@ const total = ref(0);
 
 const queryParams = reactive<PositionQuery>({
   page: 1,
-  limit: 10,
+  limit: 20,
 });
 
 const positionTableData = ref<PositionVO[]>();

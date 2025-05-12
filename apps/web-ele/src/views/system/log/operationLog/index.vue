@@ -9,7 +9,7 @@ const queryFormRef = ref();
 
 const queryParams = reactive<OperationLogQuery>({
   page: 1,
-  limit: 10,
+  limit: 20,
 });
 
 const loading = ref(false);

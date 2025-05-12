@@ -24,7 +24,7 @@ const total = ref(0);
 
 const queryParams = reactive<ScheduledJobLogQuery>({
   page: 1,
-  limit: 10,
+  limit: 20,
 });
 
 const jobLogList = ref<ScheduledJobLogPage[]>();

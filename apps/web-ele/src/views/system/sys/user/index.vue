@@ -44,7 +44,7 @@ const userIds = ref<string[]>([]);
 // 查询参数
 const queryParams = reactive<UserQuery>({
   page: 1,
-  limit: 10,
+  limit: 20,
 });
 
 const dateTimeRange = ref('');
@@ -448,7 +448,7 @@ onMounted(() => {
 <template>
   <div class="flex h-full bg-white">
     <!--部门树-->
-    <div class="side-content w-1/5 border-r border-b p-4">
+    <div class="w-1/5 h-full border-r border-b p-4 overflow-auto">
       <el-input v-model="organName" placeholder="机构名称">
         <template #prefix>
           <el-icon class="el-input__icon"><search /></el-icon>
@@ -471,7 +471,7 @@ onMounted(() => {
         :model="queryParams"
         ref="queryFormRef"
         :inline="true"
-        class="mb-2"
+        class="mb-2 p-4"
       >
         <el-form-item prop="username">
           <el-input
@@ -855,6 +855,7 @@ onMounted(() => {
 //.table-container {
 //
 //}
+
 
 </style>
 

@@ -34,7 +34,7 @@ const total = ref(0);
 
 const queryParams = reactive<CategoryQuery>({
   page: 1,
-  limit: 10,
+  limit: 20,
 });
 
 const categoryTableData = ref<CategoryPage[]>();

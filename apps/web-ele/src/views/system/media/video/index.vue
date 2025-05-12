@@ -31,7 +31,7 @@ const total = ref(0);
 // 查询参数
 const queryParams = reactive<VideoQuery>({
   page: 1,
-  limit: 10,
+  limit: 20,
 });
 
 // 查询表单
