@@ -6,9 +6,11 @@ import { requestClient } from '#/api/request';
 export interface RoleQuery extends PageQuery {
   // 角色编码
   roleCode?: string;
-
   // 角色名称
   roleName?: string;
+  sort?: string;
+  orderByColumn?: string;
+  ascOrDesc?: string;
 }
 
 /**

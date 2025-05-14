@@ -3,7 +3,7 @@ import type { TransferKey } from 'element-plus';
 
 import type { RoleForm, RolePage, RoleQuery } from '#/api/system/sys/role';
 
-import { onMounted, reactive, ref, watch } from 'vue';
+import {onMounted, onUnmounted, reactive, ref, watch} from 'vue';
 
 import {
   Delete,
@@ -49,7 +49,7 @@ const total = ref(0);
 
 const queryParams = reactive<RoleQuery>({
   page: 1,
-  limit: 10,
+  limit: 20,
 });
 
 const roleTableData = ref<RolePage[]>();
@@ -108,6 +108,22 @@ const dataScopeOption = [
   { value: 2, label: '本部门数据权限' },
   { value: 3, label: '本人数据' },
 ];
+
+/**
+ * 排序事件
+ * @param prop 排序字段
+ * @param order {null: 不排序；ascending: 升序；descending: 降序}
+ */
+const handleSortChange = ({ prop, order }) => {
+  if (order === null) {
+    queryParams.orderByColumn = '';
+    queryParams.ascOrDesc = '';
+  } else {
+    queryParams.orderByColumn = prop;
+    queryParams.ascOrDesc = order === 'ascending' ? 'asc' : 'desc';
+  }
+  handleQuery();
+};
 
 /**
  * 查询角色
@@ -428,28 +444,29 @@ function handleRoleUserSubmit() {
   }
 }
 
+// 除去表格高度，顶部和底部预留高度
+const TABLE_OFFSET_HEIGHT = 200;
+
 // 定义表格高度
-const tableHeight = ref(window.innerHeight - 200); // 初始高度
+const tableHeight = ref(window.innerHeight - TABLE_OFFSET_HEIGHT); // 初始高度
 
 // 监听窗口大小变化，动态调整表格高度
-watch(
-  () => window.innerHeight,
-  () => {
-    tableHeight.value = window.innerHeight - 200; // 动态计算表格高度
-  },
-);
+const updateTableHeight = () => {
+  tableHeight.value = window.innerHeight - TABLE_OFFSET_HEIGHT; // 动态计算表格高度
+};
 
 onMounted(() => {
+  // 初始化表格高度
+  updateTableHeight();
+  // 监听窗口大小变化
+  window.addEventListener('resize', updateTableHeight);
   handleQuery();
   menuOption();
+});
 
-  // 初始化表格高度
-  tableHeight.value = window.innerHeight - 200;
-
-  // 监听窗口大小变化
-  window.addEventListener('resize', () => {
-    tableHeight.value = window.innerHeight - 200;
-  });
+onUnmounted(() => {
+  // 移除窗口大小变化监听器
+  window.removeEventListener('resize', updateTableHeight);
 });
 </script>
 
@@ -538,6 +555,8 @@ onMounted(() => {
         border
         @selection-change="handleSelectionChange"
         :max-height="tableHeight"
+        @sort-change="handleSortChange"
+        :default-sort="{ prop: 'sort', order: 'ascending' }"
       >
         <el-table-column type="selection" width="80" align="center" />
         <el-table-column type="index" width="80" align="center" label="序号" />
@@ -565,7 +584,7 @@ onMounted(() => {
 
         <el-table-column
           label="排序"
-          sortable
+          sortable="custom"
           prop="sort"
           width="100"
           align="center"
@@ -576,7 +595,7 @@ onMounted(() => {
           prop="createTime"
           width="250"
           align="center"
-          sortable
+          sortable="custom"
         />
 
         <el-table-column
@@ -584,7 +603,7 @@ onMounted(() => {
           prop="updateTime"
           width="250"
           align="center"
-          sortable
+          sortable="custom"
         />
 
         <el-table-column label="操作" fixed="right" align="center">
