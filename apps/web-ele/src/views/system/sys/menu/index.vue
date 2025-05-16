@@ -18,6 +18,7 @@ import {
   selectMenuTreeApi,
 } from '#/api/system/sys/menu';
 import { MenuTypeEnum } from '#/enums/MenuTypesEnum';
+import { useTableHeight } from '#/hooks/useTableHeight';
 
 defineOptions({
   name: 'Menu',
@@ -38,8 +39,12 @@ const dialog = reactive({
 // 查询参数
 const queryParams = reactive<MenuQuery>({});
 
-// 菜单表格数据
+// 表格数据
 const menuTableData = ref<MenuVO[]>([]);
+
+const tableRef = ref();
+
+const { tableHeight } = useTableHeight(200);
 
 // 顶级菜单下拉选项
 const menuOptionData = ref<OptionType[]>([]);
@@ -67,7 +72,28 @@ const rules = reactive({
 // 选择表格的行菜单id
 const selectedRowMenuId = ref<string | undefined>();
 
-const buttonIcon = 'mdi:feather';
+const buttonIcon = 'mdi:text-box-outline';
+
+const allExpanded = ref(false);
+
+// 展开或收缩表格树
+const toggleAllRows = () => {
+  const data = menuTableData.value;
+  if (!data || data.length === 0) return;
+
+  allExpanded.value = !allExpanded.value;
+
+  const traverse = (nodes) => {
+    nodes.forEach((node) => {
+      tableRef.value.toggleRowExpansion(node, allExpanded.value);
+      if (node.children && node.children.length > 0) {
+        traverse(node.children);
+      }
+    });
+  };
+
+  traverse(data);
+};
 
 /**
  * 查询
@@ -243,25 +269,33 @@ onMounted(() => {
             </template>
             新增菜单
           </el-button>
+
+          <!-- 新增：展开/折叠按钮 -->
+          <el-button type="primary" @click="toggleAllRows">
+            <template #icon>
+              <el-icon>
+                <ArrowDown v-if="!allExpanded" /><ArrowUp v-else />
+              </el-icon>
+            </template>
+            {{ allExpanded ? '收起全部' : '展开全部' }}
+          </el-button>
         </el-form-item>
       </ElForm>
       <el-table
+        ref="tableRef"
         v-loading="loading"
         :data="menuTableData"
         highlight-current-row
         row-key="menuId"
-        :expand-row-keys="['1']"
         @row-click="onRowClick"
-        :tree-props="{
-          children: 'children',
-          hasChildren: 'hasChildren',
-        }"
+        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+        :max-height="tableHeight"
       >
         <el-table-column label="菜单名称" min-width="100">
           <template #default="scope">
             <span class="icon size-4">
               <Icon
-                :icon="scope.row.icon ? scope.row.icon : ''"
+                :icon="scope.row.icon ? scope.row.icon : buttonIcon"
                 class="size-full"
               />
             </span>
@@ -646,8 +680,8 @@ onMounted(() => {
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="submitForm">确定</el-button>
           <el-button @click="closeDialog">取消</el-button>
+          <el-button type="primary" @click="submitForm">确定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -661,5 +695,4 @@ onMounted(() => {
   vertical-align: -0.2em; /* 因icon大小被设置为和字体大小一致，而span等标签的下边缘会和字体的基线对齐，故需设置一个往下的偏移比例，来纠正视觉上的未对齐效果 */
   outline: none;
 }
-
 </style>
