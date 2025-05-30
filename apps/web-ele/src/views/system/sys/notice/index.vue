@@ -21,6 +21,7 @@ import {
   updateNoticeApi,
 } from '#/api/system/sys/notice';
 import { WangEditor } from '#/components/wang-editor';
+import {useCardHeight} from "#/hooks/useCardHeight";
 
 defineOptions({
   name: 'Notice',
@@ -265,11 +266,14 @@ function cancelPublishNotices() {
 onMounted(() => {
   handleQuery();
 });
+
+const cardFormRef = ref();
+const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 </script>
 
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <el-card ref="cardFormRef" class="mb-2">
       <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="roleName">
           <el-input
@@ -353,15 +357,16 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
-    </div>
+    </el-card>
 
-    <el-card class="table-container">
+    <el-card :style="{ height: cardHeight }">
       <el-table
         ref="dataTableRef"
         v-loading="loading"
         :data="noticeTableData"
         highlight-current-row
         border
+        :height="tableHeight"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="80" align="center" />
@@ -422,7 +427,7 @@ onMounted(() => {
           align="center"
         />
 
-        <el-table-column label="操作" fixed="right" align="center">
+        <el-table-column label="操作" align="center">
           <template #default="scope">
             <el-button
               type="primary"
@@ -447,7 +452,6 @@ onMounted(() => {
           </template>
         </el-table-column>
       </el-table>
-
       <el-pagination
         v-if="total > 0"
         v-model:current-page="queryParams.page"
@@ -501,8 +505,8 @@ onMounted(() => {
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit">确定</el-button>
           <el-button @click="closeDialog">取消</el-button>
+          <el-button type="primary" @click="handleSubmit">确定</el-button>
         </div>
       </template>
     </el-dialog>

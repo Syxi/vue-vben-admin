@@ -20,18 +20,18 @@ const localRoutes: RouteRecordStringComponent[] = [
         meta: {
           affixTab: true,
           icon: 'lucide:area-chart',
-          title: $t('page.dashboard.analytics'),
+          title: '首页',
         },
       },
-      {
-        name: 'Workspace',
-        path: '/workspace',
-        component: '/dashboard/workspace/index.vue',
-        meta: {
-          icon: 'carbon:workspace',
-          title: $t('page.dashboard.workspace'),
-        },
-      },
+      // {
+      //   name: 'Workspace',
+      //   path: '/workspace',
+      //   component: '/dashboard/workspace/index.vue',
+      //   meta: {
+      //     icon: 'carbon:workspace',
+      //     title: $t('page.dashboard.workspace'),
+      //   },
+      // },
     ],
   },
 ];

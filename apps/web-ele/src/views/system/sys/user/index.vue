@@ -29,6 +29,8 @@ import {
 } from '#/api/system/sys/user';
 import { Dictionary } from '#/components/dictionary';
 import { ImageUpload } from '#/components/image-upload';
+import { useCardHeight } from '#/hooks/useCardHeight';
+import { useScrollbarHeight } from '#/hooks/useScrollbarHeight';
 
 defineOptions({
   name: 'User',
@@ -170,12 +172,41 @@ async function resetPassword() {
   }
 }
 
+// async function resetPassword(userId?: string) {
+//   let ids: string[];
+//   if (userId) {
+//     ids = [String(userId)];
+//     const data = await resetPwdApi(ids);
+//     ElMessage.success(`密码重置成功，新密码是：${data}`);
+//   }
+// }
+
 /**
  * 启用用户
  */
-async function enableUser() {
-  const ids = userIds.value;
-  if (ids.length > 0) {
+// async function enableUser() {
+//   const ids = userIds.value;
+//   if (ids.length > 0) {
+//     ElMessageBox.confirm('确定启用用户?', '启用用户', {
+//       confirmButtonText: '确定',
+//       cancelButtonText: '取消',
+//       type: 'warning',
+//     })
+//       .then(async () => {
+//         await enableUserApi(ids);
+//         ElMessage.success('启用用户成功!');
+//         resetQuery();
+//       })
+//       .catch(() => {
+//         ElMessage.error('启用用户失败!');
+//       });
+//   }
+// }
+
+async function enableUser(userId?: string) {
+  let ids: string[];
+  if (userId) {
+    ids = [String(userId)];
     ElMessageBox.confirm('确定启用用户?', '启用用户', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
@@ -195,9 +226,29 @@ async function enableUser() {
 /**
  * 禁用用户
  */
-async function disableUser() {
-  const ids = userIds.value;
-  if (ids.length > 0) {
+// async function disableUser() {
+//   const ids = userIds.value;
+//   if (ids.length > 0) {
+//     ElMessageBox.confirm('确定禁用用户?', '禁用用户', {
+//       confirmButtonText: '确定',
+//       cancelButtonText: '取消',
+//       type: 'warning',
+//     })
+//       .then(async () => {
+//         await disableUserApi(ids);
+//         ElMessage.success('禁用用户成功!');
+//         resetQuery();
+//       })
+//       .catch(() => {
+//         ElMessage.error('禁用用户失败');
+//       });
+//   }
+// }
+
+async function disableUser(userId?: string) {
+  let ids: string[];
+  if (userId) {
+    ids = [String(userId)];
     ElMessageBox.confirm('确定禁用用户?', '禁用用户', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
@@ -418,297 +469,309 @@ const submitUpload = async () => {
   }
 };
 
-// 定义表格高度
-const tableHeight = ref(window.innerHeight - 300); // 初始高度
-
-// 监听窗口大小变化，动态调整表格高度
-watch(
-  () => window.innerHeight,
-  () => {
-    tableHeight.value = window.innerHeight - 300; // 动态计算表格高度
-  },
-);
-
-
 onMounted(() => {
-  // 初始化表格高度
-  tableHeight.value = window.innerHeight - 300;
-
-  // 监听窗口大小变化
-  window.addEventListener('resize', () => {
-    tableHeight.value = window.innerHeight - 300;
-  });
-
   // 初始化用户列表数据
   handleQuery();
   getOrganTreeOptions();
 });
+
+const cardFormRef = ref();
+const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
+
+const scrollbarHeight = useScrollbarHeight(120);
 </script>
 
 <template>
-  <div class="flex h-full bg-white">
+  <div class="app-container">
     <!--部门树-->
-    <div class="w-1/5 h-full border-r border-b p-4 overflow-auto">
-      <el-input v-model="organName" placeholder="机构名称">
-        <template #prefix>
-          <el-icon class="el-input__icon"><search /></el-icon>
-        </template>
-      </el-input>
+    <el-row :gutter="4">
+      <el-col :span="4">
+        <el-scrollbar
+          :height="scrollbarHeight"
+          class="tree-el-scrollbar"
+        >
+          <el-input v-model="organName" placeholder="机构名称" class="mt-4">
+            <template #prefix>
+              <el-icon class="el-input__icon"><search /></el-icon>
+            </template>
+          </el-input>
 
-      <ElTree
-        class="mt-5"
-        ref="organTreeRef"
-        :data="organTreeOptionData"
-        highlight-current
-        :default-expand-all="true"
-        :filter-node-method="filterNode"
-        @node-click="handleNodeClick"
-      />
-    </div>
-
-    <div class="table-container">
-      <ElForm
-        :model="queryParams"
-        ref="queryFormRef"
-        :inline="true"
-        class="mb-2 p-4"
-      >
-        <el-form-item prop="username">
-          <el-input
-            v-model="queryParams.username"
-            placeholder="用户名"
-            @keyup.enter="handleQuery()"
-            clearable
-            style="width: 240px"
+          <ElTree
+            class="mt-2"
+            ref="organTreeRef"
+            :data="organTreeOptionData"
+            highlight-current
+            :default-expand-all="true"
+            :filter-node-method="filterNode"
+            @node-click="handleNodeClick"
           />
-        </el-form-item>
+        </el-scrollbar>
+      </el-col>
 
-        <el-form-item prop="realName">
-          <el-input
-            v-model="queryParams.realName"
-            placeholder="真实姓名"
-            @keyup.enter="handleQuery()"
-            clearable
-            style="width: 240px"
-          />
-        </el-form-item>
+      <el-col :span="20">
+        <el-card ref="cardFormRef" class="mb-2">
+          <ElForm :model="queryParams" ref="queryFormRef" :inline="true">
+            <el-form-item prop="username">
+              <el-input
+                v-model="queryParams.username"
+                placeholder="用户名/真实姓名"
+                @keyup.enter="handleQuery()"
+                clearable
+                style="width: 180px"
+              />
+            </el-form-item>
 
-        <el-form-item prop="status">
-          <el-select
-            v-model="queryParams.status"
-            placeholder="用户状态"
-            clearable
-            class="!w-[110px]"
-            @change="handleQuery()"
+            <!--        <el-form-item prop="realName">-->
+            <!--          <el-input-->
+            <!--            v-model="queryParams.realName"-->
+            <!--            placeholder="真实姓名"-->
+            <!--            @keyup.enter="handleQuery()"-->
+            <!--            clearable-->
+            <!--          />-->
+            <!--        </el-form-item>-->
+
+            <el-form-item prop="status">
+              <el-select
+                v-model="queryParams.status"
+                placeholder="用户状态"
+                clearable
+                class="!w-[100px]"
+                @change="handleQuery()"
+              >
+                <el-option label="正常" value="1" />
+                <el-option label="禁用" value="-1" />
+              </el-select>
+            </el-form-item>
+
+            <!--            <el-form-item>-->
+            <!--              <el-date-picker-->
+            <!--                v-model="dateTimeRange"-->
+            <!--                type="daterange"-->
+            <!--                start-placeholder="开始时间"-->
+            <!--                end-placeholder="截止时间"-->
+            <!--                unlink-panels-->
+            <!--              />-->
+            <!--            </el-form-item>-->
+
+            <el-form-item>
+              <el-button type="primary" @click="handleQuery()">
+                <template #icon>
+                  <el-icon><Search /></el-icon>
+                </template>
+                搜索
+              </el-button>
+
+              <el-button type="primary" @click="resetQuery()">
+                <template #icon>
+                  <el-icon><Refresh /></el-icon>
+                </template>
+                重置
+              </el-button>
+
+              <el-button
+                v-access:code="['sys:user:add']"
+                type="primary"
+                @click="openDialog()"
+              >
+                <template #icon>
+                  <el-icon><Plus /></el-icon>
+                </template>
+                新增
+              </el-button>
+
+              <el-button
+                type="danger"
+                v-access:code="['sys:user:delete']"
+                :disabled="userIds.length === 0"
+                @click="handleDelete()"
+              >
+                <template #icon>
+                  <el-icon><Delete /></el-icon>
+                </template>
+                删除
+              </el-button>
+
+              <el-button
+                type="primary"
+                @click="resetPassword()"
+                v-access:code="['sys:user:password']"
+              >
+                <template #icon>
+                  <el-icon><RefreshRight /></el-icon>
+                </template>
+                重置密码
+              </el-button>
+
+              <el-button
+                type="primary"
+                @click="handleOpenUploadDialog()"
+                v-access:code="['sys:user:import']"
+              >
+                <template #icon>
+                  <el-icon><Upload /></el-icon>
+                </template>
+                导入用户
+              </el-button>
+
+              <el-button
+                type="primary"
+                class="ml-3"
+                @click="handleExport"
+                v-access:code="['sys:user:export']"
+              >
+                <template #icon>
+                  <el-icon><Download /></el-icon>
+                </template>
+                导出用户
+              </el-button>
+            </el-form-item>
+          </ElForm>
+        </el-card>
+
+        <el-card :style="{ height: cardHeight }">
+          <el-table
+            v-loading="loading"
+            border
+            :data="userTableData"
+            @selection-change="handleSelectionChange"
+            :height="tableHeight"
           >
-            <el-option label="正常" value="1" />
-            <el-option label="禁用" value="-1" />
-          </el-select>
-        </el-form-item>
+            <el-table-column type="selection" width="50" align="center" />
 
-        <el-form-item>
-          <el-date-picker
-            v-model="dateTimeRange"
-            type="daterange"
-            start-placeholder="开始时间"
-            end-placeholder="截止时间"
-          />
-        </el-form-item>
+            <el-table-column
+              type="index"
+              label="序号"
+              width="80"
+              align="center"
+            />
 
-        <el-form-item>
-          <el-button type="primary" @click="handleQuery()">
-            <template #icon>
-              <el-icon><Search /></el-icon>
-            </template>
-            搜索
-          </el-button>
+            <el-table-column
+              v-if="false"
+              key="userId"
+              label="编号"
+              prop="userId"
+              width="100"
+            />
 
-          <el-button type="primary" @click="resetQuery()">
-            <template #icon>
-              <el-icon><Refresh /></el-icon>
-            </template>
-            重置
-          </el-button>
+            <el-table-column
+              key="username"
+              label="用户名"
+              prop="username"
+              align="center"
+              width="150"
+            />
 
-          <el-button
-            v-access:code="['sys:user:add']"
-            type="primary"
-            @click="openDialog()"
-          >
-            <template #icon>
-              <el-icon><Plus /></el-icon>
-            </template>
-            新增
-          </el-button>
+            <el-table-column label="真实姓名" prop="realName" align="center" />
 
-          <el-button
-            v-access:code="['sys:user:enable']"
-            type="primary"
-            @click="enableUser()"
-          >
-            <template #icon>
-              <el-icon><SwitchButton /></el-icon>
-            </template>
-            启用
-          </el-button>
+            <el-table-column
+              label="性别"
+              prop="genderLabel"
+              align="center"
+              width="80"
+            />
 
-          <el-button
-            :disabled="userIds.length === 0"
-            v-access:code="['sys:user:disable']"
-            type="danger"
-            @click="disableUser()"
-          >
-            <template #icon>
-              <el-icon><SwitchButton /></el-icon>
-            </template>
-            禁用
-          </el-button>
+            <el-table-column
+              label="角色名称"
+              prop="roleNames"
+              align="center"
+              :show-overflow-tooltip="true"
+            />
 
-          <el-button
-            type="danger"
-            v-access:code="['sys:user:delete']"
-            :disabled="userIds.length === 0"
-            @click="handleDelete()"
-          >
-            <template #icon>
-              <el-icon><Delete /></el-icon>
-            </template>
-            删除
-          </el-button>
+            <el-table-column prop="organName" label="部门名称" align="center" />
 
-          <el-button
-            type="primary"
-            @click="resetPassword()"
-            v-access:code="['sys:user:password']"
-          >
-            <template #icon>
-              <el-icon><RefreshRight /></el-icon>
-            </template>
-            重置密码
-          </el-button>
+            <el-table-column
+              prop="mobile"
+              label="手机号码"
+              align="center"
+              width="120"
+            />
 
-          <el-button
-            type="primary"
-            @click="handleOpenUploadDialog()"
-            v-access:code="['sys:user:import']"
-          >
-            <template #icon>
-              <el-icon><Upload /></el-icon>
-            </template>
-            导入用户
-          </el-button>
+            <!-- <el-table-column prop="email" label="邮箱" align="center" /> -->
 
-          <el-button
-            type="primary"
-            class="ml-3"
-            @click="handleExport"
-            v-access:code="['sys:user:export']"
-          >
-            <template #icon>
-              <el-icon><Download /></el-icon>
-            </template>
-            导出用户
-          </el-button>
-        </el-form-item>
-      </ElForm>
-
-      <el-table
-        v-loading="loading"
-        border
-        :data="userTableData"
-        @selection-change="handleSelectionChange"
-        :max-height="tableHeight"
-      >
-        <el-table-column type="selection" width="50" align="center" />
-
-        <el-table-column type="index" label="序号" width="80" align="center" />
-
-        <el-table-column
-          v-if="false"
-          key="userId"
-          label="编号"
-          prop="userId"
-          width="100"
-        />
-
-        <el-table-column
-          key="username"
-          label="用户名"
-          prop="username"
-          align="center"
-          width="150"
-        />
-
-        <el-table-column label="真实姓名" prop="realName" align="center" />
-
-        <el-table-column
-          label="性别"
-          prop="genderLabel"
-          align="center"
-          width="80"
-        />
-
-        <el-table-column
-          label="角色名称"
-          prop="roleNames"
-          align="center"
-          :show-overflow-tooltip="true"
-        />
-
-        <el-table-column prop="organName" label="部门名称" align="center" />
-
-        <el-table-column prop="mobile" label="手机号码" align="center" />
-
-        <!-- <el-table-column prop="email" label="邮箱" align="center" /> -->
-
-        <el-table-column label="状态" prop="status" align="center" width="100">
-          <template #default="scope">
-            <el-tag :type="scope.row.status === 1 ? 'success' : 'info'">
-              {{ scope.row.status === 1 ? '正常' : '禁用' }}
-            </el-tag>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="创建时间" prop="createTime" align="center" />
-
-        <el-table-column fixed="right" label="操作" width="150" align="center">
-          <template #default="scope">
-            <el-button
-              type="primary"
-              size="small"
-              link
-              @click="openDialog(scope.row.userId)"
-              v-access:code="['sys:user:edit']"
+            <el-table-column
+              label="状态"
+              prop="status"
+              align="center"
+              width="80"
             >
-              <el-icon><Edit /></el-icon>编辑
-            </el-button>
+              <template #default="scope">
+                <el-tag :type="scope.row.status === 1 ? 'success' : 'info'">
+                  {{ scope.row.status === 1 ? '正常' : '禁用' }}
+                </el-tag>
+              </template>
+            </el-table-column>
 
-            <el-button
-              type="primary"
-              size="small"
-              link
-              @click="handleDelete(scope.row.userId)"
-              v-access:code="['sys:user:delete']"
-            >
-              <el-icon><Delete /></el-icon>
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+            <el-table-column
+              label="创建时间"
+              prop="createTime"
+              align="center"
+              width="160"
+            />
 
-      <el-pagination
-        v-if="total > 0"
-        class="mt-2"
-        v-model:current-page="queryParams.page"
-        v-model:page-size="queryParams.limit"
-        :total="total"
-        :page-sizes="[10, 20, 30, 40, 50, 100]"
-        layout="total, sizes, prev, pager, next, jumper"
-        @size-change="handleQuery"
-        @current-change="handleQuery"
-      />
-    </div>
+            <el-table-column label="操作" width="150">
+              <template #default="scope">
+                <el-button
+                  type="primary"
+                  size="small"
+                  link
+                  @click="openDialog(scope.row.userId)"
+                  v-access:code="['sys:user:edit']"
+                >
+                  <el-icon><Edit /></el-icon>编辑
+                </el-button>
+
+                <!--                <el-button-->
+                <!--                  v-access:code="['sys:user:enable']"-->
+                <!--                  type="primary"-->
+                <!--                  size="small"-->
+                <!--                  link-->
+                <!--                  @click="enableUser(scope.row.userId)"-->
+                <!--                >-->
+                <!--                  <template #icon>-->
+                <!--                    <el-icon><SwitchButton /></el-icon>-->
+                <!--                  </template>-->
+                <!--                  启用-->
+                <!--                </el-button>-->
+
+                <!--                <el-button-->
+                <!--                  v-access:code="['sys:user:disable']"-->
+                <!--                  type="danger"-->
+                <!--                  size="small"-->
+                <!--                  link-->
+                <!--                  @click="disableUser(scope.row.userId)"-->
+                <!--                >-->
+                <!--                  <template #icon>-->
+                <!--                    <el-icon><SwitchButton /></el-icon>-->
+                <!--                  </template>-->
+                <!--                  禁用-->
+                <!--                </el-button>-->
+
+                <el-button
+                  type="danger"
+                  size="small"
+                  link
+                  @click="handleDelete(scope.row.userId)"
+                  v-access:code="['sys:user:delete']"
+                >
+                  <el-icon><Delete /></el-icon>
+                  删除
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination
+            v-if="total > 0"
+            v-model:current-page="queryParams.page"
+            v-model:page-size="queryParams.limit"
+            :total="total"
+            :page-sizes="[10, 20, 30, 40, 50, 100]"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleQuery"
+            @current-change="handleQuery"
+          />
+        </el-card>
+      </el-col>
+    </el-row>
 
     <!-- 表单弹窗 -->
     <el-dialog
@@ -791,8 +854,8 @@ onMounted(() => {
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit()">确定</el-button>
           <el-button @click="closeDialog()">取消</el-button>
+          <el-button type="primary" @click="handleSubmit()">确定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -830,32 +893,12 @@ onMounted(() => {
 
       <template #footer>
         <div class="dialog-footer">
+          <el-button @click="handleCloseUploadDialog">取消</el-button>
           <el-button type="primary" @click="submitUpload">导入</el-button>
-          <el-button @click="handleCloseUploadDialog">关闭</el-button>
         </div>
       </template>
     </el-dialog>
   </div>
 </template>
 
-<style lang="scss" scoped>
-//.app-container {
-//  display: flex;
-//  flex-direction: row;
-//  height: 100%;
-//  background-color: #fff;
-//}
-
-
-//.tree-container {
-//  width: 300px; // 设置 el-tree 容器的宽度
-//  margin-right: 20px; // 添加右边距以分离树和表格
-//}
-//
-//.table-container {
-//
-//}
-
-
-</style>
-
+<style lang="scss" scoped></style>

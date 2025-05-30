@@ -18,7 +18,7 @@ import {
   selectMenuTreeApi,
 } from '#/api/system/sys/menu';
 import { MenuTypeEnum } from '#/enums/MenuTypesEnum';
-import { useTableHeight } from '#/hooks/useTableHeight';
+import { useCardHeight } from '#/hooks/useCardHeight';
 
 defineOptions({
   name: 'Menu',
@@ -43,8 +43,6 @@ const queryParams = reactive<MenuQuery>({});
 const menuTableData = ref<MenuVO[]>([]);
 
 const tableRef = ref();
-
-const { tableHeight } = useTableHeight(200);
 
 // 顶级菜单下拉选项
 const menuOptionData = ref<OptionType[]>([]);
@@ -224,6 +222,12 @@ async function menuOptionTree() {
   menuOptionData.value = [{ value: '0', label: '顶级菜单', children: data }];
 }
 
+const cardFormRef = ref();
+const { cardHeight, tableHeight } = useCardHeight(cardFormRef, {
+  tableOffset: 20,
+});
+
+
 onMounted(() => {
   handleQuery();
   menuOptionTree();
@@ -232,7 +236,7 @@ onMounted(() => {
 
 <template>
   <div class="app-container">
-    <div class="table-container">
+    <el-card ref="cardFormRef" class="mb-2">
       <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="menuName">
           <el-input
@@ -240,7 +244,7 @@ onMounted(() => {
             placeholder="菜单名称"
             clearable
             style="width: 240px"
-            @keyup.enter="handleQuery"
+            @keyup.enter="handleQuery()"
           />
         </el-form-item>
 
@@ -281,6 +285,9 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
+    </el-card>
+
+    <el-card :style="{ height: cardHeight }">
       <el-table
         ref="tableRef"
         v-loading="loading"
@@ -289,7 +296,8 @@ onMounted(() => {
         row-key="menuId"
         @row-click="onRowClick"
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-        :max-height="tableHeight"
+        :height="tableHeight"
+        stripe
       >
         <el-table-column label="菜单名称" min-width="100">
           <template #default="scope">
@@ -369,7 +377,7 @@ onMounted(() => {
 
         <el-table-column label="排序" align="center" width="80" prop="sort" />
 
-        <el-table-column label="操作" align="center" width="200" fixed="right">
+        <el-table-column label="操作" align="center" width="200">
           <template #default="scope">
             <el-button
               v-if="
@@ -409,7 +417,7 @@ onMounted(() => {
           </template>
         </el-table-column>
       </el-table>
-    </div>
+    </el-card>
 
     <el-dialog
       draggable

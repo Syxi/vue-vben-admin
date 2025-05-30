@@ -14,6 +14,7 @@ import {
   selectVideosPageApi,
   uploadVideoApi,
 } from '#/api/system/media/video';
+import {useCardHeight} from "#/hooks/useCardHeight";
 
 // import 'video.js/dist/video-js.css';
 
@@ -281,11 +282,14 @@ function handlePlayVideo(fileName: string, url: string) {
 onMounted(() => {
   handleQuery();
 });
+
+const cardFormRef = ref();
+const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 </script>
 
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <el-card ref="cardFormRef" class="mb-2">
       <ElForm :model="queryParams" ref="queryForm" :inline="true">
         <el-form-item>
           <el-input
@@ -332,13 +336,14 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
-    </div>
+    </el-card>
 
-    <el-card shadow="never" class="table-container">
+    <el-card :style="{ height: cardHeight }">
       <el-table
         v-loading="loading"
         :data="videoTableData"
         border
+        :height="tableHeight"
         @selection-change="handleSelectionChange"
       >
         <el-table-column v-if="false" prop="id" />
@@ -356,7 +361,7 @@ onMounted(() => {
         />
 
         <!-- @click="handlePreviewFile(scope.row.id, scope.row.fileName)"  -->
-        <el-table-column fixed="right" label="操作">
+        <el-table-column label="操作">
           <template #default="scope">
             <el-button
               type="primary"
@@ -448,8 +453,8 @@ onMounted(() => {
 
         <template #footer>
           <div class="dialog-footer">
-            <el-button type="primary" @click="submitUpload">确定</el-button>
             <el-button @click="handleCloseUploadDialog()">取消</el-button>
+            <el-button type="primary" @click="submitUpload">确定</el-button>
           </div>
         </template>
       </el-dialog>

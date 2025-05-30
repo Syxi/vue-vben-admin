@@ -15,6 +15,7 @@ import {
   handleDownloadSourceFileApi,
   selectFilePageApi,
 } from '#/api/system/media/file';
+import { useCardHeight } from '#/hooks/useCardHeight';
 
 defineOptions({
   name: 'File',
@@ -351,11 +352,14 @@ async function handlePreviewFile(row: FileRecordVO) {
 onMounted(() => {
   handleQuery();
 });
+
+const cardFormRef = ref();
+const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 </script>
 
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <el-card ref="cardFormRef" class="mb-2">
       <ElForm :model="queryParams" ref="queryForm" :inline="true">
         <el-form-item>
           <el-input
@@ -402,13 +406,14 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
-    </div>
+    </el-card>
 
-    <el-card shadow="never" class="table-container">
+    <el-card :style="{ height: cardHeight }">
       <el-table
         v-loading="loading"
         :data="fileTableData"
         border
+        :height="tableHeight"
         @selection-change="handleSelectionChange"
       >
         <el-table-column v-if="false" prop="id" />
@@ -430,7 +435,7 @@ onMounted(() => {
         />
 
         <!-- @click="handlePreviewFile(scope.row.id, scope.row.fileName)"  -->
-        <el-table-column fixed="right" label="操作">
+        <el-table-column label="操作">
           <template #default="scope">
             <el-button
               type="primary"
@@ -474,7 +479,6 @@ onMounted(() => {
           </template>
         </el-table-column>
       </el-table>
-
       <el-pagination
         v-if="total > 0"
         v-model:current-page="queryParams.page"
@@ -485,59 +489,59 @@ onMounted(() => {
         @size-change="handleQuery"
         @current-change="handleQuery"
       />
-
-      <!-- 使用dialog查看pdf -->
-      <el-dialog
-        draggable
-        center
-        fullscreen
-        v-model="dialogView.visible"
-        :title="dialogView.title"
-        width="100%"
-        @close="closeDialog()"
-      >
-        <div style="height: 90vh; overflow: hidden">
-          <iframe
-            :src="pdfUrl"
-            style="width: 100%; height: 100%"
-            allowfullscreen
-          ></iframe>
-        </div>
-      </el-dialog>
-
-      <el-dialog
-        v-model="dialog.visible"
-        title="上传文件"
-        width="800"
-        @close="handleCloseDiolog()"
-      >
-        <el-upload
-          class="upload-demo"
-          drag
-          multiple
-          ref="uploadRef"
-          :file-list="uploadFiles"
-          :on-exceed="handleFileExceed"
-          :on-change="handleFileChange"
-          :on-remove="handleRemove"
-          :auto-upload="false"
-        >
-          <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-          <div class="el-upload__text">
-            Drop file here or <em>click to upload</em>
-          </div>
-          <template #tip>
-            <div class="el-upload__tip">上传文件列表</div>
-          </template>
-        </el-upload>
-
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button type="primary" @click="submitUpload()">确定</el-button>
-            <el-button @click="handleCloseDiolog()">取消</el-button>
-          </div>
-        </template>
-      </el-dialog>
     </el-card>
+
+    <!-- 使用dialog查看pdf -->
+    <el-dialog
+      draggable
+      center
+      fullscreen
+      v-model="dialogView.visible"
+      :title="dialogView.title"
+      width="100%"
+      @close="closeDialog()"
+    >
+      <div style="height: 90vh; overflow: hidden">
+        <iframe
+          :src="pdfUrl"
+          style="width: 100%; height: 100%"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      v-model="dialog.visible"
+      title="上传文件"
+      width="800"
+      @close="handleCloseDiolog()"
+    >
+      <el-upload
+        class="upload-demo"
+        drag
+        multiple
+        ref="uploadRef"
+        :file-list="uploadFiles"
+        :on-exceed="handleFileExceed"
+        :on-change="handleFileChange"
+        :on-remove="handleRemove"
+        :auto-upload="false"
+      >
+        <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+        <div class="el-upload__text">
+          Drop file here or <em>click to upload</em>
+        </div>
+        <template #tip>
+          <div class="el-upload__tip">上传文件列表</div>
+        </template>
+      </el-upload>
+
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="handleCloseDiolog()">取消</el-button>
+          <el-button type="primary" @click="submitUpload()">确定</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>

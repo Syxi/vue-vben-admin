@@ -10,6 +10,7 @@ import { ElForm } from 'element-plus';
 
 import { selectJobBeanNameListApi } from '#/api/system/log/scheduledJob';
 import { selectScheduledJobLogPageApi } from '#/api/system/log/scheduledJobLog';
+import {useCardHeight} from "#/hooks/useCardHeight";
 
 defineOptions({
   name: 'ScheduledJobLog',
@@ -65,11 +66,14 @@ onMounted(() => {
   handleQuery();
   handleJobBeanName();
 });
+
+const cardFormRef = ref();
+const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 </script>
 
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <el-card ref="cardFormRef" class="mb-2">
       <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="jobName">
           <el-input
@@ -126,14 +130,15 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
-    </div>
+    </el-card>
 
-    <el-card class="table-container">
+    <el-card :style="{ height: cardHeight }">
       <el-table
         v-loading="loading"
         :data="jobLogList"
         highlight-current-row
         border
+        :height="tableHeight"
       >
         <el-table-column type="selection" width="80" align="center" />
 

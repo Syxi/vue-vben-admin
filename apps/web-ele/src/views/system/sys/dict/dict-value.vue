@@ -371,8 +371,8 @@ onMounted(() => {
       </ElForm>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit()">确定</el-button>
           <el-button type="primary" @click="closeDialog()">取消</el-button>
+          <el-button type="primary" @click="handleSubmit()">确定</el-button>
         </div>
       </template>
     </el-dialog>

@@ -13,6 +13,7 @@ import {onMounted, reactive, ref} from 'vue';
 import {ElForm, ElMessage, ElMessageBox} from 'element-plus';
 
 import {orgOptionTreeApi} from '#/api/system/sys/organiation';
+import {useCardHeight} from "#/hooks/useCardHeight";
 
 defineOptions({
   name: 'Position',
@@ -190,11 +191,15 @@ onMounted(() => {
   handleQuery();
   getOrganTreeptions();
 });
+
+const cardFormRef = ref();
+const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
+
 </script>
 
 <template>
-  <div class="m-2 flex h-full">
-    <el-card class="w-full">
+  <div class="app-container">
+    <el-card ref="cardFormRef" class="mb-2">
       <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="roleName">
           <el-input
@@ -245,16 +250,20 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
+    </el-card>
 
+    <el-card :style="{ height: cardHeight }">
       <el-table
         ref="dataTableRef"
         v-loading="loading"
         :data="positionTableData"
         highlight-current-row
         border
+        :height="tableHeight"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="80" align="center" />
+        <el-table-column type="index" width="80" align="center" label="序号" />
 
         <el-table-column
           label="岗位名称"
@@ -293,7 +302,7 @@ onMounted(() => {
           align="center"
         />
 
-        <el-table-column label="操作" fixed="right" align="center">
+        <el-table-column label="操作" align="center">
           <template #default="scope">
             <el-button
               type="primary"
@@ -327,7 +336,6 @@ onMounted(() => {
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="handleQuery"
         @current-change="handleQuery"
-        class="mt-2"
       />
     </el-card>
 
@@ -378,8 +386,8 @@ onMounted(() => {
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit">确定</el-button>
           <el-button @click="closeDialog">取消</el-button>
+          <el-button type="primary" @click="handleSubmit">确定</el-button>
         </div>
       </template>
     </el-dialog>

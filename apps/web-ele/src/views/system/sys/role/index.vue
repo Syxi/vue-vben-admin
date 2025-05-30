@@ -3,7 +3,7 @@ import type { TransferKey } from 'element-plus';
 
 import type { RoleForm, RolePage, RoleQuery } from '#/api/system/sys/role';
 
-import {onMounted, onUnmounted, reactive, ref, watch} from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 
 import {
   Delete,
@@ -29,6 +29,7 @@ import {
   updateRoleUserApi,
 } from '#/api/system/sys/role';
 import { UserInRoleApi, userNotInRoleApi } from '#/api/system/sys/user';
+import { useCardHeight } from '#/hooks/useCardHeight';
 
 defineOptions({
   name: 'Role',
@@ -444,35 +445,18 @@ function handleRoleUserSubmit() {
   }
 }
 
-// 除去表格高度，顶部和底部预留高度
-const TABLE_OFFSET_HEIGHT = 200;
-
-// 定义表格高度
-const tableHeight = ref(window.innerHeight - TABLE_OFFSET_HEIGHT); // 初始高度
-
-// 监听窗口大小变化，动态调整表格高度
-const updateTableHeight = () => {
-  tableHeight.value = window.innerHeight - TABLE_OFFSET_HEIGHT; // 动态计算表格高度
-};
+const cardFormRef = ref();
+const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 
 onMounted(() => {
-  // 初始化表格高度
-  updateTableHeight();
-  // 监听窗口大小变化
-  window.addEventListener('resize', updateTableHeight);
   handleQuery();
   menuOption();
-});
-
-onUnmounted(() => {
-  // 移除窗口大小变化监听器
-  window.removeEventListener('resize', updateTableHeight);
 });
 </script>
 
 <template>
   <div class="app-container">
-    <div class="table-container">
+    <el-card ref="cardFormRef" class="mb-2">
       <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="roleName">
           <el-input
@@ -546,17 +530,19 @@ onUnmounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
+    </el-card>
 
+    <el-card :style="{ height: cardHeight }">
       <el-table
         ref="dataTableRef"
         v-loading="loading"
         :data="roleTableData"
         highlight-current-row
-        border
+        :border="true"
         @selection-change="handleSelectionChange"
-        :max-height="tableHeight"
         @sort-change="handleSortChange"
         :default-sort="{ prop: 'sort', order: 'ascending' }"
+        :height="tableHeight"
       >
         <el-table-column type="selection" width="80" align="center" />
         <el-table-column type="index" width="80" align="center" label="序号" />
@@ -593,7 +579,7 @@ onUnmounted(() => {
         <el-table-column
           label="创建时间"
           prop="createTime"
-          width="250"
+          width="200"
           align="center"
           sortable="custom"
         />
@@ -601,12 +587,12 @@ onUnmounted(() => {
         <el-table-column
           label="更新时间"
           prop="updateTime"
-          width="250"
+          width="200"
           align="center"
           sortable="custom"
         />
 
-        <el-table-column label="操作" fixed="right" align="center">
+        <el-table-column label="操作"  align="center">
           <template #default="scope">
             <el-button
               type="primary"
@@ -661,7 +647,7 @@ onUnmounted(() => {
         @size-change="handleQuery"
         @current-change="handleQuery"
       />
-    </div>
+    </el-card>
 
     <!-- 角色表单弹窗 -->
     <el-dialog
@@ -712,8 +698,8 @@ onUnmounted(() => {
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit">确定</el-button>
           <el-button @click="closeDialog">取消</el-button>
+          <el-button type="primary" @click="handleSubmit">确定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -779,10 +765,8 @@ onUnmounted(() => {
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleRoleMenuSubmit">
-            确定
-          </el-button>
           <el-button @click="menuDialogVisiable = false">取消</el-button>
+          <el-button type="primary" @click="handleRoleMenuSubmit">确定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -807,10 +791,8 @@ onUnmounted(() => {
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleRoleUserSubmit">
-            确定
-          </el-button>
           <el-button @click="roleDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleRoleUserSubmit">确定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -832,4 +814,5 @@ onUnmounted(() => {
   --el-transfer-item-height: 30px;
   --el-transfer-filter-height: 32px;
 }
+
 </style>

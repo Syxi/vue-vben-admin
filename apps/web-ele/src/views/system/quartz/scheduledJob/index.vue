@@ -19,6 +19,7 @@ import {
   selectJobBeanNameListApi,
   updateScheduledJobApi,
 } from '#/api/system/log/scheduledJob';
+import { useCardHeight } from '#/hooks/useCardHeight';
 
 defineOptions({
   name: 'ScheduledJob',
@@ -287,11 +288,14 @@ onMounted(() => {
   handleQuery();
   handleJobBeanName();
 });
+
+const cardFormRef = ref();
+const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 </script>
 
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <el-card ref="cardFormRef" class="mb-2">
       <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="jobName">
           <el-input
@@ -376,14 +380,15 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
-    </div>
+    </el-card>
 
-    <el-card class="table-container">
+    <el-card :style="{ height: cardHeight }">
       <el-table
         v-loading="loading"
         :data="scheduledJobList"
         highlight-current-row
         border
+        :height="tableHeight"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="80" align="center" />
@@ -421,7 +426,7 @@ onMounted(() => {
 
         <el-table-column label="备注" prop="remark" align="center" />
 
-        <el-table-column label="操作" width="300" align="center" fixed="right">
+        <el-table-column label="操作" width="300" align="center">
           <template #default="scope">
             <el-button
               type="primary"
@@ -532,8 +537,8 @@ onMounted(() => {
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit">确定</el-button>
           <el-button @click="closeDialog">取消</el-button>
+          <el-button type="primary" @click="handleSubmit">确定</el-button>
         </div>
       </template>
     </el-dialog>

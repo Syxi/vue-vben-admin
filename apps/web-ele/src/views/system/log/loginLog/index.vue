@@ -4,6 +4,7 @@ import type { LoginLog, LoginLogQuery } from '#/api/system/log/log';
 import { onMounted, reactive, ref } from 'vue';
 
 import { selectLoginLogPageApi } from '#/api/system/log/log';
+import { useCardHeight } from '#/hooks/useCardHeight';
 
 const queryFormRef = ref();
 
@@ -42,11 +43,14 @@ function resetQuery() {
 onMounted(() => {
   handleQuery();
 });
+
+const cardFormRef = ref();
+const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 </script>
 
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <el-card ref="cardFormRef" class="mb-2">
       <el-form ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="username">
           <el-input
@@ -73,10 +77,15 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </el-form>
-    </div>
+    </el-card>
 
-    <el-card class="table-container">
-      <el-table :data="loginLogData" :loading="loading" highlight-current-row>
+    <el-card :style="{ height: cardHeight }">
+      <el-table
+        :data="loginLogData"
+        :loading="loading"
+        highlight-current-row
+        :height="tableHeight"
+      >
         <el-table-column type="index" label="序号" width="100" align="center" />
 
         <!-- <el-table-column

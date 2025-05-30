@@ -17,6 +17,7 @@ import {
   selectDictTypePageApi,
 } from '#/api/system/sys/dictType';
 import DictValue from '#/views/system/sys/dict/dict-value.vue';
+import {useCardHeight} from "#/hooks/useCardHeight";
 
 defineOptions({
   name: 'DictType',
@@ -213,11 +214,15 @@ function closeDictValueDialog() {
 onMounted(() => {
   handleQuery();
 });
+
+const cardFormRef = ref();
+
+const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 </script>
 
 <template>
-  <div class="m-2 flex h-full">
-    <el-card class="w-full">
+  <div class="app-container">
+    <el-card ref="cardFormRef" class="mb-2">
       <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="name">
           <el-input
@@ -266,12 +271,15 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
+    </el-card>
 
+    <el-card :style="{ height: cardHeight }">
       <el-table
         v-loading="loading"
         heighlight-current-row
         :data="dictTypeTableData"
         border
+        :height="tableHeight"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />
@@ -346,7 +354,6 @@ onMounted(() => {
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="handleQuery"
         @current-change="handleQuery"
-        class="mt-2"
       />
     </el-card>
 
@@ -398,8 +405,8 @@ onMounted(() => {
       </ElForm>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit()">确定</el-button>
           <el-button type="primary" @click="closeDialog()">取消</el-button>
+          <el-button type="primary" @click="handleSubmit()">确定</el-button>
         </div>
       </template>
     </el-dialog>

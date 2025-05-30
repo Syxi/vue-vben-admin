@@ -16,6 +16,7 @@ import {
   selectCategoryPageApi,
   updateCategoryApi,
 } from '#/api/system/article/category';
+import {useCardHeight} from "#/hooks/useCardHeight";
 
 defineOptions({
   name: 'Category',
@@ -173,11 +174,14 @@ function handleDelete(categoryId?: string) {
 onMounted(() => {
   handleQuery();
 });
+
+const cardFormRef = ref();
+const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 </script>
 
 <template>
   <div class="app-container">
-    <div class="search-container">
+    <el-card ref="cardFormRef" class="mb-2">
       <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="categoryName">
           <el-input
@@ -226,14 +230,15 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
-    </div>
+    </el-card>
 
-    <el-card shadow="never" class="table-container">
+    <el-card :style="{ height: cardHeight }">
       <el-table
         v-loading="loading"
         heighlight-current-row
         :data="categoryTableData"
         border
+        :height="tableHeight"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center" />
@@ -256,7 +261,7 @@ onMounted(() => {
 
         <el-table-column label="创建时间" prop="createTime" align="center" />
 
-        <el-table-column label="操作" align="center" width="300" fixed="right">
+        <el-table-column label="操作" align="center" width="300">
           <template #default="scope">
             <el-button
               type="primary"
@@ -324,8 +329,8 @@ onMounted(() => {
       </ElForm>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit()">确定</el-button>
           <el-button type="primary" @click="closeDialog()">取消</el-button>
+          <el-button type="primary" @click="handleSubmit()">确定</el-button>
         </div>
       </template>
     </el-dialog>

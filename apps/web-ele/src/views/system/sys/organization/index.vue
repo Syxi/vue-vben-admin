@@ -17,6 +17,7 @@ import {
   orgOptionTreeApi,
   orgTreeApi,
 } from '#/api/system/sys/organiation';
+import {useCardHeight} from "#/hooks/useCardHeight";
 
 // 组织树
 const organTreeRef = ref(ElTree);
@@ -177,29 +178,14 @@ onMounted(() => {
   handleQuery();
   OrgOptionTree();
 });
+
+const cardFormRef = ref();
+const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 </script>
 
 <template>
-  <div class="flex h-full gap-2 p-2">
-    <!-- 部门树 -->
-    <el-card class="w-1/4">
-      <el-input v-model="organName" style="width: 240px" placeholder="机构名称">
-        <template #prefix>
-          <el-icon class="el-input__icon"><search /></el-icon>
-        </template>
-      </el-input>
-
-      <ElTree
-        class="mt-5"
-        ref="organTreeRef"
-        :data="organTreeOptionData"
-        highlight-current
-        :default-expand-all="true"
-        :filter-node-method="filterNode"
-      />
-    </el-card>
-
-    <el-card class="w-full">
+  <div class="app-container">
+    <el-card ref="cardFormRef" class="mb-2">
       <ElForm
         ref="queryElFormRef"
         :inline="true"
@@ -243,7 +229,9 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
+    </el-card>
 
+    <el-card :style="{ height: cardHeight }">
       <el-table
         border
         :data="OrganTableData"
@@ -251,6 +239,7 @@ onMounted(() => {
         default-expand-all
         row-key="id"
         highlight-current-row
+        :height="tableHeight"
       >
         <!-- <el-table-column
           v-if="false"
@@ -271,7 +260,6 @@ onMounted(() => {
           label="名称"
           prop="organName"
           align="left"
-          min-width="200"
         />
 
         <el-table-column
@@ -311,7 +299,7 @@ onMounted(() => {
           width="200"
         />
 
-        <el-table-column fixed="right" align="center" label="操作" width="300">
+        <el-table-column  align="center" label="操作" >
           <template #default="scope">
             <el-button
               v-if="scope.row.organType === 1"
@@ -407,10 +395,8 @@ onMounted(() => {
 
       <template #footer>
         <div class="dialog-footer">
+          <el-button type="primary" @click="handleCloseDialog()">取消</el-button>
           <el-button type="primary" @click="handleSubmit()">确定</el-button>
-          <el-button type="primary" @click="handleCloseDialog()">
-            取消
-          </el-button>
         </div>
       </template>
     </el-dialog>

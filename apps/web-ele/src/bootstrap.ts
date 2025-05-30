@@ -24,7 +24,6 @@ import { router } from './router';
 
 import 'video.js/dist/video-js.css';
 import 'element-plus/dist/index.css';
-import './styles/global.scss';
 
 async function bootstrap(namespace: string) {
   // 初始化组件适配器
