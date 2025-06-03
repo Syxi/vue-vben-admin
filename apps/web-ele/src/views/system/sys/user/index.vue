@@ -486,10 +486,7 @@ const scrollbarHeight = useScrollbarHeight(120);
     <!--部门树-->
     <el-row :gutter="4">
       <el-col :span="4">
-        <el-scrollbar
-          :height="scrollbarHeight"
-          class="tree-el-scrollbar"
-        >
+        <el-scrollbar :height="scrollbarHeight" class="tree-container">
           <el-input v-model="organName" placeholder="机构名称" class="mt-4">
             <template #prefix>
               <el-icon class="el-input__icon"><search /></el-icon>
@@ -901,4 +898,12 @@ const scrollbarHeight = useScrollbarHeight(120);
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.tree-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: var(--radius);
+}
+</style>
