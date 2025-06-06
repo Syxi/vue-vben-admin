@@ -1,4 +1,5 @@
 import { createApp, watchEffect } from 'vue';
+import VueEcharts from 'vue-echarts';
 
 import { registerAccessDirective } from '@vben/access';
 import { initTippy } from '@vben/common-ui';
@@ -21,6 +22,8 @@ import { $t, setupI18n } from '#/locales';
 import { initComponentAdapter } from './adapter/component';
 import App from './app.vue';
 import { router } from './router';
+
+import 'echarts';
 
 import 'video.js/dist/video-js.css';
 import 'element-plus/dist/index.css';
@@ -61,6 +64,9 @@ async function bootstrap(namespace: string) {
 
   // 全局引入elementPlus
   app.use(ElementPlus);
+
+  // 全局注册 v-echarts组件
+  app.component('vue-echarts', VueEcharts);
 
   /**
    * 1注册vue的iconify: pnpm install --save-dev @iconify/vue

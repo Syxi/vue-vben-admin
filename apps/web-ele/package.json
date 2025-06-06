@@ -47,12 +47,14 @@
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",
     "dayjs": "catalog:",
+    "echarts": "^5.6.0",
     "element-plus": "catalog:",
     "jsencrypt": "^3.3.2",
     "pinia": "catalog:",
     "sockjs-client": "^1.6.1",
     "video.js": "^8.22.0",
     "vue": "catalog:",
+    "vue-echarts": "^7.0.3",
     "vue-router": "catalog:"
   },
   "devDependencies": {
