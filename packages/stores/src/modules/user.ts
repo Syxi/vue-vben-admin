@@ -23,6 +23,10 @@ interface BasicUserInfo {
 
   // 用户名
   username?: string;
+  /**
+   * 首页地址
+   */
+  homePath?: string;
 }
 
 interface AccessState {

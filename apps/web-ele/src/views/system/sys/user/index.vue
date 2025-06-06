@@ -566,7 +566,7 @@ const scrollbarHeight = useScrollbarHeight(120);
               </el-button>
 
               <el-button
-                v-access:code="['sys:user:add']"
+                v-access:code="'sys:user:add'"
                 type="primary"
                 @click="openDialog()"
               >
