@@ -227,7 +227,6 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef, {
   tableOffset: 20,
 });
 
-
 onMounted(() => {
   handleQuery();
   menuOptionTree();
@@ -301,13 +300,13 @@ onMounted(() => {
       >
         <el-table-column label="菜单名称" min-width="100">
           <template #default="scope">
-            <span class="icon size-4">
+            <span class="icon-container">
               <Icon
                 :icon="scope.row.icon ? scope.row.icon : buttonIcon"
-                class="size-full"
+                class="menu-icon"
               />
+              <span class="menu-name">{{ scope.row.menuName }}</span>
             </span>
-            {{ scope.row.menuName }}
           </template>
         </el-table-column>
 
@@ -697,10 +696,20 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-.icon {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: -0.2em; /* 因icon大小被设置为和字体大小一致，而span等标签的下边缘会和字体的基线对齐，故需设置一个往下的偏移比例，来纠正视觉上的未对齐效果 */
-  outline: none;
+.icon-container {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.menu-icon {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 4px; // 可以根据需要调整间距
+}
+
+.menu-name {
+  display: inline-flex;
+  align-items: center;
 }
 </style>
