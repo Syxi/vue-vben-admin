@@ -6,15 +6,14 @@ import type { AnyFunction } from '@vben/types';
 import { computed, useTemplateRef, watch } from 'vue';
 
 import { useHoverToggle } from '@vben/hooks';
-import { LockKeyhole, LogOut } from '@vben/icons';
+import { LockKeyhole, LogOut, Settings } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { preferences, usePreferences } from '@vben/preferences';
-import { useLockStore } from '@vben/stores';
+import { useLockStore, useUserStore } from '@vben/stores';
 import { isWindowsOs } from '@vben/utils';
 
 import { useVbenModal } from '@vben-core/popup-ui';
 import {
-  Badge,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -161,6 +160,13 @@ if (enableShortcutKey.value) {
     }
   });
 }
+
+const userStore = useUserStore();
+// const authStore = useAuthStore();
+//
+// async function handleLogout() {
+//   await authStore.logout(false);
+// }
 </script>
 
 <template>
@@ -188,37 +194,47 @@ if (enableShortcutKey.value) {
     <DropdownMenuTrigger ref="refTrigger" :disabled="props.trigger === 'hover'">
       <div class="hover:bg-accent ml-1 mr-2 cursor-pointer rounded-full p-1.5">
         <div class="hover:text-accent-foreground flex-center">
-          <VbenAvatar :alt="text" :src="avatar" class="size-8" dot />
+          <VbenAvatar :alt="text" :src="avatar" class="mr-1 size-8" dot />
+          <span>{{ userStore.userInfo?.realName }}</span>
         </div>
       </div>
     </DropdownMenuTrigger>
-    <DropdownMenuContent class="mr-2 min-w-[240px] p-0 pb-1">
+    <DropdownMenuContent class="mr-2 min-w-[180px] p-0 pb-1">
       <div ref="refContent">
-        <DropdownMenuLabel class="flex items-center p-3">
-          <VbenAvatar
-            :alt="text"
-            :src="avatar"
-            class="size-12"
-            dot
-            dot-class="bottom-0 right-1 border-2 size-4 bg-green-500"
-          />
-          <div class="ml-2 w-full">
-            <div
-              v-if="tagText || text || $slots.tagText"
-              class="text-foreground mb-1 flex items-center text-sm font-medium"
-            >
-              {{ text }}
-              <slot name="tagText">
-                <Badge v-if="tagText" class="ml-2 text-green-400">
-                  {{ tagText }}
-                </Badge>
-              </slot>
-            </div>
-            <div class="text-muted-foreground text-xs font-normal">
-              {{ description }}
-            </div>
-          </div>
-        </DropdownMenuLabel>
+<!--        <DropdownMenuLabel class="flex items-center justify-center p-3">-->
+<!--          <VbenAvatar-->
+<!--            :alt="text"-->
+<!--            :src="avatar"-->
+<!--            class="size-12"-->
+<!--            dot-->
+<!--            dot-class="bottom-0 right-1 border-2 size-4 bg-green-500"-->
+<!--          />-->
+<!--          <div class="ml-2 w-full">-->
+<!--            <div-->
+<!--              v-if="tagText || text || $slots.tagText"-->
+<!--              class="text-foreground mb-1 flex items-center text-sm font-medium"-->
+<!--            >-->
+<!--              {{ text }}-->
+<!--              <slot name="tagText">-->
+<!--                <Badge v-if="tagText" class="ml-2 text-green-400">-->
+<!--                  {{ tagText }}-->
+<!--                </Badge>-->
+<!--              </slot>-->
+<!--            </div>-->
+<!--            <div class="text-muted-foreground text-xs font-normal">-->
+<!--              {{ description }}-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </DropdownMenuLabel>-->
+        <DropdownMenuItem
+          class="mt-1 flex cursor-pointer items-center rounded-sm py-1 leading-8"
+          @click=""
+        >
+          <Settings class="mr-2 size-4" />
+          <span>个人中心</span>
+        </DropdownMenuItem>
+
+        <!--  文档      -->
         <DropdownMenuSeparator v-if="menus?.length" />
         <DropdownMenuItem
           v-for="menu in menus"
@@ -230,6 +246,8 @@ if (enableShortcutKey.value) {
           {{ menu.text }}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
+
+        <!--    锁定屏幕    -->
         <DropdownMenuItem
           v-if="preferences.widget.lockScreen"
           class="mx-1 flex cursor-pointer items-center rounded-sm py-1 leading-8"
@@ -242,6 +260,7 @@ if (enableShortcutKey.value) {
           </DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuSeparator v-if="preferences.widget.lockScreen" />
+        <!--  退出登录      -->
         <DropdownMenuItem
           class="mx-1 flex cursor-pointer items-center rounded-sm py-1 leading-8"
           @click="handleLogout"
