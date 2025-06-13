@@ -1,32 +1,28 @@
 <script setup lang="ts">
-import type {
-  OrganizationForm,
-  OrganizationQuery,
-  OrganizationVO,
-} from '#/api/system/sys/organiation';
+import type { DeptForm, DeptQuery, DeptVO } from '#/api/system/sys/dept';
 
 import { onMounted, reactive, ref, watch } from 'vue';
 
 import { ElForm, ElMessage, ElMessageBox, ElTree } from 'element-plus';
 
 import {
-  addOrgApi,
-  deleteOrgApi,
-  editOrgApi,
-  getOrgDetailApi,
-  orgOptionTreeApi,
+  addDeptApi,
+  deleteDeptApi,
+  deptOptionTreeApi,
+  editDeptApi,
+  getDeptDetailApi,
   orgTreeApi,
-} from '#/api/system/sys/organiation';
-import {useCardHeight} from "#/hooks/useCardHeight";
+} from '#/api/system/sys/dept';
+import { useCardHeight } from '#/hooks/useCardHeight';
 
 // 组织树
-const organTreeRef = ref(ElTree);
+const deptTreeRef = ref(ElTree);
 
 // 组织名称
-const organName = ref('');
+const deptName = ref('');
 
-watch(organName, (val) => {
-  organTreeRef.value!.filter(val);
+watch(deptName, (val) => {
+  deptTreeRef.value!.filter(val);
 });
 
 const filterNode = (value: string, data: any) => {
@@ -35,10 +31,10 @@ const filterNode = (value: string, data: any) => {
 };
 
 // 组织下拉选项树数据
-const organTreeOptionData = ref<OptionType[]>([]);
+const deptTreeOptionData = ref<OptionType[]>([]);
 
 // 组织树数据
-const OrganTableData = ref<OrganizationVO[]>([]);
+const deptTableData = ref<DeptVO[]>([]);
 
 // 加载状态
 const loading = ref(false);
@@ -47,21 +43,21 @@ const loading = ref(false);
 const queryElFormRef = ref(ElForm);
 
 // 查询参数
-const queryParams = reactive<OrganizationQuery>({});
+const queryParams = reactive<DeptQuery>({});
 
 // 弹出窗组织表单
 const orgFormRef = ref(ElForm);
 
 // 组织表单数据
-const formData = reactive<OrganizationForm>({
+const formData = reactive<DeptForm>({
   status: 1,
 });
 
 const rules = reactive({
   parentId: [{ required: true, message: '上级机构不能为空', trigger: 'blur' }],
-  organName: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
-  organCode: [{ required: true, message: '编码不能为空', trigger: 'blur' }],
-  organType: [{ required: true, message: '类型不能为空', trigger: 'blur' }],
+  deptName: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
+  deptCode: [{ required: true, message: '编码不能为空', trigger: 'blur' }],
+  deptType: [{ required: true, message: '类型不能为空', trigger: 'blur' }],
 });
 
 // 新增或编辑机构，弹出窗
@@ -79,7 +75,7 @@ function handleQuery() {
   loading.value = true;
   orgTreeApi(queryParams)
     .then((data) => {
-      OrganTableData.value = data;
+      deptTableData.value = data;
     })
     .finally(() => {
       loading.value = false;
@@ -103,7 +99,7 @@ async function handleOpenDialog(id?: string, parentId?: string) {
 
   if (id) {
     dialog.title = '修改';
-    const data = await getOrgDetailApi(id);
+    const data = await getDeptDetailApi(id);
     Object.assign(formData, data);
   } else {
     dialog.title = '新增';
@@ -133,7 +129,7 @@ async function handleSubmit() {
 
   try {
     const id = formData.id;
-    await (id ? editOrgApi(formData) : addOrgApi(formData));
+    await (id ? editDeptApi(formData) : addDeptApi(formData));
     ElMessage.success(id ? '修改成功！' : '新增成功');
     handleCloseDialog();
     resetQuery();
@@ -155,7 +151,7 @@ function handleDelete(id?: string) {
       type: 'warning',
     })
       .then(() => {
-        deleteOrgApi(id).then(() => {
+        deleteDeptApi(id).then(() => {
           ElMessage.success('删除成功!');
           resetQuery();
           OrgOptionTree();
@@ -171,7 +167,7 @@ function handleDelete(id?: string) {
  * 组织机构部门下拉树
  */
 async function OrgOptionTree() {
-  organTreeOptionData.value = await orgOptionTreeApi();
+  deptTreeOptionData.value = await deptOptionTreeApi();
 }
 
 onMounted(() => {
@@ -192,7 +188,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
         :model="queryParams"
         class="mb-2"
       >
-        <el-form-item prop="organName">
+        <el-form-item prop="deptName">
           <el-input
             placeholder="机构名称"
             clearable
@@ -220,7 +216,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
           <el-button
             type="primary"
             @click="handleOpenDialog()"
-            v-access:code="['sys:organ:add']"
+            v-access:code="['sys:dept:add']"
           >
             <template #icon>
               <el-icon><Plus /></el-icon>
@@ -234,7 +230,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
     <el-card :style="{ height: cardHeight }">
       <el-table
         border
-        :data="OrganTableData"
+        :data="deptTableData"
         v-loading="loading"
         default-expand-all
         row-key="id"
@@ -256,20 +252,16 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
           prop="parentId"
         /> -->
 
-        <el-table-column
-          label="名称"
-          prop="organName"
-          align="left"
-        />
+        <el-table-column label="名称" prop="deptName" align="left" />
 
         <el-table-column
           label="类型"
-          prop="organType"
+          prop="deptType"
           align="center"
           width="100"
         >
           <template #default="scope">
-            <el-tag v-if="scope.row.organType === 1" type="primary">
+            <el-tag v-if="scope.row.deptType === 1" type="primary">
               机构
             </el-tag>
             <el-tag v-else type="success">部门</el-tag>
@@ -278,7 +270,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 
         <el-table-column
           label="编码"
-          prop="organCode"
+          prop="deptCode"
           align="center"
           width="120"
         />
@@ -299,14 +291,14 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
           width="200"
         />
 
-        <el-table-column  align="center" label="操作" >
+        <el-table-column align="center" label="操作">
           <template #default="scope">
             <el-button
-              v-if="scope.row.organType === 1"
+              v-if="scope.row.deptType === 1"
               type="primary"
               link
               size="small"
-              v-access:code="['sys:organ:add']"
+              v-access:code="['sys:dept:add']"
               @click="handleOpenDialog(null, scope.row.parentId)"
             >
               <el-icon><Plus /></el-icon>
@@ -317,7 +309,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
               type="primary"
               link
               size="small"
-              v-access:code="['sys:organ:edit']"
+              v-access:code="['sys:dept:edit']"
               @click="handleOpenDialog(scope.row.id, null)"
             >
               <el-icon><Edit /></el-icon> 编辑
@@ -327,7 +319,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
               type="primary"
               link
               size="small"
-              v-access:code="['sys:organ:delete']"
+              v-access:code="['sys:dept:delete']"
               @click="handleDelete(scope.row.id)"
             >
               <el-icon><Delete /></el-icon>
@@ -353,29 +345,26 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
         :rules="rules"
         label-width="80px"
       >
-        <el-form-item
-          label="上级机构"
-          prop="parentId"
-        >
+        <el-form-item label="上级机构" prop="parentId">
           <el-tree-select
             v-model="formData.parentId"
-            :data="organTreeOptionData"
+            :data="deptTreeOptionData"
             filterable
             check-strictly
             :default-expand-all="true"
           />
         </el-form-item>
 
-        <el-form-item prop="organName" label="名称">
-          <el-input v-model="formData.organName" placeholder="名称" />
+        <el-form-item prop="deptName" label="名称">
+          <el-input v-model="formData.deptName" placeholder="名称" />
         </el-form-item>
 
-        <el-form-item prop="organCode" label="编码">
-          <el-input v-model="formData.organCode" placeholder="编码" />
+        <el-form-item prop="deptCode" label="编码">
+          <el-input v-model="formData.deptCode" placeholder="编码" />
         </el-form-item>
 
-        <el-form-item label="类型" prop="organType">
-          <el-radio-group v-model="formData.organType">
+        <el-form-item label="类型" prop="deptType">
+          <el-radio-group v-model="formData.deptType">
             <el-radio :value="1">机构</el-radio>
             <el-radio :value="2">部门</el-radio>
           </el-radio-group>
@@ -395,7 +384,9 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleCloseDialog()">取消</el-button>
+          <el-button type="primary" @click="handleCloseDialog()">
+            取消
+          </el-button>
           <el-button type="primary" @click="handleSubmit()">确定</el-button>
         </div>
       </template>

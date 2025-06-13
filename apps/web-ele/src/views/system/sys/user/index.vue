@@ -13,7 +13,7 @@ import {
   genFileId,
 } from 'element-plus';
 
-import { orgOptionTreeApi } from '#/api/system/sys/organiation';
+import { deptOptionTreeApi } from '#/api/system/sys/dept';
 import {
   addUserApi,
   deleteUserApi,
@@ -68,16 +68,16 @@ const total = ref(0);
 const userTableData = ref<UserPage[]>();
 
 // 组织下拉选项树数据
-const organTreeOptionData = ref<OptionType[]>([]);
+const deptTreeOptionData = ref<OptionType[]>([]);
 
 // 组织树
-const organTreeRef = ref(ElTree);
+const deptTreeRef = ref(ElTree);
 
 // 组织名称
-const organName = ref('');
+const deptName = ref('');
 
-watch(organName, (val) => {
-  organTreeRef.value!.filter(val);
+watch(deptName, (val) => {
+  deptTreeRef.value!.filter(val);
 });
 
 // 搜索树节点
@@ -109,7 +109,7 @@ const dialog = reactive({
 const rules = reactive({
   username: [{ required: true, message: '登录账号不能为空', trigger: 'blur' }],
   realName: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
-  organId: [{ required: true, message: '所属部门不能为空', trigger: 'blur' }],
+  deptId: [{ required: true, message: '所属部门不能为空', trigger: 'blur' }],
   // password: [{ required: true, message: "密码不能为空", trigger: 'blur'}],
   // roleIds: [{ required: true, message: "用户角色不能为空", trigger: "blur" }],
   email: [
@@ -145,7 +145,7 @@ function resetQuery() {
   queryFormRef.value.resetFields();
   dateTimeRange.value = '';
   queryParams.page = 1;
-  queryParams.organId = '';
+  queryParams.deptId = '';
   handleQuery();
 }
 
@@ -284,13 +284,13 @@ async function openDialog(userId?: string) {
  * @param node
  */
 function handleNodeClick(node: any) {
-  queryParams.organId = node.value;
+  queryParams.deptId = node.value;
   handleQuery();
 }
 
 // 获取部门下拉选项
 async function getOrganTreeOptions() {
-  organTreeOptionData.value = await orgOptionTreeApi();
+  deptTreeOptionData.value = await deptOptionTreeApi();
 }
 
 // 删除用户事件
@@ -487,7 +487,7 @@ const scrollbarHeight = useScrollbarHeight(120);
     <el-row :gutter="4">
       <el-col :span="4">
         <el-scrollbar :height="scrollbarHeight" class="tree-container">
-          <el-input v-model="organName" placeholder="机构名称" class="mt-4">
+          <el-input v-model="deptName" placeholder="机构名称" class="mt-4">
             <template #prefix>
               <el-icon class="el-input__icon"><search /></el-icon>
             </template>
@@ -495,8 +495,8 @@ const scrollbarHeight = useScrollbarHeight(120);
 
           <ElTree
             class="mt-2"
-            ref="organTreeRef"
-            :data="organTreeOptionData"
+            ref="deptTreeRef"
+            :data="deptTreeOptionData"
             highlight-current
             :default-expand-all="true"
             :filter-node-method="filterNode"
@@ -674,7 +674,7 @@ const scrollbarHeight = useScrollbarHeight(120);
               :show-overflow-tooltip="true"
             />
 
-            <el-table-column prop="organName" label="部门名称" align="center" />
+            <el-table-column prop="deptName" label="部门名称" align="center" />
 
             <el-table-column
               prop="mobile"
@@ -813,10 +813,10 @@ const scrollbarHeight = useScrollbarHeight(120);
               <Dictionary v-model="formData.gender" type-code="gender" />
             </el-form-item>
 
-            <el-form-item label="机构：" prop="organId">
+            <el-form-item label="机构：" prop="deptId">
               <el-tree-select
-                v-model="formData.organId"
-                :data="organTreeOptionData"
+                v-model="formData.deptId"
+                :data="deptTreeOptionData"
                 :default-expand-all="true"
                 check-strictly
                 filterable

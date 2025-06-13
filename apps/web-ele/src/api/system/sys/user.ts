@@ -95,7 +95,7 @@ export interface UserForm {
   status?: number;
 
   // 部门名称
-  organId?: string;
+  deptId?: string;
 
   // 角色id数组
   roleIds?: string[];
@@ -104,7 +104,7 @@ export interface UserForm {
   roleNames?: string;
 
   // 部门名称
-  organName?: string;
+  deptName?: string;
 }
 
 export interface UserPassword {

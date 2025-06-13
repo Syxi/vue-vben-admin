@@ -12,7 +12,7 @@ import {onMounted, reactive, ref} from 'vue';
 
 import {ElForm, ElMessage, ElMessageBox} from 'element-plus';
 
-import {orgOptionTreeApi} from '#/api/system/sys/organiation';
+import {deptOptionTreeApi} from '#/api/system/sys/dept';
 import {useCardHeight} from "#/hooks/useCardHeight";
 
 defineOptions({
@@ -184,7 +184,7 @@ function handleDelete(positionId?: string) {
 
 // 获取部门下拉选项
 async function getOrganTreeptions() {
-  organTreeOptionData.value = await orgOptionTreeApi();
+  organTreeOptionData.value = await deptOptionTreeApi();
 }
 
 onMounted(() => {
