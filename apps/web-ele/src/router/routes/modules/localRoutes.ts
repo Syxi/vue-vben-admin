@@ -32,6 +32,17 @@ const localRoutes: RouteRecordStringComponent[] = [
     // },
     // ],
   },
+
+  {
+    component: '/system/profile/index.vue',
+    name: 'Profile',
+    path: '/profile',
+    meta: {
+      icon: 'lucide:settings',
+      title: '个人中心',
+      hideInMenu: true,
+    },
+  },
 ];
 
 export default localRoutes;

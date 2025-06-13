@@ -12,7 +12,7 @@ import { ElMessage } from 'element-plus';
 import { getAllMenusApi } from '#/api';
 import { BasicLayout, IFrameView } from '#/layouts';
 import { $t } from '#/locales';
-import localRoutes from '#/router/routes/modules/dashboard';
+import localRoutes from '#/router/routes/modules/localRoutes';
 
 const forbiddenComponent = () => import('#/views/_core/fallback/forbidden.vue');
 

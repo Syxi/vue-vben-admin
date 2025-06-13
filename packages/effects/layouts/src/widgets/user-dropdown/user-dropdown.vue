@@ -4,6 +4,7 @@ import type { Component } from 'vue';
 import type { AnyFunction } from '@vben/types';
 
 import { computed, useTemplateRef, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { useHoverToggle } from '@vben/hooks';
 import { LockKeyhole, LogOut, Settings } from '@vben/icons';
@@ -17,7 +18,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
@@ -162,11 +162,11 @@ if (enableShortcutKey.value) {
 }
 
 const userStore = useUserStore();
-// const authStore = useAuthStore();
-//
-// async function handleLogout() {
-//   await authStore.logout(false);
-// }
+const router = useRouter();
+
+const goToProfile = () => {
+  router.push('/profile');
+};
 </script>
 
 <template>
@@ -201,34 +201,34 @@ const userStore = useUserStore();
     </DropdownMenuTrigger>
     <DropdownMenuContent class="mr-2 min-w-[180px] p-0 pb-1">
       <div ref="refContent">
-<!--        <DropdownMenuLabel class="flex items-center justify-center p-3">-->
-<!--          <VbenAvatar-->
-<!--            :alt="text"-->
-<!--            :src="avatar"-->
-<!--            class="size-12"-->
-<!--            dot-->
-<!--            dot-class="bottom-0 right-1 border-2 size-4 bg-green-500"-->
-<!--          />-->
-<!--          <div class="ml-2 w-full">-->
-<!--            <div-->
-<!--              v-if="tagText || text || $slots.tagText"-->
-<!--              class="text-foreground mb-1 flex items-center text-sm font-medium"-->
-<!--            >-->
-<!--              {{ text }}-->
-<!--              <slot name="tagText">-->
-<!--                <Badge v-if="tagText" class="ml-2 text-green-400">-->
-<!--                  {{ tagText }}-->
-<!--                </Badge>-->
-<!--              </slot>-->
-<!--            </div>-->
-<!--            <div class="text-muted-foreground text-xs font-normal">-->
-<!--              {{ description }}-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </DropdownMenuLabel>-->
+        <!--        <DropdownMenuLabel class="flex items-center justify-center p-3">-->
+        <!--          <VbenAvatar-->
+        <!--            :alt="text"-->
+        <!--            :src="avatar"-->
+        <!--            class="size-12"-->
+        <!--            dot-->
+        <!--            dot-class="bottom-0 right-1 border-2 size-4 bg-green-500"-->
+        <!--          />-->
+        <!--          <div class="ml-2 w-full">-->
+        <!--            <div-->
+        <!--              v-if="tagText || text || $slots.tagText"-->
+        <!--              class="text-foreground mb-1 flex items-center text-sm font-medium"-->
+        <!--            >-->
+        <!--              {{ text }}-->
+        <!--              <slot name="tagText">-->
+        <!--                <Badge v-if="tagText" class="ml-2 text-green-400">-->
+        <!--                  {{ tagText }}-->
+        <!--                </Badge>-->
+        <!--              </slot>-->
+        <!--            </div>-->
+        <!--            <div class="text-muted-foreground text-xs font-normal">-->
+        <!--              {{ description }}-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </DropdownMenuLabel>-->
         <DropdownMenuItem
           class="mt-1 flex cursor-pointer items-center rounded-sm py-1 leading-8"
-          @click=""
+          @click="goToProfile"
         >
           <Settings class="mr-2 size-4" />
           <span>个人中心</span>
