@@ -7,5 +7,5 @@ import { requestClient } from '#/api/request';
  * @returns 用户信息
  */
 export function getUserInfoApi() {
-  return requestClient.get<UserInfo>('/api/user/userInfo');
+  return requestClient.get<UserInfo>('/user/userInfo');
 }

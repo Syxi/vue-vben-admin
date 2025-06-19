@@ -64,7 +64,7 @@ export interface ScheduledJobForm {
 export async function scheduledJobPageApi(
   scheduledJobQuery: ScheduledJobQuery,
 ) {
-  return requestClient.get<ScheduledJobPageResult>('/api/scheduledJob/page', {
+  return requestClient.get<ScheduledJobPageResult>('/scheduledJob/page', {
     params: scheduledJobQuery,
   });
 }
@@ -75,7 +75,7 @@ export async function scheduledJobPageApi(
  * @param scheduledJobForm
  */
 export async function addScheduledJobApi(scheduledJobForm: ScheduledJobForm) {
-  return requestClient.post('/api/scheduledJob/add', scheduledJobForm);
+  return requestClient.post('/scheduledJob/add', scheduledJobForm);
 }
 
 /**
@@ -86,7 +86,7 @@ export async function addScheduledJobApi(scheduledJobForm: ScheduledJobForm) {
 export async function updateScheduledJobApi(
   scheduledJobForm: ScheduledJobForm,
 ) {
-  return requestClient.put('/api/scheduledJob/update', scheduledJobForm);
+  return requestClient.put('/scheduledJob/update', scheduledJobForm);
 }
 
 /**
@@ -96,7 +96,7 @@ export async function updateScheduledJobApi(
  */
 export async function getScheduledJobDetailApi(id: string) {
   return requestClient.get<ScheduledJobPage>(
-    `/api/scheduledJob/scheduledJobDetail/${id}`,
+    `/scheduledJob/scheduledJobDetail/${id}`,
   );
 }
 
@@ -106,7 +106,7 @@ export async function getScheduledJobDetailApi(id: string) {
  * @returns
  */
 export async function deleteScheduledJobApi(ids: string[]) {
-  return requestClient.delete('/api/scheduledJob/delete', ids);
+  return requestClient.delete('/scheduledJob/delete', ids);
 }
 
 /**
@@ -115,7 +115,7 @@ export async function deleteScheduledJobApi(ids: string[]) {
  * @returns
  */
 export async function executeJobsApi(ids: string[]) {
-  return requestClient.post('/api/scheduledJob/run', ids);
+  return requestClient.post('/scheduledJob/run', ids);
 }
 
 /**
@@ -124,7 +124,7 @@ export async function executeJobsApi(ids: string[]) {
  * @returns
  */
 export async function pauseJobsApi(ids: string[]) {
-  return requestClient.post('/api/scheduledJob/pause', ids);
+  return requestClient.post('/scheduledJob/pause', ids);
 }
 
 /**
@@ -132,5 +132,5 @@ export async function pauseJobsApi(ids: string[]) {
  * @returns
  */
 export async function selectJobBeanNameListApi() {
-  return requestClient.get<string[]>('/api/scheduledJob/jobBean');
+  return requestClient.get<string[]>('/scheduledJob/jobBean');
 }

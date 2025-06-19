@@ -125,7 +125,7 @@ export interface UserPassword {
  * @param userQuery
  */
 export async function selectUserPageApi(userQuery: UserQuery) {
-  return requestClient.get<UserPageResult>('/api/user/page', {
+  return requestClient.get<UserPageResult>('/user/page', {
     params: userQuery,
   });
 }
@@ -135,7 +135,7 @@ export async function selectUserPageApi(userQuery: UserQuery) {
  * @param userId
  */
 export async function getUserDetailApi(userId: string) {
-  return requestClient.get<UserForm>(`/api/user/detail/${userId}`);
+  return requestClient.get<UserForm>(`/user/detail/${userId}`);
 }
 
 /**
@@ -144,7 +144,7 @@ export async function getUserDetailApi(userId: string) {
  * @param userForm
  */
 export async function addUserApi(userForm: UserForm) {
-  return requestClient.post('/api/user/add', userForm);
+  return requestClient.post('/user/add', userForm);
 }
 
 /**
@@ -153,7 +153,7 @@ export async function addUserApi(userForm: UserForm) {
  * @param userForm
  */
 export async function editUserApi(userForm: UserForm) {
-  return requestClient.put('/api/user/edit', userForm);
+  return requestClient.put('/user/edit', userForm);
 }
 
 /**
@@ -162,7 +162,7 @@ export async function editUserApi(userForm: UserForm) {
  * @returns
  */
 export async function deleteUserApi(userIds: string[]) {
-  return requestClient.delete('/api/user/delete', userIds);
+  return requestClient.delete('/user/delete', userIds);
 }
 
 /**
@@ -171,7 +171,7 @@ export async function deleteUserApi(userIds: string[]) {
  * @returns
  */
 export async function enableUserApi(userIds: string[]) {
-  return requestClient.put('/api/user/enable', userIds);
+  return requestClient.put('/user/enable', userIds);
 }
 
 /**
@@ -180,7 +180,7 @@ export async function enableUserApi(userIds: string[]) {
  * @returns
  */
 export async function disableUserApi(userIds: string[]) {
-  return requestClient.put('/api/user/disable', userIds);
+  return requestClient.put('/user/disable', userIds);
 }
 
 /**
@@ -188,7 +188,7 @@ export async function disableUserApi(userIds: string[]) {
  * @param userIds
  */
 export async function resetPwdApi(userIds: string[]) {
-  return requestClient.put('/api/user/resetPassword', userIds);
+  return requestClient.put('/user/resetPassword', userIds);
 }
 
 /**
@@ -196,7 +196,7 @@ export async function resetPwdApi(userIds: string[]) {
  * @returns
  */
 export async function downloadTemplateApi() {
-  return requestClient.get('/api/user/template', {
+  return requestClient.get('/user/template', {
     responseType: 'arraybuffer',
   });
 }
@@ -207,7 +207,7 @@ export async function downloadTemplateApi() {
  * @param userIds
  */
 export async function exportUserApi(userIds: string[]) {
-  return requestClient.post('/api/user/export', userIds, {
+  return requestClient.post('/user/export', userIds, {
     responseType: 'arraybuffer',
   });
 }
@@ -220,7 +220,7 @@ export async function exportUserApi(userIds: string[]) {
 export async function importUserApi(file: File) {
   const formData = new FormData();
   formData.append('file', file);
-  return requestClient.post<ImportResult>('/api/user/import', formData, {
+  return requestClient.post<ImportResult>('/user/import', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -232,7 +232,7 @@ export async function importUserApi(file: File) {
  * @param userPassword
  */
 export async function updatePasswordApi(userPassword: UserPassword) {
-  return requestClient.post('/api/user/updatePassword', userPassword);
+  return requestClient.post('/user/updatePassword', userPassword);
 }
 
 /**
@@ -240,7 +240,7 @@ export async function updatePasswordApi(userPassword: UserPassword) {
  * @returns
  */
 export async function getUserVOInfoApi() {
-  return requestClient.get<UserPage>('/api/user/me');
+  return requestClient.get<UserPage>('/user/me');
 }
 
 /**
@@ -249,7 +249,7 @@ export async function getUserVOInfoApi() {
  * @param userForm
  */
 export async function updateUserVOInfoApi(userForm: UserForm) {
-  return requestClient.put('/api/user/update/me', userForm);
+  return requestClient.put('/user/update/me', userForm);
 }
 
 /**
@@ -258,7 +258,7 @@ export async function updateUserVOInfoApi(userForm: UserForm) {
  * @param roleId
  */
 export async function userNotInRoleApi(roleId: string) {
-  return requestClient.get<TransferVO[]>(`/api/user/notInRole/${roleId}`);
+  return requestClient.get<TransferVO[]>(`/user/notInRole/${roleId}`);
 }
 
 /**
@@ -267,5 +267,5 @@ export async function userNotInRoleApi(roleId: string) {
  * @param roleId
  */
 export async function UserInRoleApi(roleId: string) {
-  return requestClient.get<TransferVO[]>(`/api/user/inRole/${roleId}`);
+  return requestClient.get<TransferVO[]>(`/user/inRole/${roleId}`);
 }

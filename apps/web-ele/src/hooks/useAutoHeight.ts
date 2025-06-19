@@ -1,6 +1,10 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
-export function useScrollbarHeight(offset: number = 100) {
+/**
+ * 获取当前页面高度, 用于动态计算高度
+ * @param offset - 顶部和页脚总占高度px
+ */
+export function useAutoHeight(offset: number = 100) {
   const height = ref<number>(window.innerHeight - offset);
   let resizeTimer: null | number = null;
 

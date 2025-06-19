@@ -56,7 +56,7 @@ export interface LoginLogQuery extends PageQuery {
 export async function selectOperationLogPageApi(
   operationLogQuery: OperationLogQuery,
 ) {
-  return requestClient.get<OperationLogPageResult>('/api/userOperationLog', {
+  return requestClient.get<OperationLogPageResult>('/log/userOperationLog', {
     params: operationLogQuery,
   });
 }
@@ -67,7 +67,7 @@ export async function selectOperationLogPageApi(
  * @param loginLogQuery
  */
 export async function selectLoginLogPageApi(loginLogQuery: LoginLogQuery) {
-  return requestClient.get<LoginLogPageResult>('/api/loginLog', {
+  return requestClient.get<LoginLogPageResult>('/log/loginLog', {
     params: loginLogQuery,
   });
 }

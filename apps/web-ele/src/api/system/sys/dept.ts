@@ -106,7 +106,7 @@ export interface DeptQuery {
  * @returns 组织树
  */
 export async function orgTreeApi(deptQuery: DeptQuery) {
-  return requestClient.get<DeptVO[]>('/api/dept/tree', {
+  return requestClient.get<DeptVO[]>('/dept/tree', {
     params: deptQuery,
   });
 }
@@ -116,7 +116,7 @@ export async function orgTreeApi(deptQuery: DeptQuery) {
  * @returns
  */
 export async function deptOptionTreeApi() {
-  return requestClient.get<OptionType[]>('/api/dept/option');
+  return requestClient.get<OptionType[]>('/dept/option');
 }
 
 /**
@@ -125,7 +125,7 @@ export async function deptOptionTreeApi() {
  * @returns
  */
 export async function getDeptDetailApi(id: string) {
-  return requestClient.get<DeptVO>(`/api/dept/detail/${id}`);
+  return requestClient.get<DeptVO>(`/dept/detail/${id}`);
 }
 
 /**
@@ -134,14 +134,14 @@ export async function getDeptDetailApi(id: string) {
  * @param deptForm
  */
 export async function addDeptApi(deptForm: DeptForm) {
-  return requestClient.post('/api/dept/add', deptForm);
+  return requestClient.post('/dept/add', deptForm);
 }
 
 /**
  * 编辑组织
  */
 export async function editDeptApi(deptForm: DeptForm) {
-  return requestClient.put('/api/dept/edit', deptForm);
+  return requestClient.put('/dept/edit', deptForm);
 }
 
 /**
@@ -150,5 +150,5 @@ export async function editDeptApi(deptForm: DeptForm) {
  * @returns
  */
 export async function deleteDeptApi(id: string) {
-  return requestClient.delete(`/api/dept/${id}`);
+  return requestClient.delete(`/dept/${id}`);
 }

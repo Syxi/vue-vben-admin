@@ -64,7 +64,7 @@ export type CategoryPageResult = PageResult<CategoryPage[]>;
  * @param categoryQuery
  */
 export async function selectCategoryPageApi(categoryQuery: CategoryQuery) {
-  return requestClient.get<CategoryPageResult>('/api/category/page', {
+  return requestClient.get<CategoryPageResult>('/category/page', {
     params: categoryQuery,
   });
 }
@@ -74,7 +74,7 @@ export async function selectCategoryPageApi(categoryQuery: CategoryQuery) {
  * @param categoryForm
  */
 export async function saveCategoryApi(categoryForm: CategoryForm) {
-  return requestClient.post('/api/category/save', categoryForm);
+  return requestClient.post('/category/save', categoryForm);
 }
 
 /**
@@ -82,7 +82,7 @@ export async function saveCategoryApi(categoryForm: CategoryForm) {
  * @param categoryForm
  */
 export async function updateCategoryApi(categoryForm: CategoryForm) {
-  return requestClient.put('/api/category/update', categoryForm);
+  return requestClient.put('/category/update', categoryForm);
 }
 
 /**
@@ -91,7 +91,7 @@ export async function updateCategoryApi(categoryForm: CategoryForm) {
  * @returns
  */
 export async function getCategoryDetailApi(categoryId: string) {
-  return requestClient.get<CategoryForm>(`/api/category/detail/${categoryId}`);
+  return requestClient.get<CategoryForm>(`/category/detail/${categoryId}`);
 }
 
 /**
@@ -100,14 +100,14 @@ export async function getCategoryDetailApi(categoryId: string) {
  * @param categoryIds
  */
 export async function deleteCategoryApi(categoryIds: string[]) {
-  return requestClient.delete('/api/category/delete', categoryIds);
+  return requestClient.delete('/category/delete', categoryIds);
 }
 
 /**
  * 文章分类下拉选项
  */
 export async function selectCategoryOptionApi() {
-  return requestClient.get<CategoryOption[]>('/api/category/categoryList');
+  return requestClient.get<CategoryOption[]>('/category/categoryList');
 }
 
 /**
@@ -116,6 +116,6 @@ export async function selectCategoryOptionApi() {
  */
 export async function selectPortalCategoryApi() {
   return requestClient.get<PortalCategory[]>(
-    '/api/category/portal/categoryList',
+    '/category/portal/categoryList',
   );
 }

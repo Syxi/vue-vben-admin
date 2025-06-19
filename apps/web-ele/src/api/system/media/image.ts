@@ -32,7 +32,7 @@ export interface ImageForm {
 export async function uploadImageApi(file: File) {
   const formData = new FormData();
   formData.append('file', file);
-  return requestClient.post<string>(`/api/image/uploadImage`, formData, {
+  return requestClient.post<string>(`/image/uploadImage`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -49,7 +49,7 @@ export async function uploadImagesApi(files: File[]) {
   for (const file of files) {
     formData.append('file', file);
   }
-  return requestClient.post<string[]>('/api/image/uploadImages', formData, {
+  return requestClient.post<string[]>('/image/uploadImages', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -62,13 +62,13 @@ export async function uploadImagesApi(files: File[]) {
  * @param imageQuery
  */
 export async function selectImagePageApi(imageQuery: ImageQuery) {
-  return requestClient.get<ImagePageResult>('/api/image/page', {
+  return requestClient.get<ImagePageResult>('/image/page', {
     params: imageQuery,
   });
 }
 
 export async function getImageDetailsApi(id: string) {
-  return requestClient.get<ImageForm>(`/api/image/${id}`);
+  return requestClient.get<ImageForm>(`/image/${id}`);
 }
 
 /**
@@ -77,7 +77,7 @@ export async function getImageDetailsApi(id: string) {
  * @param imageForm
  */
 export async function updateImageApi(imageForm: ImageForm) {
-  return requestClient.put('/api/image/edit', imageForm);
+  return requestClient.put('/image/edit', imageForm);
 }
 
 /**
@@ -86,7 +86,7 @@ export async function updateImageApi(imageForm: ImageForm) {
  * @returns
  */
 export async function deleteImagesApi(ids: string[]) {
-  return requestClient.delete('/api/image/delete', ids);
+  return requestClient.delete('/image/delete', ids);
 }
 
 /**
@@ -95,7 +95,7 @@ export async function deleteImagesApi(ids: string[]) {
  * @param id
  */
 export async function handleDownloadImageApi(id: string) {
-  return requestClient.get(`/api/image/downloadImage/${id}`, {
+  return requestClient.get(`/image/downloadImage/${id}`, {
     responseType: 'blob',
   });
 }
@@ -105,5 +105,5 @@ export async function handleDownloadImageApi(id: string) {
  * @returns
  */
 export async function selectImageUrlsApi() {
-  return requestClient.get<string[]>('/api/image/portal/image');
+  return requestClient.get<string[]>('/image/portal/image');
 }

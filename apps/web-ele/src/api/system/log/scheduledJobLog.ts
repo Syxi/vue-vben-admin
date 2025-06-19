@@ -44,10 +44,7 @@ export interface ScheduledJobLogQuery extends PageQuery {
 export async function selectScheduledJobLogPageApi(
   scheduledJobLogQuery: ScheduledJobLogQuery,
 ) {
-  return requestClient.get<ScheduledJobLogPageResult>(
-    '/api/scheduledJobLog/page',
-    {
-      params: scheduledJobLogQuery,
-    },
-  );
+  return requestClient.get<ScheduledJobLogPageResult>('/scheduledJobLog/page', {
+    params: scheduledJobLogQuery,
+  });
 }

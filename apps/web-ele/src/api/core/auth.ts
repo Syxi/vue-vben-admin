@@ -67,7 +67,7 @@ export async function loginApi(loginParams: LoginParams) {
   formData.append('password', loginParams.password);
   formData.append('captchaKey', loginParams.captchaKey || '');
   formData.append('captchaCode', loginParams.captchaCode || '');
-  return requestClient.post<LoginResult>('/api/login', formData);
+  return requestClient.post<LoginResult>('/auth/login', formData);
 }
 
 /**
@@ -75,7 +75,7 @@ export async function loginApi(loginParams: LoginParams) {
  * @returns 获取加密秘钥
  */
 export async function getSecretKeyApi() {
-  return requestClient.get<string>('/api/aes/secretKey');
+  return requestClient.get<string>('/auth/aes/secretKey');
 }
 
 /**
@@ -84,7 +84,7 @@ export async function getSecretKeyApi() {
  * @returns
  */
 export async function refreshTokenApi(refreshToken: string) {
-  return baseRequestClient.post<LoginResult>('/api/refreshToken', {
+  return baseRequestClient.post<LoginResult>('/auth/refreshToken', {
     refreshToken,
   });
 }
@@ -94,7 +94,7 @@ export async function refreshTokenApi(refreshToken: string) {
  * @returns
  */
 export function logoutApi() {
-  return baseRequestClient.delete('/api/logout');
+  return baseRequestClient.delete('/auth/logout');
 }
 
 /**
@@ -102,12 +102,12 @@ export function logoutApi() {
  * @returns
  */
 export async function getCaptchaApi() {
-  return requestClient.get<CaptchaResult>('/api/captcha');
+  return requestClient.get<CaptchaResult>('/auth/captcha');
 }
 
 /**
  * 验证码开关
  */
 export async function switchCaptchaApi() {
-  return requestClient.get<boolean>('/api/captchaEnabled');
+  return requestClient.get<boolean>('/auth/captchaEnabled');
 }

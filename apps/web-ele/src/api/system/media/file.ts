@@ -40,7 +40,7 @@ export interface FileRecordQuery extends PageQuery {
  * @returns
  */
 export async function selectFilePageApi(fileRecordQuery: FileRecordQuery) {
-  return requestClient.get<FilePageResult>('/api/file/page', {
+  return requestClient.get<FilePageResult>('/file/page', {
     params: fileRecordQuery,
   });
 }
@@ -53,7 +53,7 @@ export async function selectFilePageApi(fileRecordQuery: FileRecordQuery) {
 export async function fileUploadApi(file: File) {
   const formData = new FormData();
   formData.append('file', file);
-  return requestClient.post('/api/file/upload', formData, {
+  return requestClient.post('/file/upload', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -66,7 +66,7 @@ export async function fileUploadApi(file: File) {
  * @param id
  */
 export async function handleDownloadSourceFileApi(id: string) {
-  return requestClient.get(`/api/file/downloadSourceFile/${id}`, {
+  return requestClient.get(`/file/downloadSourceFile/${id}`, {
     responseType: 'blob',
   });
 }
@@ -77,7 +77,7 @@ export async function handleDownloadSourceFileApi(id: string) {
  * @returns
  */
 export async function handleDownloadPdfFileApi(id: string) {
-  return requestClient.get(`/api/file/downloadPdfFile/${id}`, {
+  return requestClient.get(`/file/downloadPdfFile/${id}`, {
     responseType: 'blob',
   });
 }
@@ -88,7 +88,7 @@ export async function handleDownloadPdfFileApi(id: string) {
  * @param ids
  */
 export async function deleteFileApi(ids: string[]) {
-  return requestClient.delete('/api/file/delete', ids);
+  return requestClient.delete('/file/delete', ids);
 }
 
 /**
@@ -97,7 +97,7 @@ export async function deleteFileApi(ids: string[]) {
  * @returns
  */
 export async function previewFileApi(id: string) {
-  return requestClient.get(`/api/file/preview/${id}`, {
+  return requestClient.get(`/file/preview/${id}`, {
     responseType: 'arraybuffer',
   });
 }
@@ -108,5 +108,5 @@ export async function previewFileApi(id: string) {
  * @returns
  */
 export async function checkFileConvertStatusApi(id: string) {
-  return requestClient.get<number>(`/api/file/checkFileConvert/${id}`);
+  return requestClient.get<number>(`/file/checkFileConvert/${id}`);
 }

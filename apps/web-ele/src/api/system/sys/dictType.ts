@@ -45,7 +45,7 @@ export type DictTypePageResult = PageResult<DictTypePage[]>;
  * @param dictTypeQuery
  */
 export async function selectDictTypePageApi(dictTypeQuery?: DictTypeQuery) {
-  return requestClient.get<DictTypePageResult>('/api/dictType/page', {
+  return requestClient.get<DictTypePageResult>('/dictType/page', {
     params: dictTypeQuery,
   });
 }
@@ -56,7 +56,7 @@ export async function selectDictTypePageApi(dictTypeQuery?: DictTypeQuery) {
  * @param dictTypeForm
  */
 export async function addDictTypeApi(dictTypeForm: DictTypeForm) {
-  return requestClient.post('/api/dictType/add', dictTypeForm);
+  return requestClient.post('/dictType/add', dictTypeForm);
 }
 
 /**
@@ -65,7 +65,7 @@ export async function addDictTypeApi(dictTypeForm: DictTypeForm) {
  * @param dictTypeForm
  */
 export async function editDictTypeApi(dictTypeForm: DictTypeForm) {
-  return requestClient.put('/api/dictType/edit', dictTypeForm);
+  return requestClient.put('/dictType/edit', dictTypeForm);
 }
 
 /**
@@ -74,7 +74,7 @@ export async function editDictTypeApi(dictTypeForm: DictTypeForm) {
  * @returns
  */
 export async function getDictTypeDetailApi(id: string) {
-  return requestClient.get<DictTypeForm>(`/api/dictType/detail/${id}`);
+  return requestClient.get<DictTypeForm>(`/dictType/detail/${id}`);
 }
 
 /**
@@ -83,5 +83,5 @@ export async function getDictTypeDetailApi(id: string) {
  * @param ids
  */
 export async function deleteDictTypeApi(ids: string[]) {
-  return requestClient.delete('/api/dictType/delete', ids);
+  return requestClient.delete('/dictType/delete', ids);
 }

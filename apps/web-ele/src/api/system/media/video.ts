@@ -31,7 +31,7 @@ export interface VideoQuery extends PageQuery {
  * @returns
  */
 export async function selectVideosPageApi(videoQuery: VideoQuery) {
-  return requestClient.get<VideoPageResult>('/api/video/page', {
+  return requestClient.get<VideoPageResult>('/video/page', {
     params: videoQuery,
   });
 }
@@ -44,7 +44,7 @@ export async function selectVideosPageApi(videoQuery: VideoQuery) {
 export async function uploadVideoApi(file: File) {
   const formData = new FormData();
   formData.append('file', file);
-  return requestClient.post('/api/video/upload', formData, {
+  return requestClient.post('/video/upload', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -57,7 +57,7 @@ export async function uploadVideoApi(file: File) {
  * @returns
  */
 export async function downloadVideoApi(fileName: string) {
-  return requestClient.get(`/api/video/download/${fileName}`, {
+  return requestClient.get(`/video/download/${fileName}`, {
     responseType: 'blob',
   });
 }
@@ -68,7 +68,7 @@ export async function downloadVideoApi(fileName: string) {
  * @param ids
  */
 export async function deleteVideoApi(ids: string[]) {
-  return requestClient.delete('/api/video/delete', ids);
+  return requestClient.delete('/video/delete', ids);
 }
 
 /**
@@ -77,7 +77,7 @@ export async function deleteVideoApi(ids: string[]) {
  * @param fileName
  //  */
 export async function playVideoApi(fileName: string) {
-  return requestClient.get('/api/video/play', {
+  return requestClient.get('/video/play', {
     params: {
       fileName,
     },

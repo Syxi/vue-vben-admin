@@ -113,7 +113,7 @@ export interface MenuForm {
  * @param menuQuery
  */
 export async function selectMenuTreeApi(menuQuery: MenuQuery) {
-  return requestClient.get<MenuVO[]>('/api/menu/page', {
+  return requestClient.get<MenuVO[]>('/menu/page', {
     params: menuQuery,
   });
 }
@@ -123,7 +123,7 @@ export async function selectMenuTreeApi(menuQuery: MenuQuery) {
  * @returns
  */
 export async function menuOptionApi() {
-  return requestClient.get<OptionType[]>('/api/menu/option');
+  return requestClient.get<OptionType[]>('/menu/option');
 }
 
 /**
@@ -132,7 +132,7 @@ export async function menuOptionApi() {
  * @param menuForm
  */
 export async function addMenuApi(menuForm: MenuForm) {
-  return requestClient.post('/api/menu/add', menuForm);
+  return requestClient.post('/menu/add', menuForm);
 }
 
 /**
@@ -141,7 +141,7 @@ export async function addMenuApi(menuForm: MenuForm) {
  * @param menuForm
  */
 export async function editMenuApi(menuForm: MenuForm) {
-  return requestClient.put('/api/menu/edit', menuForm);
+  return requestClient.put('/menu/edit', menuForm);
 }
 
 /**
@@ -150,7 +150,7 @@ export async function editMenuApi(menuForm: MenuForm) {
  * @returns
  */
 export async function getMenuDetailApi(menuId: string) {
-  return requestClient.get<MenuForm>(`/api/menu/detail/${menuId}`);
+  return requestClient.get<MenuForm>(`/menu/detail/${menuId}`);
 }
 
 /**
@@ -159,7 +159,7 @@ export async function getMenuDetailApi(menuId: string) {
  * @returns
  */
 export async function deleteMenuApi(menuId: string) {
-  return requestClient.delete(`/api/menu/delete/${menuId}`);
+  return requestClient.delete(`/menu/delete/${menuId}`);
 }
 
 /**
@@ -169,5 +169,5 @@ export async function deleteMenuApi(menuId: string) {
  * @returns
  */
 export async function updateRoleMenusApi(roleId: string, menus: string[]) {
-  return requestClient.put<any>(`/api/menu/${roleId}/menus`, menus);
+  return requestClient.put<any>(`/menu/${roleId}/menus`, menus);
 }

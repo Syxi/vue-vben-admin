@@ -85,7 +85,7 @@ export interface NoticeQuery extends PageQuery {
  * @returns
  */
 export async function selectNoticePageApi(noticeQuery: NoticeQuery) {
-  return requestClient.get<noticePageResult>('/api/notice/page', {
+  return requestClient.get<noticePageResult>('/notice/page', {
     params: noticeQuery,
   });
 }
@@ -96,7 +96,7 @@ export async function selectNoticePageApi(noticeQuery: NoticeQuery) {
  * @param noticeForm
  */
 export async function addNoticeApi(noticeForm: NoticeForm) {
-  return requestClient.post('/api/notice/add', noticeForm);
+  return requestClient.post('/notice/add', noticeForm);
 }
 
 /**
@@ -105,7 +105,7 @@ export async function addNoticeApi(noticeForm: NoticeForm) {
  * @returns
  */
 export async function getNoticeApi(noticeId: string) {
-  return requestClient.get<NoticeVO>(`/api/notice/detail/${noticeId}`);
+  return requestClient.get<NoticeVO>(`/notice/detail/${noticeId}`);
 }
 
 /**
@@ -114,7 +114,7 @@ export async function getNoticeApi(noticeId: string) {
  * @param noticeForm
  */
 export async function updateNoticeApi(noticeForm: NoticeForm) {
-  return requestClient.put('/api/notice/update', noticeForm);
+  return requestClient.put('/notice/update', noticeForm);
 }
 
 /**
@@ -123,7 +123,7 @@ export async function updateNoticeApi(noticeForm: NoticeForm) {
  * @returns
  */
 export async function deleteNoticeApi(noticeIds: string[]) {
-  return requestClient.delete('/api/notice/delete', noticeIds);
+  return requestClient.delete('/notice/delete', noticeIds);
 }
 
 /**
@@ -132,7 +132,7 @@ export async function deleteNoticeApi(noticeIds: string[]) {
  * @returns
  */
 export async function topNoticeApi(noticeId: string) {
-  return requestClient.put(`/api/notice/top/${noticeId}`);
+  return requestClient.put(`/notice/top/${noticeId}`);
 }
 
 /**
@@ -141,7 +141,7 @@ export async function topNoticeApi(noticeId: string) {
  * @returns
  */
 export async function cancelTopNoticeApi(noticeId: string) {
-  return requestClient.put(`/api/notice/cancelTop/${noticeId}`);
+  return requestClient.put(`/notice/cancelTop/${noticeId}`);
 }
 
 /**

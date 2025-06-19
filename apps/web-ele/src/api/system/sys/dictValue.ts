@@ -36,7 +36,7 @@ export type DictValuePageResult = PageResult<DictValuePage[]>;
  * @param dictValueQuery
  */
 export async function selectDictValuePageApi(dictValueQuery: DictValueQuery) {
-  return requestClient.get<DictValuePageResult>('/api/dictValue/page', {
+  return requestClient.get<DictValuePageResult>('/dictValue/page', {
     params: dictValueQuery,
   });
 }
@@ -46,7 +46,7 @@ export async function selectDictValuePageApi(dictValueQuery: DictValueQuery) {
  * @returns
  */
 export async function dictValueOptionApi(typeCode: string) {
-  return requestClient.get<DictValueForm>(`/api/dictValue/option/${typeCode}`);
+  return requestClient.get<DictValueForm>(`/dictValue/option/${typeCode}`);
 }
 
 /**
@@ -55,7 +55,7 @@ export async function dictValueOptionApi(typeCode: string) {
  * @param dictValueForm
  */
 export async function addDictValueApi(dictValueForm: DictValueForm) {
-  return requestClient.post('/api/dictValue/add', dictValueForm);
+  return requestClient.post('/dictValue/add', dictValueForm);
 }
 
 /**
@@ -64,7 +64,7 @@ export async function addDictValueApi(dictValueForm: DictValueForm) {
  * @param dictValueForm
  */
 export async function editDictValueApi(dictValueForm: DictValueForm) {
-  return requestClient.put('/api/dictValue/edit', dictValueForm);
+  return requestClient.put('/dictValue/edit', dictValueForm);
 }
 
 /**
@@ -73,7 +73,7 @@ export async function editDictValueApi(dictValueForm: DictValueForm) {
  * @param ids
  */
 export async function deleteDictValuesApi(ids: string[]) {
-  return requestClient.delete('/api/dictValue/delete', ids);
+  return requestClient.delete('/dictValue/delete', ids);
 }
 
 /**
@@ -82,7 +82,7 @@ export async function deleteDictValuesApi(ids: string[]) {
  * @returns
  */
 export async function getDictValueDetailApi(id: string) {
-  return requestClient.get<DictValueForm>(`/api/dictValue/detail/${id}`);
+  return requestClient.get<DictValueForm>(`/dictValue/detail/${id}`);
 }
 
 /**
@@ -90,5 +90,5 @@ export async function getDictValueDetailApi(id: string) {
  * @param typeCode
  */
 export async function getDictOptionsApi(typeCode: string) {
-  return requestClient.get<OptionType[]>(`/api/dictValue/option/${typeCode}`);
+  return requestClient.get<OptionType[]>(`/dictValue/option/${typeCode}`);
 }

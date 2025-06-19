@@ -58,7 +58,7 @@ export type ArticlePageResult = PageResult<ArticlePage[]>;
  * @param articleQuery
  */
 export async function selectArticlePageApi(articleQuery: ArticleQuery) {
-  return requestClient.get<ArticlePageResult>('/api/article/page', {
+  return requestClient.get<ArticlePageResult>('/article/page', {
     params: articleQuery,
   });
 }
@@ -69,7 +69,7 @@ export async function selectArticlePageApi(articleQuery: ArticleQuery) {
  * @param articleForm
  */
 export async function saveArticleApi(articleForm: ArticleForm) {
-  return requestClient.post('/api/article/save', articleForm);
+  return requestClient.post('/article/save', articleForm);
 }
 
 /**
@@ -78,7 +78,7 @@ export async function saveArticleApi(articleForm: ArticleForm) {
  * @param articleForm
  */
 export async function updateArticleApi(articleForm: ArticleForm) {
-  return requestClient.put('/api/article/update', articleForm);
+  return requestClient.put('/article/update', articleForm);
 }
 
 /**
@@ -87,7 +87,7 @@ export async function updateArticleApi(articleForm: ArticleForm) {
  * @param articleId
  */
 export async function getArticleDetailApi(articleId: string) {
-  return requestClient.get<ArticleForm>(`/api/article/detail/${articleId}`);
+  return requestClient.get<ArticleForm>(`/article/detail/${articleId}`);
 }
 
 /**
@@ -96,7 +96,7 @@ export async function getArticleDetailApi(articleId: string) {
  * @param articleIds
  */
 export async function deleteArticleApi(articleIds: string[]) {
-  return requestClient.delete('/api/article/delete', articleIds);
+  return requestClient.delete('/article/delete', articleIds);
 }
 
 /**
@@ -106,6 +106,6 @@ export async function deleteArticleApi(articleIds: string[]) {
  */
 export async function readArticleApi(articleId: string) {
   return requestClient.get<ArticlePage>(
-    `/api/article/portal/read/${articleId}`,
+    `/article/portal/read/${articleId}`,
   );
 }

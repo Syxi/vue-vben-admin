@@ -28,12 +28,9 @@ export interface SwitchConfigForm {
 export async function selectSwitchConfigPageApi(
   switchConfigQuery: SwitchConfigQuery,
 ) {
-  return requestClient.get<SwitchConfigPageResult>(
-    '/api/sysSwitchConfig/page',
-    {
-      params: switchConfigQuery,
-    },
-  );
+  return requestClient.get<SwitchConfigPageResult>('/sysSwitchConfig/page', {
+    params: switchConfigQuery,
+  });
 }
 
 /**
@@ -42,7 +39,7 @@ export async function selectSwitchConfigPageApi(
  * @returns
  */
 export async function getSwitchConfigApi(id: string) {
-  return requestClient.get<SwitchConfigForm>(`/api/sysSwitchConfig/${id}`);
+  return requestClient.get<SwitchConfigForm>(`/sysSwitchConfig/${id}`);
 }
 
 /**
@@ -53,7 +50,7 @@ export async function getSwitchConfigApi(id: string) {
 export async function updateSwitchConfigApi(
   switchConfigForm: SwitchConfigForm,
 ) {
-  return requestClient.put('/api/sysSwitchConfig/update', switchConfigForm);
+  return requestClient.put('/sysSwitchConfig/update', switchConfigForm);
 }
 
 /**
@@ -69,7 +66,7 @@ export async function updateStatusApi(
   configValue: boolean,
 ) {
   return requestClient.put(
-    `/api/sysSwitchConfig/update/${id}`,
+    `/sysSwitchConfig/update/${id}`,
     {},
     {
       params: {

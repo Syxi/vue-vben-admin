@@ -71,7 +71,7 @@ export interface RoleForm {
  * @param roleQuery
  */
 export async function selectRolePageApi(roleQuery: RoleQuery) {
-  return requestClient.get<RolePageResult>('/api/role/page', {
+  return requestClient.get<RolePageResult>('/role/page', {
     params: roleQuery,
   });
 }
@@ -80,7 +80,7 @@ export async function selectRolePageApi(roleQuery: RoleQuery) {
  * 角色下拉选项
  */
 export async function roleOptionApi(roleQuery?: RoleQuery) {
-  return requestClient.get<OptionType[]>('/api/role/option', {
+  return requestClient.get<OptionType[]>('/role/option', {
     params: roleQuery,
   });
 }
@@ -91,7 +91,7 @@ export async function roleOptionApi(roleQuery?: RoleQuery) {
  * @returns
  */
 export async function addRoleApi(roleForm: RoleForm) {
-  return requestClient.post('/api/role/add', roleForm);
+  return requestClient.post('/role/add', roleForm);
 }
 
 /**
@@ -100,7 +100,7 @@ export async function addRoleApi(roleForm: RoleForm) {
  * @returns
  */
 export async function roleDetailApi(roleId: string) {
-  return requestClient.get<RoleForm>(`/api/role/detail/${roleId}`);
+  return requestClient.get<RoleForm>(`/role/detail/${roleId}`);
 }
 
 /**
@@ -109,7 +109,7 @@ export async function roleDetailApi(roleId: string) {
  * @param roleForm
  */
 export async function editRoleApi(roleForm: RoleForm) {
-  return requestClient.put('/api/role/edit', roleForm);
+  return requestClient.put('/role/edit', roleForm);
 }
 
 /**
@@ -118,7 +118,7 @@ export async function editRoleApi(roleForm: RoleForm) {
  * @returns
  */
 export async function deleteRoleApi(roleIds: string[]) {
-  return requestClient.delete('/api/role/delete', roleIds);
+  return requestClient.delete('/role/delete', roleIds);
 }
 
 /**
@@ -128,7 +128,7 @@ export async function deleteRoleApi(roleIds: string[]) {
  * @returns
  */
 export async function updateRoleStatusApi(roleId: string, status: number) {
-  return requestClient.put(`/api/role/${roleId}/${status}`);
+  return requestClient.put(`/role/${roleId}/${status}`);
 }
 
 /**
@@ -137,7 +137,7 @@ export async function updateRoleStatusApi(roleId: string, status: number) {
  * @param roleIds
  */
 export async function enableRoleApi(roleIds: string[]) {
-  return requestClient.put('/api/role/enable', roleIds);
+  return requestClient.put('/role/enable', roleIds);
 }
 
 /**
@@ -146,7 +146,7 @@ export async function enableRoleApi(roleIds: string[]) {
  * @param roleIds
  */
 export async function disableRoleApi(roleIds: string[]) {
-  return requestClient.put('/api/role/disable', roleIds);
+  return requestClient.put('/role/disable', roleIds);
 }
 
 /**
@@ -155,7 +155,7 @@ export async function disableRoleApi(roleIds: string[]) {
  * @returns
  */
 export async function getRoleMenuIdsApi(roleId: string) {
-  return requestClient.get<string[]>(`/api/role/${roleId}/menuIds`);
+  return requestClient.get<string[]>(`/role/${roleId}/menuIds`);
 }
 
 /**
@@ -165,5 +165,5 @@ export async function getRoleMenuIdsApi(roleId: string) {
  * @returns
  */
 export async function updateRoleUserApi(roleId: string, userIds: string[]) {
-  return requestClient.put(`/api/role/updateRoleUser/${roleId}`, userIds);
+  return requestClient.put(`/role/updateRoleUser/${roleId}`, userIds);
 }
