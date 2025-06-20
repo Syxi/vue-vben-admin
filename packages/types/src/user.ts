@@ -9,7 +9,7 @@ interface UserInfo {
    */
   perms?: string[];
   /**
-   * 用户角色
+   * 用户角色编码
    */
   roles?: string[];
   /**
@@ -24,6 +24,30 @@ interface UserInfo {
    * 用户昵称
    */
   realName: string;
+  /**
+   * 手机号
+   */
+  phone?: string;
+  /**
+   * 邮箱
+   */
+  email?: string;
+  /**
+   * 职位
+   */
+  position?: string;
+  /**
+   * 部门名称
+   */
+  deptNames?: string;
+  /**
+   * 角色名称
+   */
+  roleNames?: string;
+  /**
+   * 最后登录时间
+   */
+  lastLoginTime?: Date;
 }
 
 export type { UserInfo };

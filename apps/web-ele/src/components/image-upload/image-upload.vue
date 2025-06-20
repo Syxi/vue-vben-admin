@@ -53,8 +53,7 @@ function handleBeforeUpload(file: UploadRawFile) {
         <el-avatar shape="circle" :src="imgUrl" :size="140" fit="cover" />
       </div>
       <div class="mt-2 flex justify-center">
-        <el-icon class="mr-1"><Camera /></el-icon>
-        <el-text>上传头像</el-text>
+        <el-text><el-icon class="mr-1"><Camera /></el-icon>上传头像</el-text>
       </div>
     </div>
   </el-upload>

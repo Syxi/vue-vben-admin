@@ -29,8 +29,8 @@ import {
 } from '#/api/system/sys/user';
 import { Dictionary } from '#/components/dictionary';
 import { ImageUpload } from '#/components/image-upload';
+import { useAutoHeight } from '#/hooks/useAutoHeight';
 import { useCardHeight } from '#/hooks/useCardHeight';
-import { useScrollbarHeight } from '#/hooks/useScrollbarHeight';
 
 defineOptions({
   name: 'User',
@@ -478,7 +478,7 @@ onMounted(() => {
 const cardFormRef = ref();
 const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 
-const scrollbarHeight = useScrollbarHeight(120);
+const autoHeight = useAutoHeight(120);
 </script>
 
 <template>
@@ -486,7 +486,7 @@ const scrollbarHeight = useScrollbarHeight(120);
     <!--部门树-->
     <el-row :gutter="4">
       <el-col :span="4">
-        <el-scrollbar :height="scrollbarHeight" class="tree-container">
+        <el-scrollbar :height="autoHeight" class="tree-container">
           <el-input v-model="deptName" placeholder="机构名称" class="mt-4">
             <template #prefix>
               <el-icon class="el-input__icon"><search /></el-icon>
@@ -506,7 +506,7 @@ const scrollbarHeight = useScrollbarHeight(120);
       </el-col>
 
       <el-col :span="20">
-        <el-card ref="cardFormRef" class="mb-2">
+        <el-card ref="cardFormRef" class="query-form-card">
           <ElForm :model="queryParams" ref="queryFormRef" :inline="true">
             <el-form-item prop="username">
               <el-input
@@ -905,5 +905,9 @@ const scrollbarHeight = useScrollbarHeight(120);
   justify-content: center;
   background: #ffffff;
   border-radius: var(--radius);
+}
+
+.query-form-card .el-form-item {
+  margin-bottom: 0;
 }
 </style>

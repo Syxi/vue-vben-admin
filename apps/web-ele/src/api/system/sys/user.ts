@@ -17,7 +17,7 @@ export interface UserQuery extends PageQuery {
 
   endTime?: string;
 
-  organId?: string;
+  deptId?: string;
 }
 
 /**
@@ -235,13 +235,6 @@ export async function updatePasswordApi(userPassword: UserPassword) {
   return requestClient.post('/user/updatePassword', userPassword);
 }
 
-/**
- * 个人信息
- * @returns
- */
-export async function getUserVOInfoApi() {
-  return requestClient.get<UserPage>('/user/me');
-}
 
 /**
  * 更新个人信息

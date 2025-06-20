@@ -24,9 +24,37 @@ interface BasicUserInfo {
   // 用户名
   username?: string;
   /**
+   * 性别
+   */
+  gender?: number;
+  /**
    * 首页地址
    */
   homePath?: string;
+  /**
+   * 手机号
+   */
+  mobile?: string;
+  /**
+   * 邮箱
+   */
+  email?: string;
+  /**
+   * 职位
+   */
+  position?: string;
+  /**
+   * 部门名称
+   */
+  deptNames?: string;
+  /**
+   * 角色名称
+   */
+  roleNames?: string;
+  /**
+   * 最后登录时间
+   */
+  lastLoginTime?: Date;
 }
 
 interface AccessState {
