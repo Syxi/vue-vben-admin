@@ -86,6 +86,7 @@ const { authPanelCenter, authPanelLeft, authPanelRight, isDark } =
               class="animate-float h-64 w-2/5"
             />
           </template>
+          <!--   图标组件       -->
           <SloganIcon v-else :alt="appName" class="animate-float h-64 w-2/5" />
           <div class="text-1xl text-foreground mt-6 font-sans lg:text-2xl">
             {{ pageTitle }}

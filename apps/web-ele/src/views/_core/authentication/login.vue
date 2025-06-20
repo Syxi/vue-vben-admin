@@ -113,8 +113,8 @@ onBeforeMount(() => {
 <template>
   <div>
     <!-- 登录系统名称 -->
-    <div class="relative mx-2 text-center">
-      <h2>{{ loginTitle }}</h2>
+    <div class="title relative mx-2 text-center">
+      <h1>{{ loginTitle }}</h1>
     </div>
 
     <el-form ref="loginFormRef" :model="params" :rules="loginRules">
@@ -164,7 +164,7 @@ onBeforeMount(() => {
             </template>
           </el-input>
         </el-col>
-        <el-col :span="7" :offset="1">
+        <el-col :span="7" :offset="1" class="cursor-pointer">
           <el-image @click="getCaptcha()" :src="captchaBase64" />
         </el-col>
       </el-form-item>
@@ -191,5 +191,11 @@ onBeforeMount(() => {
 el-image {
   height: 40px;
   cursor: pointer;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.75rem;
 }
 </style>
