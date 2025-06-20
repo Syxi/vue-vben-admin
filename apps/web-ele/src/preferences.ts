@@ -12,6 +12,19 @@ export const overridesPreferences = defineOverridesPreferences({
     accessMode: 'backend', // 后端动态生成路由
   },
   widget: {
-    notification: false,
+    notification: false, // 关闭头部的通知组件
+  },
+  logo: {
+    enable: true,
+    source: '/static/img/codesee-icon.svg',
+  },
+  copyright: {
+    companyName: '未来科技',
+    companySiteLink: 'https://www.vben.pro',
+    date: '2025',
+    enable: false,
+    icp: '',
+    icpLink: '',
+    settingShow: false,
   },
 });
