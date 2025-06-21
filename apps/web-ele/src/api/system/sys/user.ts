@@ -52,7 +52,7 @@ export interface UserPage {
   status?: number;
 
   // 部门名称
-  organName?: string;
+  deptName?: string;
 
   // 创建时间
   createTime?: Date;

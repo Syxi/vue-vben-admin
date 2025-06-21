@@ -269,7 +269,7 @@ async function disableUser(userId?: string) {
 async function openDialog(userId?: string) {
   dialog.visible = true;
   // 用户表单弹窗
-  await getOrganTreeOptions();
+  await deptTreeOptions();
   if (userId) {
     dialog.title = '修改用户';
     const data = await getUserDetailApi(userId);
@@ -289,7 +289,7 @@ function handleNodeClick(node: any) {
 }
 
 // 获取部门下拉选项
-async function getOrganTreeOptions() {
+async function deptTreeOptions() {
   deptTreeOptionData.value = await deptOptionTreeApi();
 }
 
@@ -472,7 +472,7 @@ const submitUpload = async () => {
 onMounted(() => {
   // 初始化用户列表数据
   handleQuery();
-  getOrganTreeOptions();
+  deptTreeOptions();
 });
 
 const cardFormRef = ref();

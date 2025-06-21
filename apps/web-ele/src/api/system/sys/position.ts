@@ -8,7 +8,7 @@ export interface PositionVO {
   positionName?: string;
 
   /* */
-  organName?: string;
+  deptName?: string;
 
   /* */
   description?: string;
@@ -47,7 +47,7 @@ export interface PositionForm {
   positionName?: string;
 
   /* */
-  organId?: string;
+  deptId?: string;
 
   /* */
   description?: string;

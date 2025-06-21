@@ -55,7 +55,7 @@ const rules = reactive({
 });
 
 // 组织下拉选项树数据
-const organTreeOptionData = ref<OptionType[]>([]);
+const deptTreeOptionData = ref<OptionType[]>([]);
 
 interface CheckedPosition {
   positionId?: string;
@@ -183,13 +183,13 @@ function handleDelete(positionId?: string) {
 }
 
 // 获取部门下拉选项
-async function getOrganTreeptions() {
-  organTreeOptionData.value = await deptOptionTreeApi();
+async function deptTreeOptions() {
+  deptTreeOptionData.value = await deptOptionTreeApi();
 }
 
 onMounted(() => {
   handleQuery();
-  getOrganTreeptions();
+  deptTreeOptions();
 });
 
 const cardFormRef = ref();
@@ -274,7 +274,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 
         <el-table-column
           label="所属部门"
-          prop="organName"
+          prop="deptName"
           width="200"
           align="center"
         />
@@ -362,10 +362,10 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
           />
         </el-form-item>
 
-        <el-form-item label="机构" prop="organId">
+        <el-form-item label="机构" prop="deptId">
           <el-tree-select
-            v-model="formData.organId"
-            :data="organTreeOptionData"
+            v-model="formData.deptId"
+            :data="deptTreeOptionData"
             :default-expand-all="true"
             check-strictly
             filterable
