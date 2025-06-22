@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { TransferKey } from 'element-plus';
 
-import type { RoleForm, RolePage, RoleQuery } from '#/api/system/sys/role';
+import type { RolePage, RoleQuery } from '#/api/system/sys/role';
 
 import { onMounted, reactive, ref, watch } from 'vue';
 
@@ -18,18 +18,16 @@ import { ElForm, ElMessage, ElMessageBox, ElTree } from 'element-plus';
 
 import { menuOptionApi, updateRoleMenusApi } from '#/api/system/sys/menu';
 import {
-  addRoleApi,
   deleteRoleApi,
   disableRoleApi,
-  editRoleApi,
   enableRoleApi,
   getRoleMenuIdsApi,
-  roleDetailApi,
   selectRolePageApi,
   updateRoleUserApi,
 } from '#/api/system/sys/role';
 import { UserInRoleApi, userNotInRoleApi } from '#/api/system/sys/user';
 import { useCardHeight } from '#/hooks/useCardHeight';
+import RoleFormDialog from "#/views/system/sys/role/RoleFormDialog.vue";
 
 defineOptions({
   name: 'Role',
@@ -38,7 +36,6 @@ defineOptions({
 
 const queryFormRef = ref(ElForm);
 
-const roleFormRef = ref(ElForm);
 
 const menuTreeRef = ref(ElTree);
 
@@ -55,24 +52,18 @@ const queryParams = reactive<RoleQuery>({
 
 const roleTableData = ref<RolePage[]>();
 
-const dialog = reactive({
-  title: '',
-  visible: false,
-});
+const dialogVisible = ref(false);
 
-const formData = reactive<RoleForm>({
-  sort: 1,
-  status: 1,
-  roleCode: '',
-  roleName: '',
-  dataScope: 0,
-});
+const dialogTitle = ref<string>('');
 
-const rules = reactive({
-  roleName: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
-  roleCode: [{ required: true, message: '请输入角色编码', trigger: 'blur' }],
-  status: [{ required: true, message: '请选择状态', trigger: 'blur' }],
-});
+const roleId = ref();
+
+function openDialog(id?: string) {
+  roleId.value = id;
+  dialogTitle.value = id ? '修改角色' : '新增角色';
+  dialogVisible.value = true;
+}
+
 
 const menuDialogVisiable = ref(false);
 
@@ -103,12 +94,7 @@ const isExpanded = ref(true);
 
 const parentChildrenLink = ref(true);
 
-const dataScopeOption = [
-  { value: 0, label: '全部数据权限' },
-  { value: 1, label: '组织及子部门数据' },
-  { value: 2, label: '本部门数据权限' },
-  { value: 3, label: '本人数据' },
-];
+
 
 /**
  * 排序事件
@@ -150,63 +136,9 @@ function resetQuery() {
   handleQuery();
 }
 
-/**
- * 打开角色表单弹窗
- * @param roleId
- */
-async function openDialog(roleId?: string) {
-  dialog.visible = true;
-  if (roleId) {
-    dialog.title = '修改角色';
-    const data = await roleDetailApi(roleId);
-    Object.assign(formData, data);
-  } else {
-    dialog.title = '新增角色';
-  }
-}
 
-/**
- * 角色保存提交
- */
-const handleSubmit = async () => {
-  const valid = roleFormRef.value.validate();
-  if (!valid) return;
 
-  loading.value = true;
 
-  try {
-    const roleId = formData.roleId;
-    await (roleId ? editRoleApi(formData) : addRoleApi(formData));
-    ElMessage.success(roleId ? '修改角色成功' : '新增角色成功');
-    closeDialog();
-    resetQuery();
-  } catch {
-    ElMessage.error('角色名称或角色编码已存在，请检查');
-    closeDialog();
-  } finally {
-    loading.value = false;
-  }
-};
-
-/**
- * 关闭表单弹窗
- */
-function closeDialog() {
-  dialog.visible = false;
-  resetForm();
-}
-
-/**
- * 重置表单
- */
-function resetForm() {
-  roleFormRef.value.resetFields();
-  roleFormRef.value.clearValidate();
-
-  formData.roleId = undefined;
-  formData.sort = 1;
-  formData.status = 1;
-}
 
 /**
  * 删除角色
@@ -649,60 +581,65 @@ onMounted(() => {
       />
     </el-card>
 
+    <RoleFormDialog
+      v-model="dialogVisible"
+      :title="dialogTitle"
+      :role-id="roleId"
+    />
     <!-- 角色表单弹窗 -->
-    <el-dialog
-      center
-      draggable
-      v-model="dialog.visible"
-      :title="dialog.title"
-      width="500px"
-      @close="closeDialog"
-    >
-      <ElForm
-        ref="roleFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="100px"
-        style="max-width: 400px"
-      >
-        <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model="formData.roleName" placeholder="请输入角色名称" />
-        </el-form-item>
+<!--    <el-dialog-->
+<!--      center-->
+<!--      draggable-->
+<!--      v-model="dialog.visible"-->
+<!--      :title="dialog.title"-->
+<!--      width="500px"-->
+<!--      @close="closeDialog"-->
+<!--    >-->
+<!--      <ElForm-->
+<!--        ref="roleFormRef"-->
+<!--        :model="formData"-->
+<!--        :rules="rules"-->
+<!--        label-width="100px"-->
+<!--        style="max-width: 400px"-->
+<!--      >-->
+<!--        <el-form-item label="角色名称" prop="roleName">-->
+<!--          <el-input v-model="formData.roleName" placeholder="请输入角色名称" />-->
+<!--        </el-form-item>-->
 
-        <el-form-item label="角色编码" prop="roleCode">
-          <el-input v-model="formData.roleCode" placeholder="请输入角色编码" />
-        </el-form-item>
+<!--        <el-form-item label="角色编码" prop="roleCode">-->
+<!--          <el-input v-model="formData.roleCode" placeholder="请输入角色编码" />-->
+<!--        </el-form-item>-->
 
-        <!-- <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="formData.status">
-            <el-radio :value="1">启用</el-radio>
-            <el-radio :value="-1">禁用</el-radio>
-          </el-radio-group>
-        </el-form-item> -->
+<!--        &lt;!&ndash; <el-form-item label="状态" prop="status">-->
+<!--          <el-radio-group v-model="formData.status">-->
+<!--            <el-radio :value="1">启用</el-radio>-->
+<!--            <el-radio :value="-1">禁用</el-radio>-->
+<!--          </el-radio-group>-->
+<!--        </el-form-item> &ndash;&gt;-->
 
-        <el-form-item label="数据权限" prop="dataScope">
-          <el-select v-model="formData.dataScope">
-            <el-option
-              v-for="item in dataScopeOption"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item label="数据权限" prop="dataScope">-->
+<!--          <el-select v-model="formData.dataScope">-->
+<!--            <el-option-->
+<!--              v-for="item in dataScopeOption"-->
+<!--              :key="item.value"-->
+<!--              :label="item.label"-->
+<!--              :value="item.value"-->
+<!--            />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
 
-        <el-form-item label="排序" prop="sort">
-          <el-input-number v-model="formData.sort" :min="0" />
-        </el-form-item>
-      </ElForm>
+<!--        <el-form-item label="排序" prop="sort">-->
+<!--          <el-input-number v-model="formData.sort" :min="0" />-->
+<!--        </el-form-item>-->
+<!--      </ElForm>-->
 
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="closeDialog">取消</el-button>
-          <el-button type="primary" @click="handleSubmit">确定</el-button>
-        </div>
-      </template>
-    </el-dialog>
+<!--      <template #footer>-->
+<!--        <div class="dialog-footer">-->
+<!--          <el-button @click="closeDialog">取消</el-button>-->
+<!--          <el-button type="primary" @click="handleSubmit">确定</el-button>-->
+<!--        </div>-->
+<!--      </template>-->
+<!--    </el-dialog>-->
 
     <!-- 分配菜单弹窗 -->
     <el-dialog
