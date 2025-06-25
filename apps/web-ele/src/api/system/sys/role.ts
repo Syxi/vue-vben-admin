@@ -56,7 +56,7 @@ export interface RoleForm {
   roleName: string;
 
   // 数据权限
-  dataScope: number;
+  dataScope?: number;
 
   // 排序
   sort?: number;

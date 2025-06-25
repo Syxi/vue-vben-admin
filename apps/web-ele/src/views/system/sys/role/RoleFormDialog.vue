@@ -1,48 +1,34 @@
 <script setup lang="ts">
+import type { FormInstance, FormRules } from 'element-plus';
+
+import type { RoleForm } from '#/api/system/sys/role';
+
+import { defineEmits, defineExpose, reactive, ref } from 'vue';
+
 import { ElForm, ElMessage } from 'element-plus';
-import { defineProps, defineEmits, ref, watch } from 'vue';
 
-import { addRoleApi, editRoleApi, roleDetailApi, type RoleForm } from '#/api/system/sys/role';
+import { addRoleApi, editRoleApi, roleDetailApi } from '#/api/system/sys/role';
 
-const props = defineProps<{
-  modelValue: boolean;
-  roleId?: string;
-  title: string;
-}>();
-
+// 定义事件
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void;
   (e: 'success'): void;
 }>();
 
-// 本地可写的 visible 状态
-const localVisible = ref(false);
+// 本地状态
+const visible = ref(false);
 
-// 全屏控制
-const fullScreen = ref(false);
-function toggleFullScreen() {
-  fullScreen.value = !fullScreen.value;
-}
+const title = ref('');
 
-// 表单引用和状态
-const roleFormRef = ref();
-const loading = ref(false);
+const roleFormRef = ref<FormInstance>();
 
-// 表单数据
-const formData = ref<RoleForm>({
-  roleId: undefined,
-  roleName: '',
+const formData = reactive<RoleForm>({
+  roleId: '',
   roleCode: '',
-  sort: 1,
-  status: 1,
-  dataScope: 0,
+  roleName: '',
+  status: undefined,
+  sort: undefined,
+  dataScope: undefined,
 });
-
-// 表单校验规则
-const rules = {
-  roleName: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
-  roleCode: [{ required: true, message: '请输入角色编码', trigger: 'blur' }],
-};
 
 // 数据权限选项
 const dataScopeOption = [
@@ -52,81 +38,63 @@ const dataScopeOption = [
   { value: 3, label: '本人数据' },
 ];
 
-// 同步 props 到本地状态
-watch(
-  () => props.modelValue,
-  (newVal) => {
-    localVisible.value = newVal;
-  },
-  { immediate: true }
-);
-
-// 当本地状态变化时通知父组件
-watch(
-  () => localVisible.value,
-  (val) => {
-    emit('update:modelValue', val);
-  }
-);
-
-// 监听 localVisible 打开对话框并加载数据
-watch(
-  () => localVisible.value,
-  async (newVal) => {
-    if (newVal && props.roleId) {
-      await getRoleFormData(props.roleId);
-    } else if (!newVal) {
-      resetForm();
-    }
-  }
-);
+// 表单校验规则
+const rules = reactive<FormRules<RoleForm>>({
+  roleName: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
+  roleCode: [{ required: true, message: '请输入角色编码', trigger: 'blur' }],
+  status: [{ required: true, message: '请选择状态', trigger: 'blur' }],
+});
 
 /**
- * 打开角色表单弹窗
- * @param roleId
+ * 打开角色表单弹窗（暴露给 ref）
+ * @param roleId 角色ID
  */
-async function getRoleFormData(roleId: string) {
-  const data = await roleDetailApi(roleId);
-  Object.assign(formData.value, data);
+async function open(roleId?: string) {
+  visible.value = true;
+  title.value = roleId ? '修改角色' : '新增角色';
+  if (roleId) {
+    await getRoleFormData(roleId);
+  }
 }
 
 /**
- * 重置表单
+ * 关闭角色表单弹窗（暴露给 ref）
  */
-function resetForm() {
+function close() {
+  visible.value = false;
   roleFormRef.value?.resetFields();
   roleFormRef.value?.clearValidate();
+  formData.roleId = '';
+}
 
-  formData.value = {
-    roleName: '',
-    roleCode: '',
-    sort: 1,
-    status: 1,
-    dataScope: 0,
-  };
+/**
+ * 获取角色数据
+ * @param roleId 角色ID
+ */
+async function getRoleFormData(roleId: string) {
+  const data = await roleDetailApi(roleId);
+  Object.assign(formData, data);
 }
 
 /**
  * 角色保存提交
  */
-const handleSubmit = async () => {
-  const valid = roleFormRef.value.validate();
-  if (!valid) return;
+const handleSubmit = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
 
-  loading.value = true;
-
-  try {
-    const roleId = formData.value.roleId;
-    await (roleId ? editRoleApi(formData.value) : addRoleApi(formData.value));
-    ElMessage.success(roleId ? '修改角色成功' : '新增角色成功');
-    localVisible.value = false;
-    emit('success'); // 通知父组件刷新列表
-  } catch {
-    ElMessage.error('角色名称或角色编码已存在，请检查');
-  } finally {
-    loading.value = false;
-  }
+  await formEl.validate(async (valid) => {
+    if (valid) {
+      const roleId = formData.roleId;
+      await (roleId ? editRoleApi(formData) : addRoleApi(formData));
+      ElMessage.success(roleId ? '修改角色成功' : '新增角色成功');
+      close();
+      emit('success'); // 通知父组件刷新列表
+    }
+  });
 };
+
+// 暴露方法给 ref
+defineExpose({ open, close });
 </script>
 
 <template>
@@ -134,31 +102,16 @@ const handleSubmit = async () => {
   <el-dialog
     center
     draggable
-    v-model="localVisible"
+    v-model="visible"
     :title="title"
     width="500px"
-    :fullscreen="fullScreen"
-    @close="localVisible = false"
+    @close="close"
   >
-    <!-- 自定义标题栏 -->
-    <template #header>
-      <div class="custom-header">
-        <span>{{ title }}</span>
-        <div class="header-icons">
-          <el-button @click.stop="toggleFullScreen" circle size="small">
-            <el-icon><FullScreen /></el-icon>
-          </el-button>
-        </div>
-      </div>
-    </template>
-
-    <!-- 表单内容 -->
     <ElForm
       ref="roleFormRef"
       :model="formData"
       :rules="rules"
       label-width="100px"
-      style="max-width: 400px"
     >
       <el-form-item label="角色名称" prop="roleName">
         <el-input v-model="formData.roleName" placeholder="请输入角色名称" />
@@ -166,6 +119,13 @@ const handleSubmit = async () => {
 
       <el-form-item label="角色编码" prop="roleCode">
         <el-input v-model="formData.roleCode" placeholder="请输入角色编码" />
+      </el-form-item>
+
+      <el-form-item label="状态" prop="status">
+        <el-radio-group v-model="formData.status">
+          <el-radio :value="1">启用</el-radio>
+          <el-radio :value="-1">禁用</el-radio>
+        </el-radio-group>
       </el-form-item>
 
       <el-form-item label="数据权限" prop="dataScope">
@@ -187,23 +147,14 @@ const handleSubmit = async () => {
     <!-- 底部按钮 -->
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="localVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button @click="close">取消</el-button>
+        <el-button type="primary" @click="handleSubmit(roleFormRef)">
+          确定
+        </el-button>
       </div>
     </template>
   </el-dialog>
 </template>
 
 <style scoped>
-.custom-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.header-icons {
-  display: flex;
-  align-items: center;
-}
 </style>
