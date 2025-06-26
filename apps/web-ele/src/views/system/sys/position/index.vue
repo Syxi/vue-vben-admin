@@ -1,19 +1,17 @@
 <script setup lang="ts">
-import type {PositionForm, PositionQuery, PositionVO,} from '#/api/system/sys/position';
+import type { PositionQuery, PositionVO } from '#/api/system/sys/position';
+
+import { onMounted, reactive, ref } from 'vue';
+
+import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
+
+import { deptOptionTreeApi } from '#/api/system/sys/dept';
 import {
-  addPositionApi,
   deletePositionApi,
-  getPositionApi,
   selectPositionPageApi,
-  updatePositionApi,
 } from '#/api/system/sys/position';
-
-import {onMounted, reactive, ref} from 'vue';
-
-import {ElForm, ElMessage, ElMessageBox} from 'element-plus';
-
-import {deptOptionTreeApi} from '#/api/system/sys/dept';
-import {useCardHeight} from "#/hooks/useCardHeight";
+import { useCardHeight } from '#/hooks/useCardHeight';
+import PositionFormDialog from '#/views/system/sys/position/PositionFormDialog.vue';
 
 defineOptions({
   name: 'Position',
@@ -21,8 +19,6 @@ defineOptions({
 });
 
 const queryFormRef = ref(ElForm);
-
-const positionFormRef = ref(ElForm);
 
 const loading = ref(false);
 
@@ -37,30 +33,9 @@ const queryParams = reactive<PositionQuery>({
 
 const positionTableData = ref<PositionVO[]>();
 
-const dialog = reactive({
-  title: '',
-  visible: false,
-});
-
-const formData = reactive<PositionForm>({
-  sort: 1,
-  status: 1,
-  positionName: '',
-});
-
-const rules = reactive({
-  positionName: [
-    { required: true, message: '请输入岗位名称', trigger: 'blur' },
-  ],
-});
-
 // 组织下拉选项树数据
 const deptTreeOptionData = ref<OptionType[]>([]);
 
-interface CheckedPosition {
-  positionId?: string;
-  positionName?: string;
-}
 
 /**
  * 行 checkbox 选中事件
@@ -69,6 +44,12 @@ interface CheckedPosition {
 function handleSelectionChange(selection: any) {
   // 多选
   positionIds.value = selection.map((item: any) => item.positionId);
+}
+
+// 新增、编辑弹窗子组件
+const formDialogRef = ref();
+function openDialog(positionId?: string) {
+  formDialogRef.value.openDialog(positionId, deptTreeOptionData.value);
 }
 
 /**
@@ -93,61 +74,6 @@ function resetQuery() {
   queryFormRef.value.resetFields();
   queryParams.page = 1;
   handleQuery();
-}
-
-/**
- * 打开表单弹窗
- * @param positionId
- */
-async function openDialog(positionId?: string) {
-  dialog.visible = true;
-  if (positionId) {
-    dialog.title = '修改岗位';
-    const data = await getPositionApi(positionId);
-    Object.assign(formData, data);
-  } else {
-    dialog.title = '新增岗位';
-  }
-}
-
-/**
- * 保存提交
- */
-async function handleSubmit() {
-  const valid = positionFormRef.value.validate();
-  if (!valid) return;
-
-  loading.value = true;
-
-  try {
-    const positionId = formData.positionId;
-    await (positionId ? updatePositionApi(formData) : addPositionApi(formData));
-    ElMessage.success(positionId ? '修改岗位成功' : '新增岗位成功');
-    closeDialog();
-    resetQuery();
-  } finally {
-    loading.value = false;
-  }
-}
-
-/**
- * 关闭表单弹窗
- */
-function closeDialog() {
-  dialog.visible = false;
-  resetForm();
-}
-
-/**
- * 重置表单
- */
-function resetForm() {
-  positionFormRef.value.resetFields();
-  positionFormRef.value.clearValidate();
-
-  formData.positionId = undefined;
-  formData.sort = 1;
-  formData.status = 1;
 }
 
 /**
@@ -194,20 +120,23 @@ onMounted(() => {
 
 const cardFormRef = ref();
 const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
-
 </script>
 
 <template>
   <div class="app-container">
     <el-card ref="cardFormRef" class="mb-2">
-      <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
-        <el-form-item prop="roleName">
+      <ElForm
+        ref="queryFormRef"
+        :model="queryParams"
+        :inline="true"
+        @submit.prevent="handleQuery()"
+      >
+        <el-form-item prop="positionName" label="岗位名称">
           <el-input
             v-model="queryParams.positionName"
-            placeholder="岗位名称"
+            placeholder="请输入岗位名称"
             clearable
             style="width: 240px"
-            @keyup.enter="handleQuery"
           />
         </el-form-item>
 
@@ -340,56 +269,6 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
     </el-card>
 
     <!-- 表单弹窗 -->
-    <el-dialog
-      center
-      draggable
-      v-model="dialog.visible"
-      :title="dialog.title"
-      width="600px"
-      @close="closeDialog"
-    >
-      <div v-loading="loading"></div>
-      <ElForm
-        ref="positionFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="100px"
-      >
-        <el-form-item label="岗位名称" prop="positionName">
-          <el-input
-            v-model="formData.positionName"
-            placeholder="请输入岗位名称"
-          />
-        </el-form-item>
-
-        <el-form-item label="机构" prop="deptId">
-          <el-tree-select
-            v-model="formData.deptId"
-            :data="deptTreeOptionData"
-            :default-expand-all="true"
-            check-strictly
-            filterable
-          />
-        </el-form-item>
-
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="formData.status">
-            <el-radio :value="1">启用</el-radio>
-            <el-radio :value="-1">禁用</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="排序" prop="sort">
-          <el-input-number v-model="formData.sort" :min="0" />
-        </el-form-item>
-      </ElForm>
-
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="closeDialog">取消</el-button>
-          <el-button type="primary" @click="handleSubmit">确定</el-button>
-        </div>
-      </template>
-    </el-dialog>
+    <PositionFormDialog ref="formDialogRef" @success="resetQuery" />
   </div>
 </template>
