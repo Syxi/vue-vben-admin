@@ -124,7 +124,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 
 <template>
   <div class="app-container">
-    <el-card ref="cardFormRef" class="mb-2">
+    <el-card ref="cardFormRef" class="mb-2" shadow="never">
       <ElForm
         ref="queryFormRef"
         :model="queryParams"
@@ -181,7 +181,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
       </ElForm>
     </el-card>
 
-    <el-card :style="{ height: cardHeight }">
+    <el-card :style="{ height: cardHeight }" shadow="never">
       <el-table
         ref="dataTableRef"
         v-loading="loading"
