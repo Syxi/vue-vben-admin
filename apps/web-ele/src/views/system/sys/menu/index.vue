@@ -123,7 +123,12 @@ onMounted(() => {
 <template>
   <div class="app-container">
     <el-card ref="cardFormRef" class="mb-2" shadow="never">
-      <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
+      <ElForm
+        ref="queryFormRef"
+        :model="queryParams"
+        :inline="true"
+        @submit.prevent
+      >
         <el-form-item prop="menuName">
           <el-input
             v-model="queryParams.menuName"
