@@ -1,34 +1,23 @@
 <script setup lang="ts">
-import type { DeptForm, DeptQuery, DeptVO } from '#/api/system/sys/dept';
+import type { DeptQuery, DeptVO } from '#/api/system/sys/dept';
 
-import { onMounted, reactive, ref, watch } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 
-import { ElForm, ElMessage, ElMessageBox, ElTree } from 'element-plus';
+import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 
 import {
-  addDeptApi,
   deleteDeptApi,
   deptOptionTreeApi,
-  editDeptApi,
-  getDeptDetailApi,
   orgTreeApi,
 } from '#/api/system/sys/dept';
 import { useCardHeight } from '#/hooks/useCardHeight';
+import DeptFormDialog from '#/views/system/sys/dept/DeptFormDialog.vue';
 
-// 组织树
-const deptTreeRef = ref(ElTree);
+// 查询表单
+const queryElFormRef = ref(ElForm);
 
-// 组织名称
-const deptName = ref('');
-
-watch(deptName, (val) => {
-  deptTreeRef.value!.filter(val);
-});
-
-const filterNode = (value: string, data: any) => {
-  if (!value) return true;
-  return data.label.includes(value);
-};
+// 查询参数
+const queryParams = reactive<DeptQuery>({});
 
 // 组织下拉选项树数据
 const deptTreeOptionData = ref<OptionType[]>([]);
@@ -39,34 +28,10 @@ const deptTableData = ref<DeptVO[]>([]);
 // 加载状态
 const loading = ref(false);
 
-// 查询表单
-const queryElFormRef = ref(ElForm);
-
-// 查询参数
-const queryParams = reactive<DeptQuery>({});
-
-// 弹出窗组织表单
-const orgFormRef = ref(ElForm);
-
-// 组织表单数据
-const formData = reactive<DeptForm>({
-  status: 1,
-});
-
-const rules = reactive({
-  parentId: [{ required: true, message: '上级机构不能为空', trigger: 'blur' }],
-  deptName: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
-  deptCode: [{ required: true, message: '编码不能为空', trigger: 'blur' }],
-  deptType: [{ required: true, message: '类型不能为空', trigger: 'blur' }],
-});
-
-// 新增或编辑机构，弹出窗
-const dialog = reactive({
-  visiable: false,
-  title: '',
-  type: '',
-  width: 600,
-});
+const deptFormDialogRef = ref();
+function openDialog(id?: string, parentId?: string) {
+  deptFormDialogRef.value.openDialog(id, parentId, deptTreeOptionData.value);
+}
 
 /**
  * 查询机构树
@@ -90,58 +55,8 @@ function resetQuery() {
 }
 
 /**
- * 新增或编辑机构，打开弹出窗
- */
-async function handleOpenDialog(id?: string, parentId?: string) {
-  dialog.visiable = true;
-  // 组织下拉树
-  await OrgOptionTree();
-
-  if (id) {
-    dialog.title = '修改';
-    const data = await getDeptDetailApi(id);
-    Object.assign(formData, data);
-  } else {
-    dialog.title = '新增';
-    formData.parentId = parentId;
-  }
-}
-
-/**
- * 新增或编辑机构，关闭弹出窗
- */
-function handleCloseDialog() {
-  orgFormRef.value.resetFields();
-  orgFormRef.value.clearValidate();
-  formData.id = undefined;
-  dialog.visiable = false;
-}
-
-/**
- * 提交表单
- * @param deptId
- */
-async function handleSubmit() {
-  const valid = orgFormRef.value.validate();
-  if (!valid) return;
-
-  loading.value = true;
-
-  try {
-    const id = formData.id;
-    await (id ? editDeptApi(formData) : addDeptApi(formData));
-    ElMessage.success(id ? '修改成功！' : '新增成功');
-    handleCloseDialog();
-    resetQuery();
-    await OrgOptionTree();
-  } finally {
-    loading.value = false;
-  }
-}
-
-/**
  * 删除机构或部门
- * @param deptId
+ * @param id
  */
 function handleDelete(id?: string) {
   if (id) {
@@ -187,14 +102,14 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
         :inline="true"
         :model="queryParams"
         class="mb-2"
+        @submit.prevent="handleQuery()"
       >
-        <el-form-item prop="deptName">
+        <el-form-item prop="keyWord">
           <el-input
             placeholder="机构名称"
             clearable
             style="width: 240px"
             v-model="queryParams.keyWord"
-            @keyup.enter="handleQuery()"
           />
         </el-form-item>
 
@@ -215,7 +130,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 
           <el-button
             type="primary"
-            @click="handleOpenDialog()"
+            @click="openDialog()"
             v-access:code="['sys:dept:add']"
           >
             <template #icon>
@@ -232,8 +147,8 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
         border
         :data="deptTableData"
         v-loading="loading"
-        default-expand-all
         row-key="id"
+        default-expand-all
         highlight-current-row
         :height="tableHeight"
       >
@@ -293,24 +208,24 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 
         <el-table-column align="center" label="操作">
           <template #default="scope">
-            <el-button
-              v-if="scope.row.deptType === 1"
-              type="primary"
-              link
-              size="small"
-              v-access:code="['sys:dept:add']"
-              @click="handleOpenDialog(null, scope.row.parentId)"
-            >
-              <el-icon><Plus /></el-icon>
-              新增
-            </el-button>
+            <!--            <el-button-->
+            <!--              v-if="scope.row.deptType === 1"-->
+            <!--              type="primary"-->
+            <!--              link-->
+            <!--              size="small"-->
+            <!--              v-access:code="['sys:dept:add']"-->
+            <!--              @click="openDialog(undefined, scope.row.parentId)"-->
+            <!--            >-->
+            <!--              <el-icon><Plus /></el-icon>-->
+            <!--              新增-->
+            <!--            </el-button>-->
 
             <el-button
               type="primary"
               link
               size="small"
               v-access:code="['sys:dept:edit']"
-              @click="handleOpenDialog(scope.row.id, null)"
+              @click="openDialog(scope.row.id, scope.row.parentId)"
             >
               <el-icon><Edit /></el-icon> 编辑
             </el-button>
@@ -330,66 +245,6 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
       </el-table>
     </el-card>
 
-    <el-dialog
-      v-model="dialog.visiable"
-      :title="dialog.title"
-      :width="dialog.width"
-      append-to-body
-      draggable
-      center
-      @close="handleCloseDialog()"
-    >
-      <ElForm
-        ref="orgFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="80px"
-      >
-        <el-form-item label="上级机构" prop="parentId">
-          <el-tree-select
-            v-model="formData.parentId"
-            :data="deptTreeOptionData"
-            filterable
-            check-strictly
-            :default-expand-all="true"
-          />
-        </el-form-item>
-
-        <el-form-item prop="deptName" label="名称">
-          <el-input v-model="formData.deptName" placeholder="名称" />
-        </el-form-item>
-
-        <el-form-item prop="deptCode" label="编码">
-          <el-input v-model="formData.deptCode" placeholder="编码" />
-        </el-form-item>
-
-        <el-form-item label="类型" prop="deptType">
-          <el-radio-group v-model="formData.deptType">
-            <el-radio :value="1">机构</el-radio>
-            <el-radio :value="2">部门</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="排序" prop="sort">
-          <el-input-number v-model="formData.sort" :min="0" />
-        </el-form-item>
-
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="formData.status">
-            <el-radio :value="1">启用</el-radio>
-            <el-radio :value="-1">禁用</el-radio>
-          </el-radio-group>
-        </el-form-item>
-      </ElForm>
-
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button type="primary" @click="handleCloseDialog()">
-            取消
-          </el-button>
-          <el-button type="primary" @click="handleSubmit()">确定</el-button>
-        </div>
-      </template>
-    </el-dialog>
+    <DeptFormDialog ref="deptFormDialogRef" @success="resetQuery" />
   </div>
 </template>
