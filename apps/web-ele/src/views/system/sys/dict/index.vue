@@ -1,23 +1,17 @@
 <script setup lang="ts">
-import type {
-  DictTypeForm,
-  DictTypePage,
-  DictTypeQuery,
-} from '#/api/system/sys/dictType';
+import type { DictTypePage, DictTypeQuery } from '#/api/system/sys/dictType';
 
 import { onMounted, reactive, ref } from 'vue';
 
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 
 import {
-  addDictTypeApi,
   deleteDictTypeApi,
-  editDictTypeApi,
-  getDictTypeDetailApi,
   selectDictTypePageApi,
 } from '#/api/system/sys/dictType';
-import DictValue from '#/views/system/sys/dict/dict-value.vue';
-import {useCardHeight} from "#/hooks/useCardHeight";
+import { useCardHeight } from '#/hooks/useCardHeight';
+import DictFormDialog from '#/views/system/sys/dict/DictFormDialog.vue';
+import DictValue from '#/views/system/sys/dict/DictValue.vue';
 
 defineOptions({
   name: 'DictType',
@@ -25,8 +19,6 @@ defineOptions({
 });
 
 const queryFormRef = ref(ElForm);
-
-const dataFormRef = ref(ElForm);
 
 const loading = ref(false);
 
@@ -41,21 +33,11 @@ const queryParams = reactive<DictTypeQuery>({
 
 const dictTypeTableData = ref<DictTypePage[]>();
 
-const formData = reactive<DictTypeForm>({
-  status: 1,
-});
-
-const dialog = reactive({
-  title: '',
-  visible: false,
-});
-
-const rules = reactive({
-  name: [{ required: true, message: '请输入字典类型名称', trigger: 'blur' }],
-  typeCode: [
-    { required: true, message: '请输入字典类型编码', trigger: 'blur' },
-  ],
-});
+// 字典表单子组件
+const dictFormDialogRef = ref();
+function openDialog(id?: string) {
+  dictFormDialogRef.value.openDialog(id);
+}
 
 // 查询
 function handleQuery() {
@@ -80,78 +62,11 @@ function resetQuery() {
 }
 
 /**
- * 打开字典类型表单弹窗
- * @param dictTypeId
- */
-async function openDialog(dictTypeId?: string) {
-  dialog.visible = true;
-  if (dictTypeId) {
-    dialog.title = '修改字典类型';
-    const data = await getDictTypeDetailApi(dictTypeId);
-    Object.assign(formData, data);
-  } else {
-    dialog.title = '新增字典类型';
-  }
-}
-
-/**
- * 关闭弹窗
- */
-function closeDialog() {
-  dialog.visible = false;
-  resetForm();
-}
-
-/**
- * 重置表单
- */
-function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
-
-  formData.id = undefined;
-  formData.status = 1;
-}
-
-/**
  * 行复选框选中
  * @param selection
  */
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.id);
-}
-
-/**
- * 提交表单
- */
-function handleSubmit() {
-  dataFormRef.value.validate((isValid: boolean) => {
-    if (isValid) {
-      loading.value = true;
-      const dictTypeId = formData.id;
-      if (dictTypeId) {
-        editDictTypeApi(formData)
-          .then(() => {
-            ElMessage.success('修改成功');
-            closeDialog();
-            handleQuery();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      } else {
-        addDictTypeApi(formData)
-          .then(() => {
-            ElMessage.success('新增成功');
-            closeDialog();
-            handleQuery();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      }
-    }
-  });
 }
 
 function handleDelete(dictTypeId?: string) {
@@ -222,8 +137,13 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 
 <template>
   <div class="app-container">
-    <el-card ref="cardFormRef" class="mb-2">
-      <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
+    <el-card ref="cardFormRef" class="mb-2" shadow="never">
+      <ElForm
+        ref="queryFormRef"
+        :model="queryParams"
+        :inline="true"
+        @submit.prevent
+      >
         <el-form-item prop="name">
           <el-input
             v-model="queryParams.name"
@@ -244,7 +164,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
           <el-button type="primary" @click="resetQuery()">
             <template #icon>
               <el-icon><Refresh /></el-icon>
-          </template>
+            </template>
             重置
           </el-button>
 
@@ -273,7 +193,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
       </ElForm>
     </el-card>
 
-    <el-card :style="{ height: cardHeight }">
+    <el-card :style="{ height: cardHeight }" shadow="never">
       <el-table
         v-loading="loading"
         heighlight-current-row
@@ -357,59 +277,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
       />
     </el-card>
 
-    <el-dialog
-      v-model="dialog.visible"
-      :title="dialog.title"
-      append-to-body
-      draggable
-      center
-      width="500px"
-      @close="closeDialog()"
-    >
-      <ElForm
-        ref="dataFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="120px"
-      >
-        <el-form-item label="字典类型名称" prop="name">
-          <el-input v-model="formData.name" placeholder="请输入字典类型名称" />
-        </el-form-item>
-
-        <el-form-item label="字典类型编码" prop="typeCode">
-          <el-input
-            v-model="formData.typeCode"
-            placeholder="请输入字典类型编码"
-          />
-        </el-form-item>
-
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="formData.status">
-            <el-radio :label="1">正常</el-radio>
-            <el-radio label="-1">停用</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="排序" prop="sort">
-          <el-input-number v-model="formData.sort" :min="0" />
-        </el-form-item>
-
-        <el-form-item label="备注" prop="remark">
-          <el-input
-            v-model="formData.remark"
-            type="textarea"
-            placeholder="字典类型备注"
-            :autosize="{ minRows: 2, maxRows: 6 }"
-          />
-        </el-form-item>
-      </ElForm>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button type="primary" @click="closeDialog()">取消</el-button>
-          <el-button type="primary" @click="handleSubmit()">确定</el-button>
-        </div>
-      </template>
-    </el-dialog>
+    <DictFormDialog ref="dictFormDialogRef" @success="resetQuery" />
 
     <!-- 字典项弹窗  -->
     <el-dialog
