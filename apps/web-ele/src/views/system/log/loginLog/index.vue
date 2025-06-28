@@ -51,7 +51,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 <template>
   <div class="app-container">
     <el-card ref="cardFormRef" class="mb-2">
-      <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+      <el-form ref="queryFormRef" :model="queryParams" :inline="true" @submit.prevent>
         <el-form-item prop="username">
           <el-input
             v-model="queryParams.username"
