@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type {
-  NoticeForm,
   NoticeQuery,
   NoticeVO,
 } from '#/api/system/sys/notice';
@@ -10,18 +9,15 @@ import { onMounted, reactive, ref } from 'vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 
 import {
-  addNoticeApi,
   cancelPublishNoticesApi,
   cancelTopNoticeApi,
   deleteNoticeApi,
-  getNoticeApi,
   publishNoticesApi,
   selectNoticePageApi,
   topNoticeApi,
-  updateNoticeApi,
 } from '#/api/system/sys/notice';
-import { WangEditor } from '#/components/wang-editor';
 import {useCardHeight} from "#/hooks/useCardHeight";
+import NoticeFormDrawer from "#/views/system/sys/notice/NoticeFormDrawer.vue";
 
 defineOptions({
   name: 'Notice',
@@ -30,8 +26,6 @@ defineOptions({
 
 const queryFormRef = ref(ElForm);
 
-const noticeFormRef = ref(ElForm);
-
 const loading = ref(false);
 
 const noticeIds = ref<string[]>([]);
@@ -39,35 +33,18 @@ const noticeIds = ref<string[]>([]);
 const total = ref(0);
 
 const queryParams = reactive<NoticeQuery>({
+  noticeTitle: '',
   page: 1,
   limit: 20,
 });
 
 const noticeTableData = ref<NoticeVO[]>();
 
-const dialog = reactive({
-  title: '',
-  visible: false,
-});
-
-const formData = reactive<NoticeForm>({
-  isPublish: -1,
-  isTop: -1,
-  noticeContent: '',
-});
-
-const rules = reactive({
-  noticeTitle: [{ required: true, message: '请输入通知标题', trigger: 'blur' }],
-  isPublish: [{ required: true, message: '请选择是否发布', trigger: 'blur' }],
-  isTop: [{ required: true, message: '请选择是否置顶', trigger: 'blur' }],
-});
-
-interface CheckedNotice {
-  noticeId?: string;
-  noticeTitle?: string;
+// 通知表单子组件
+const noticeFormDrawerRef = ref();
+function openDialog(noticeId?: string) {
+  noticeFormDrawerRef.value.openDialog(noticeId);
 }
-
-const checkedNotice: CheckedNotice = reactive({});
 
 /**
  * 行 checkbox 选中事件
@@ -97,77 +74,14 @@ function handleQuery() {
  * 重置查询
  */
 function resetQuery() {
-  queryFormRef.value.resetFields();
+  queryParams.noticeTitle = '';
   queryParams.page = 1;
   handleQuery();
 }
 
-/**
- * 打开表单弹窗
- * @param noticeId
- */
-async function openDialog(noticeId?: string) {
-  dialog.visible = true;
-  if (noticeId) {
-    dialog.title = '修改通知';
-    const data = await getNoticeApi(noticeId);
-    Object.assign(formData, data);
-  } else {
-    dialog.title = '新增通知';
-  }
-}
 
-/**
- * 保存提交
- */
-function handleSubmit() {
-  noticeFormRef.value.validate((valid: any) => {
-    if (valid) {
-      loading.value = true;
-      const noticeId = formData.noticeId;
-      if (noticeId) {
-        updateNoticeApi(formData)
-          .then(() => {
-            ElMessage.success('修改成功');
-            closeDialog();
-            resetQuery();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      } else {
-        addNoticeApi(formData)
-          .then(() => {
-            ElMessage.success('新增成功');
-            closeDialog();
-            resetQuery();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      }
-    }
-  });
-}
 
-/**
- * 关闭表单弹窗
- */
-function closeDialog() {
-  dialog.visible = false;
-  resetForm();
-}
 
-/**
- * 重置表单
- */
-function resetForm() {
-  noticeFormRef.value.resetFields();
-  noticeFormRef.value.clearValidate();
-
-  formData.noticeId = undefined;
-  formData.noticeContent = '';
-}
 
 /**
  * 删除岗位
@@ -274,12 +188,13 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 <template>
   <div class="app-container">
     <el-card ref="cardFormRef" class="mb-2">
-      <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
+      <ElForm ref="queryFormRef" :model="queryParams" :inline="true" @submit.prevent>
         <el-form-item prop="roleName">
           <el-input
             v-model="queryParams.noticeTitle"
             placeholder="通知标题"
             clearable
+            style="width: 240px"
             @keyup.enter="handleQuery"
           />
         </el-form-item>
@@ -465,50 +380,6 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
     </el-card>
 
     <!-- 表单弹窗 -->
-    <el-dialog
-      v-model="dialog.visible"
-      :title="dialog.title"
-      @close="closeDialog"
-      center
-    >
-      <ElForm
-        ref="noticeFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="120px"
-      >
-        <el-form-item label="标题：" prop="noticeTitle">
-          <el-input
-            v-model="formData.noticeTitle"
-            placeholder="请输入通知标题"
-          />
-        </el-form-item>
-
-        <el-form-item label="发布：" prop="isPublish">
-          <el-radio-group v-model="formData.isPublish">
-            <el-radio :value="1">发布</el-radio>
-            <el-radio :value="-1">未发布</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="置顶：" prop="isTop">
-          <el-radio-group v-model="formData.isTop">
-            <el-radio :value="1">置顶</el-radio>
-            <el-radio :value="-1">取消置顶</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="通知内容：">
-          <WangEditor v-model:model-value="formData.noticeContent" />
-        </el-form-item>
-      </ElForm>
-
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="closeDialog">取消</el-button>
-          <el-button type="primary" @click="handleSubmit">确定</el-button>
-        </div>
-      </template>
-    </el-dialog>
+    <NoticeFormDrawer ref="noticeFormDrawerRef" @success="resetQuery" />
   </div>
 </template>
