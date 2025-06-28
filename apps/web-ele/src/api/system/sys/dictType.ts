@@ -4,8 +4,8 @@ import { requestClient } from '#/api/request';
  * 字典类型查询对象
  */
 export interface DictTypeQuery extends PageQuery {
-  name?: string;
-  typeCode?: string;
+  dictTypeName?: string;
+  dictTypeCode?: string;
 }
 
 /**

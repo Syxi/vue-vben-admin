@@ -151,34 +151,16 @@ function handleSelectionChange(selection: any) {
 /**
  * 提交表单
  */
-function handleSubmit() {
-  dataFormRef.value.validate((isValid: boolean) => {
-    if (isValid) {
-      loading.value = true;
-      const dicValueId = formData.id;
-      if (dicValueId) {
-        editDictValueApi(formData)
-          .then(() => {
-            ElMessage.success('修改成功');
-            closeDialog();
-            handleQuery();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      } else {
-        addDictValueApi(formData)
-          .then(() => {
-            ElMessage.success('新增成功');
-            closeDialog();
-            handleQuery();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      }
-    }
-  });
+async function handleSubmit() {
+  const valid = dataFormRef.value.validate();
+  if (!valid) return;
+  loading.value = true;
+  const dictValueId = formData.id;
+  await (dictValueId ? editDictValueApi(formData) : addDictValueApi(formData));
+  ElMessage.success(dictValueId ? '修改成功' : '新增成功');
+  closeDialog();
+  handleQuery();
+  loading.value = false;
 }
 
 function handleDelete(dictValueId?: string) {
@@ -211,8 +193,7 @@ onMounted(() => {
 
 <template>
   <div class="app-container">
-    <div class="search-container">
-      <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
+      <ElForm ref="queryFormRef" :model="queryParams" :inline="true" @submit.prevent>
         <el-form-item prop="name">
           <el-input
             v-model="queryParams.name"
@@ -252,7 +233,6 @@ onMounted(() => {
           </el-button>
         </el-form-item>
       </ElForm>
-    </div>
 
     <el-card shadow="never" class="table-container">
       <el-table

@@ -142,13 +142,23 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
         ref="queryFormRef"
         :model="queryParams"
         :inline="true"
-        @submit.prevent
       >
-        <el-form-item prop="name">
+        <el-form-item prop="dictTypeName">
           <el-input
-            v-model="queryParams.name"
-            placeholder="字典类型名称/编码"
+            v-model="queryParams.dictTypeName"
+            placeholder="字典类型名称"
             clearable
+            style="width: 240px"
+            @keyup.enter="handleQuery()"
+          />
+        </el-form-item>
+
+        <el-form-item prop="dictTypeCode">
+          <el-input
+            v-model="queryParams.dictTypeCode"
+            placeholder="字典类型编码"
+            clearable
+            style="width: 240px"
             @keyup.enter="handleQuery()"
           />
         </el-form-item>
@@ -281,6 +291,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 
     <!-- 字典项弹窗  -->
     <el-dialog
+      draggable
       v-model="dictValueDialog.visible"
       :title="dictValueDialog.title"
       width="1000px"
