@@ -131,7 +131,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
         :inline="true"
         @submit.prevent="handleQuery()"
       >
-        <el-form-item prop="positionName" label="岗位名称">
+        <el-form-item prop="positionName">
           <el-input
             v-model="queryParams.positionName"
             placeholder="请输入岗位名称"
