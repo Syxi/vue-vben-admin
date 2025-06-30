@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type {
-  ScheduledJobForm,
   ScheduledJobPage,
   ScheduledJobQuery,
 } from '#/api/system/log/scheduledJob';
@@ -10,16 +9,14 @@ import { onMounted, reactive, ref } from 'vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 
 import {
-  addScheduledJobApi,
   deleteScheduledJobApi,
   executeJobsApi,
-  getScheduledJobDetailApi,
   pauseJobsApi,
   scheduledJobPageApi,
   selectJobBeanNameListApi,
-  updateScheduledJobApi,
 } from '#/api/system/log/scheduledJob';
 import { useCardHeight } from '#/hooks/useCardHeight';
+import ScheduledJobFormDialog from '#/views/system/quartz/scheduledJob/ScheduledJobFormDialog.vue';
 
 defineOptions({
   name: 'ScheduledJob',
@@ -27,8 +24,6 @@ defineOptions({
 });
 
 const queryFormRef = ref(ElForm);
-
-const scheduledJobFormRef = ref(ElForm);
 
 const loading = ref(false);
 
@@ -45,32 +40,11 @@ const queryParams = reactive<ScheduledJobQuery>({
 
 const scheduledJobList = ref<ScheduledJobPage[]>();
 
-const dialog = reactive({
-  title: '',
-  visible: false,
-});
-
-const formData = reactive<ScheduledJobForm>({
-  status: 1,
-  jobName: '',
-  jobClass: '',
-  cronPopover: false,
-});
-
-const rules = reactive({
-  jobName: [{ required: true, message: '请输入定时任务名称', trigger: 'blur' }],
-  jobClass: [{ required: true, message: '请选择定时任务类', trigger: 'blur' }],
-  cronExpression: [
-    { required: true, message: '请选择cron表达式', trigger: 'blur' },
-  ],
-});
-
-interface CheckedScheduledJob {
-  jobId?: string;
-  jobeName?: string;
+// 表单弹窗子组件
+const scheduledJobDialogRef = ref();
+function openDialog(id?: string) {
+  scheduledJobDialogRef.value.openDialog(id, jobClassNameOptions.value);
 }
-
-const checkedScheduledJob: CheckedScheduledJob = reactive({});
 
 /**
  * 行 checkbox 选中事件
@@ -80,11 +54,6 @@ function handleSelectionChange(selection: any[]) {
   // 没有选中项，情况jobIds
   jobIds.value = selection.map((item: any) => item.jobId); // 多选
 }
-
-const changeCron = (val: any) => {
-  if (typeof val !== 'string') return false;
-  formData.cronExpression = val;
-};
 
 /**
  * 查询定时任务
@@ -108,76 +77,6 @@ function resetQuery() {
   queryFormRef.value.resetFields();
   queryParams.page = 1;
   handleQuery();
-}
-
-/**
- * 打开定时任务表单弹窗
- * @param roleId
- */
-async function openDialog(jobId?: string) {
-  console.log(`jobId: ${jobId}`);
-  if (jobId) {
-    dialog.title = '修改定时任务';
-    const data = await getScheduledJobDetailApi(jobId);
-    Object.assign(formData, data);
-  } else {
-    dialog.title = '新增定时任务';
-  }
-  dialog.visible = true;
-}
-
-/**
- * 定时任务保存提交
- */
-function handleSubmit() {
-  scheduledJobFormRef.value.validate((valid: any) => {
-    if (valid) {
-      loading.value = true;
-      const jobId = formData.jobId;
-      if (jobId) {
-        updateScheduledJobApi(formData)
-          .then(() => {
-            ElMessage.success('修改定时任务成功');
-            closeDialog();
-            resetQuery();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      } else {
-        addScheduledJobApi(formData)
-          .then(() => {
-            ElMessage.success('新增定时任务成功');
-            closeDialog();
-            resetQuery();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      }
-    }
-  });
-}
-
-/**
- * 关闭表单弹窗
- */
-function closeDialog() {
-  dialog.visible = false;
-  resetForm();
-}
-
-/**
- * 重置表单
- */
-function resetForm() {
-  scheduledJobFormRef.value.resetFields();
-  scheduledJobFormRef.value.clearValidate();
-
-  formData.jobId = undefined;
-  formData.jobName = '';
-  formData.cronExpression = '';
-  formData.jobClass = '';
 }
 
 /**
@@ -302,6 +201,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
             v-model="queryParams.jobName"
             placeholder="定时任务名称"
             clearable
+            style="width: 240px"
             @keyup.enter="handleQuery"
           />
         </el-form-item>
@@ -485,62 +385,6 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
     </el-card>
 
     <!-- 表单弹窗 -->
-    <el-dialog
-      center
-      draggable
-      v-model="dialog.visible"
-      :title="dialog.title"
-      width="600px"
-      @close="closeDialog"
-    >
-      <div v-loading="loading"></div>
-      <ElForm
-        ref="scheduledJobFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="120px"
-      >
-        <el-form-item label="定时任务名称" prop="jobName">
-          <el-input
-            v-model="formData.jobName"
-            placeholder="请输入定时任务名称"
-          />
-        </el-form-item>
-
-        <el-form-item label="定时任务类" prop="jobClass">
-          <el-select v-model="formData.jobClass" placeholder="Select">
-            <el-option
-              v-for="item in jobClassNameOptions"
-              :key="item"
-              :label="item"
-              :value="item"
-            />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="cron表达式" prop="cronExpression">
-          <el-input
-            v-model="formData.cronExpression"
-            placeholder="cron表达式"
-          />
-        </el-form-item>
-
-        <el-form-item label="备注" prop="remark">
-          <el-input
-            v-model="formData.remark"
-            :rows="2"
-            type="textarea"
-            placeholder="备注"
-          />
-        </el-form-item>
-      </ElForm>
-
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="closeDialog">取消</el-button>
-          <el-button type="primary" @click="handleSubmit">确定</el-button>
-        </div>
-      </template>
-    </el-dialog>
+    <ScheduledJobFormDialog ref="scheduledJobDialogRef" @success="resetQuery" />
   </div>
 </template>

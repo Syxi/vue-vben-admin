@@ -10,7 +10,7 @@ import { ElForm } from 'element-plus';
 
 import { selectJobBeanNameListApi } from '#/api/system/log/scheduledJob';
 import { selectScheduledJobLogPageApi } from '#/api/system/log/scheduledJobLog';
-import {useCardHeight} from "#/hooks/useCardHeight";
+import { useCardHeight } from '#/hooks/useCardHeight';
 
 defineOptions({
   name: 'ScheduledJobLog',
@@ -80,6 +80,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
             v-model="queryParams.jobName"
             placeholder="定时任务名称"
             clearable
+            style="width: 240px"
             @keyup.enter="handleQuery"
           />
         </el-form-item>
