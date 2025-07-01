@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import type { UploadInstance, UploadUserFile } from 'element-plus';
-
 import type { VideoQuery, VideoVO } from '#/api/system/media/video';
 
-import { nextTick, onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 
-import { VideoPlayer } from '@videojs-player/vue';
 import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 
 import {
   deleteVideoApi,
   downloadVideoApi,
   selectVideosPageApi,
-  uploadVideoApi,
 } from '#/api/system/media/video';
-import {useCardHeight} from "#/hooks/useCardHeight";
+import { useCardHeight } from '#/hooks/useCardHeight';
+import VideoPlayerDialog from '#/views/system/media/video/VideoPlayerDialog.vue';
+import VideoUploadDialog from '#/views/system/media/video/VideoUploadDialog.vue';
 
 // import 'video.js/dist/video-js.css';
 
@@ -51,16 +49,6 @@ function handleSelectionChange(selection: any) {
 // 分页列表数据
 const videoTableData = ref<VideoVO[]>();
 
-const uploadRef = ref<UploadInstance>();
-
-// 数组形式存储用户上传的多文件
-let uploadFiles = reactive<UploadUserFile[]>([]);
-
-const dialog = reactive({
-  title: '',
-  visible: false,
-});
-
 // 查询文件
 function handleQuery() {
   loading.value = true;
@@ -82,108 +70,6 @@ function resetQuery() {
   handleQuery();
 }
 
-function handleFileExceed(files: any[]) {
-  const excessFiles = files.slice(1); // 仅保留超出的文件
-  excessFiles.forEach((file) => {
-    uploadFiles.push({
-      uid: file.uid,
-      raw: file.raw,
-      name: file.name,
-    });
-  });
-}
-
-function handleFileChange(file: any) {
-  uploadFiles.push({
-    raw: file.raw,
-    name: file.name,
-  });
-}
-
-// 只接受视频文件
-function beforeUpload(uploadFile: UploadUserFile) {
-  // 修改为检查视频格式
-  const isVideo = [
-    'video/mp4',
-    'video/mpeg',
-    'video/quicktime',
-    'video/webm',
-    'video/x-flv',
-    'video/x-m4v',
-    'video/x-matroska',
-    'video/x-msvideo', // AVI 视频
-  ].includes(uploadFile.type);
-
-  if (!isVideo) {
-    ElMessage.error('上传文件只能是视频格式!'); // 提示信息已更正
-    return false;
-  }
-
-  return isVideo;
-}
-
-// 删除上传列表的文件
-async function handleRemove(uploadFile: UploadUserFile) {
-  // 比较文件uid。上传文件的uid和删除文件的uid是否一样
-  const index = uploadFiles.findIndex(
-    (file) => file.raw.uid === uploadFile.uid,
-  );
-
-  console.log('Attempting to remove file with UID:', uploadFile.uid);
-  console.log('Current uploadFiles content:', uploadFiles);
-  console.log('index', index);
-
-  // uid相同就可以删除
-  if (index === -1) {
-    ElMessage.error('文件未找到，无法删除');
-  } else {
-    // 从上传列表文件中移除文件
-    uploadFiles.splice(index, 1);
-    // 等待DOM更新后再显示信息
-    await nextTick();
-    ElMessage.success('文件已从上传列表移除');
-  }
-}
-
-// 上传文件
-const submitUpload = () => {
-  if (uploadFiles.length === 0) {
-    ElMessage.error('上传文件不能为空');
-    return false;
-  }
-  Promise.all(
-    uploadFiles.map((uploadFile) => {
-      return uploadVideoApi(uploadFile.raw);
-    }),
-  ).then(() => {
-    // 清空已上传的文件引用
-    uploadFiles = [];
-    uploadRef.value?.clearFiles();
-    ElMessage.success('视频上传成功');
-    resetQuery();
-    uploadDialog.visible = false;
-  });
-};
-
-const uploadDialog = reactive({
-  title: '上传视频',
-  visible: false,
-});
-
-// 打开上传视频窗口
-function handleOpenUploadDialog() {
-  uploadDialog.visible = true;
-}
-
-// 关闭上传视频窗口
-function handleCloseUploadDialog() {
-  // 清空已上传的文件引用
-  uploadFiles = [];
-  uploadRef.value?.clearFiles();
-  resetQuery();
-  uploadDialog.visible = false;
-}
-
 /**
  * 下载文件
  * @param fileName
@@ -191,7 +77,6 @@ function handleCloseUploadDialog() {
 async function handleDownloadVideo(fileName: string) {
   try {
     const response = await downloadVideoApi(fileName);
-    console.log(response);
     // 处理下载逻辑
     const url = window.URL.createObjectURL(new Blob([response.data]));
     // 创建隐藏的可下载链接元素
@@ -234,69 +119,42 @@ function handleDeleteVideo(id?: string) {
   });
 }
 
-const videoPlayerRef = ref();
+const cardFormRef = ref();
+const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 
-// 视频播放源
-const videoSrc = ref('');
-
-// 是否静音
-const muted = ref(false);
-
-const playerOptions = ref({
-  playbackRates: [0.5, 1, 1.5, 2], // 可选播放速度
-  loop: false, // 是否视频一结束就重新开始
-  fluid: true, // 按比例缩放以适应其容器
-  controls: true, // 是否显示控件
-  autoplay: true,
-  poster: '', // 封面
-  controlBar: {
-    timeDivider: true, // 当前时间和持续时间的分隔符
-    durationDisplay: true, // 显示持续时间
-    remainingTimeDisplay: true, // 是否显示剩余时间功能
-    fullscreenToggle: true, // 是否显示全屏按钮
-  },
-});
-
-/**
- * 关闭预览弹窗
- */
-function handleCloseDialog() {
-  // 获取 videojs 播放器实例
-  videoSrc.value = '';
-  muted.value = true;
-  dialog.visible = false;
+// 播放视频子组件
+const videoPlayerDialogRef = ref();
+function playerVideo(fileName: string, url: string) {
+  videoPlayerDialogRef.value.handlePlayVideo(fileName, url);
 }
 
-function handlePlayVideo(fileName: string, url: string) {
-  dialog.visible = true;
-  muted.value = false;
-  dialog.title = fileName;
-
-  // path: 视频文件在服务端的保存路径
-  const path = url + fileName;
-  // 构建url
-  const videoUrl = `${import.meta.env.VITE_GLOB_API_URL}/${path}`;
-  videoSrc.value = videoUrl;
+// 上传视频子组件
+const videoUploadDialogRef = ref();
+function openUploadDialog() {
+  videoUploadDialogRef.value.openDialog();
 }
 
 onMounted(() => {
   handleQuery();
 });
-
-const cardFormRef = ref();
-const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 </script>
 
 <template>
   <div class="app-container">
     <el-card ref="cardFormRef" class="mb-2">
-      <ElForm :model="queryParams" ref="queryForm" :inline="true">
+      <ElForm
+        :model="queryParams"
+        ref="queryForm"
+        :inline="true"
+        @submit.prevent
+      >
         <el-form-item>
           <el-input
             v-model="queryParams.fileName"
             placeholder="请输入文件名"
             clearable
-            @keydown="handleQuery()"
+            style="width: 240px"
+            @keyup.enter="handleQuery()"
           />
         </el-form-item>
 
@@ -330,7 +188,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
           <el-button
             type="primary"
             v-access:code="['sys:video:upload']"
-            @click="handleOpenUploadDialog()"
+            @click="openUploadDialog()"
           >
             <el-icon><Upload /></el-icon>上传视频
           </el-button>
@@ -368,7 +226,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
               size="small"
               link
               v-access:code="['sys:file:previewer']"
-              @click="handlePlayVideo(scope.row.fileName, scope.row.url)"
+              @click="playerVideo(scope.row.fileName, scope.row.url)"
             >
               播放
             </el-button>
@@ -407,58 +265,8 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
         @current-change="handleQuery"
       />
 
-      <el-dialog
-        v-model="dialog.visible"
-        :title="dialog.title"
-        @close="handleCloseDialog()"
-        center
-        draggable
-      >
-        <VideoPlayer
-          ref="videoPlayerRef"
-          :playsinline="false"
-          :options="playerOptions"
-          :src="videoSrc"
-          :muted="muted"
-        />
-      </el-dialog>
-
-      <el-dialog
-        v-model="uploadDialog.visible"
-        :title="uploadDialog.title"
-        width="800"
-        @close="handleCloseUploadDialog()"
-      >
-        <el-upload
-          class="upload-demo"
-          drag
-          ref="uploadRef"
-          :file-list="uploadFiles"
-          :on-exceed="handleFileExceed"
-          :on-change="handleFileChange"
-          :on-remove="handleRemove"
-          :on-before="beforeUpload"
-          accept=".mp4,.m4v,.mkv,.webm,.mov,.avi,.flv,.mpeg"
-          :auto-upload="false"
-          :multiple="true"
-        >
-          <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-          <div class="el-upload__text">
-            Drop file here or <em>click to upload</em>
-          </div>
-          <template #tip>
-            <div class="el-upload__tip">上传视频列表</div>
-          </template>
-        </el-upload>
-
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="handleCloseUploadDialog()">取消</el-button>
-            <el-button type="primary" @click="submitUpload">确定</el-button>
-          </div>
-        </template>
-      </el-dialog>
+      <VideoPlayerDialog ref="videoPlayerDialogRef" />
+      <VideoUploadDialog ref="videoUploadDialogRef" @success="handleQuery" />
     </el-card>
   </div>
 </template>
-
