@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import type {
-  ArticleForm,
-  ArticlePage,
-  ArticleQuery,
-} from '#/api/system/article/article';
+import type { ArticlePage, ArticleQuery } from '#/api/system/article/article';
 import type { CategoryOption } from '#/api/system/article/category';
 
 import { onMounted, reactive, ref } from 'vue';
@@ -12,14 +8,11 @@ import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 
 import {
   deleteArticleApi,
-  getArticleDetailApi,
-  saveArticleApi,
   selectArticlePageApi,
-  updateArticleApi,
 } from '#/api/system/article/article';
 import { selectCategoryOptionApi } from '#/api/system/article/category';
-import { WangEditor } from '#/components/wang-editor';
-import {useCardHeight} from "#/hooks/useCardHeight";
+import { useCardHeight } from '#/hooks/useCardHeight';
+import ArticleFormDrawer from '#/views/system/article/article/ArticleFormDrawer.vue';
 
 defineOptions({
   name: 'Article',
@@ -27,8 +20,6 @@ defineOptions({
 });
 
 const queryFormRef = ref(ElForm);
-
-const dataFormRef = ref(ElForm);
 
 const loading = ref(false);
 
@@ -42,17 +33,6 @@ const queryParams = reactive<ArticleQuery>({
 });
 
 const articleTableData = ref<ArticlePage[]>();
-
-const formData = reactive<ArticleForm>({});
-
-const dialog = reactive({
-  title: '',
-  visible: false,
-});
-
-const rules = reactive({
-  title: [{ required: true, message: '请输入文章标题', trigger: 'blur' }],
-});
 
 // 文章分类数组
 const categoryList = ref<CategoryOption[]>([]);
@@ -87,42 +67,13 @@ function handleQuery() {
  */
 function resetQuery() {
   queryFormRef.value.resetFields();
+  queryParams.title = '';
+  queryParams.categoryName = '';
+  queryParams.publish = undefined;
   queryParams.page = 1;
   handleQuery();
 }
 
-/**
- * 打开弹窗
- * @param articleId
- */
-async function openDialog(articleId?: string) {
-  if (articleId) {
-    dialog.title = '修改文章';
-    const data = await getArticleDetailApi(articleId);
-    Object.assign(formData, data);
-    dialog.visible = true;
-  } else {
-    dialog.title = '新增文章';
-    dialog.visible = true;
-  }
-}
-
-/**
- * 关闭弹窗
- */
-function closeDialog() {
-  dialog.visible = false;
-  resetForm();
-}
-
-/**
- * 重置表单
- */
-function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
-  formData.articleId = '';
-}
 
 /**
  * 行复选框选中
@@ -130,40 +81,6 @@ function resetForm() {
  */
 function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.articleId);
-}
-
-/**
- * 提交表单
- */
-function handleSubmit() {
-  dataFormRef.value.validate((isValid: boolean) => {
-    if (isValid) {
-      loading.value = true;
-      const id = formData.articleId;
-      if (id) {
-        updateArticleApi(formData)
-          .then(() => {
-            console.log(formData);
-            ElMessage.success('修改成功');
-            closeDialog();
-            handleQuery();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      } else {
-        saveArticleApi(formData)
-          .then(() => {
-            ElMessage.success('新增成功');
-            closeDialog();
-            handleQuery();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      }
-    }
-  });
 }
 
 function handleDelete(articleId?: string) {
@@ -196,17 +113,24 @@ onMounted(() => {
 
 const cardFormRef = ref();
 const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
+
+// 新增、修改文章表单子组件
+const articleFormDrawerRef = ref();
+function openDialog(id?: string) {
+  articleFormDrawerRef.value.openDialog(id, categoryList.value);
+}
 </script>
 
 <template>
   <div class="app-container">
-    <el-card ref="cardFormRef" class="mb-2">
+    <el-card ref="cardFormRef" class="mb-2" shadow="never">
       <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="title">
           <el-input
             v-model="queryParams.title"
             placeholder="文章标题"
             clearable
+            style="width: 240px"
             @keyup.enter="handleQuery()"
           />
         </el-form-item>
@@ -217,6 +141,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
             placeholder="文章分类"
             style="width: 150px"
             clearable
+            @change="handleQuery()"
           >
             <el-option
               v-for="item in categoryList"
@@ -233,6 +158,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
             placeholder="文章状态"
             style="width: 150px"
             clearable
+            @change="handleQuery()"
           >
             <el-option
               v-for="item in publishOptions"
@@ -283,7 +209,7 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
       </ElForm>
     </el-card>
 
-    <el-card :style="{ height: cardHeight }">
+    <el-card :style="{ height: cardHeight }" shadow="never">
       <el-table
         v-loading="loading"
         heighlight-current-row
@@ -375,94 +301,6 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
       />
     </el-card>
 
-    <el-dialog
-      v-model="dialog.visible"
-      :title="dialog.title"
-      draggable
-      center
-      @close="closeDialog()"
-      top="5vh"
-    >
-      <ElForm
-        ref="dataFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="120px"
-        :inline="true"
-      >
-        <!-- <el-form-item label="文章封面：" prop="avatar"></el-form-item> -->
-
-        <el-form-item label="文章标题：" prop="title">
-          <el-input v-model="formData.title" placeholder="请输入文章标题" />
-        </el-form-item>
-
-        <el-form-item label="文章分类：" prop="categoryName">
-          <el-select
-            v-model="formData.categoryName"
-            placeholder="文章分类"
-            style="width: 200px"
-            clearable
-          >
-            <el-option
-              v-for="item in categoryList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="作者：" prop="author">
-          <el-input v-model="formData.author" placeholder="请输入作者名称" />
-        </el-form-item>
-
-        <el-form-item label="排序：" prop="sort">
-          <el-input-number v-model="formData.sort" style="width: 200px" />
-        </el-form-item>
-
-        <el-form-item label="文章简介：" prop="introduction">
-          <el-input
-            v-model="formData.introduction"
-            placeholder="请输入文章简介"
-            type="textarea"
-            style="width: 500px"
-          />
-        </el-form-item>
-
-        <div>
-          <el-form-item label="是否发布：" prop="publish">
-            <el-radio-group v-model="formData.publish">
-              <el-radio :value="1">发布</el-radio>
-              <el-radio :value="-1">未发布</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </div>
-
-        <el-form-item label="是否置顶：" prop="top">
-          <el-radio-group v-model="formData.top">
-            <el-radio :value="1">置顶</el-radio>
-            <el-radio :value="-1">未置顶</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="文章内容：" prop="content">
-          <WangEditor
-            v-model:model-value="formData.content"
-            placeholder="请输入文章内容"
-          />
-        </el-form-item>
-        <!-- </el-row> -->
-      </ElForm>
-
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button type="primary" @click="closeDialog()">取消</el-button>
-          <el-button type="primary" @click="handleSubmit()">确定</el-button>
-        </div>
-      </template>
-    </el-dialog>
+    <ArticleFormDrawer ref="articleFormDrawerRef" @success="handleQuery" />
   </div>
 </template>
-
-<style scoped>
-</style>
