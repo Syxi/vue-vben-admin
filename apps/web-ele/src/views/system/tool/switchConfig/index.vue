@@ -15,7 +15,7 @@ import {
   updateStatusApi,
   updateSwitchConfigApi,
 } from '#/api/system/tool/switchConfig';
-import {useCardHeight} from "#/hooks/useCardHeight";
+import { useCardHeight } from '#/hooks/useCardHeight';
 
 defineOptions({
   name: 'SwitchConfig',
@@ -122,12 +122,18 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
 <template>
   <div class="app-container">
     <el-card ref="cardFormRef" class="mb-2">
-      <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
+      <ElForm
+        ref="queryFormRef"
+        :model="queryParams"
+        :inline="true"
+        @submit.prevent
+      >
         <el-form-item prop="configName">
           <el-input
             v-model="queryParams.configName"
             placeholder="配置名称"
             clearable
+            style="width: 240px"
             @keyup.enter="handleQuery"
           />
         </el-form-item>
@@ -209,7 +215,6 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
       />
     </el-card>
 
-    <!-- 角色表单弹窗 -->
     <el-dialog
       center
       draggable
