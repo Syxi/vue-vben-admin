@@ -101,12 +101,3 @@ export async function previewFileApi(id: string) {
     responseType: 'arraybuffer',
   });
 }
-
-/**
- * 检查文件转换状态
- * @param id
- * @returns
- */
-export async function checkFileConvertStatusApi(id: string) {
-  return requestClient.get<number>(`/file/checkFileConvert/${id}`);
-}
