@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type {
-  CategoryForm,
   CategoryPage,
   CategoryQuery,
 } from '#/api/system/article/category';
@@ -11,12 +10,10 @@ import { ElForm, ElMessage, ElMessageBox } from 'element-plus';
 
 import {
   deleteCategoryApi,
-  getCategoryDetailApi,
-  saveCategoryApi,
   selectCategoryPageApi,
-  updateCategoryApi,
 } from '#/api/system/article/category';
 import {useCardHeight} from "#/hooks/useCardHeight";
+import CategoryFormDialog from "#/views/system/article/category/CategoryFormDialog.vue";
 
 defineOptions({
   name: 'Category',
@@ -24,8 +21,6 @@ defineOptions({
 });
 
 const queryFormRef = ref(ElForm);
-
-const dataFormRef = ref(ElForm);
 
 const loading = ref(false);
 
@@ -39,19 +34,6 @@ const queryParams = reactive<CategoryQuery>({
 });
 
 const categoryTableData = ref<CategoryPage[]>();
-
-const formData = reactive<CategoryForm>({});
-
-const dialog = reactive({
-  title: '',
-  visible: false,
-});
-
-const rules = reactive({
-  categoryName: [
-    { required: true, message: '请输入文章分类名称', trigger: 'blur' },
-  ],
-});
 
 // 查询
 function handleQuery() {
@@ -75,36 +57,7 @@ function resetQuery() {
   handleQuery();
 }
 
-/**
- * 打开弹窗
- * @param categoryId
- */
-async function openDialog(categoryId?: string) {
-  dialog.visible = true;
-  if (categoryId) {
-    dialog.title = '修改文章分类';
-    const data = await getCategoryDetailApi(categoryId);
-    Object.assign(formData, data);
-  } else {
-    dialog.title = '新增文章分类';
-  }
-}
 
-/**
- * 关闭弹窗
- */
-function closeDialog() {
-  dialog.visible = false;
-  resetForm();
-}
-
-/**
- * 重置表单
- */
-function resetForm() {
-  dataFormRef.value.resetFields();
-  dataFormRef.value.clearValidate();
-}
 
 /**
  * 行复选框选中
@@ -114,39 +67,7 @@ function handleSelectionChange(selection: any) {
   ids.value = selection.map((item: any) => item.categoryId);
 }
 
-/**
- * 提交表单
- */
-function handleSubmit() {
-  dataFormRef.value.validate((isValid: boolean) => {
-    if (isValid) {
-      loading.value = true;
-      const id = formData.categoryId;
-      if (id) {
-        updateCategoryApi(formData)
-          .then(() => {
-            console.log(formData);
-            ElMessage.success('修改成功');
-            closeDialog();
-            handleQuery();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      } else {
-        saveCategoryApi(formData)
-          .then(() => {
-            ElMessage.success('新增成功');
-            closeDialog();
-            handleQuery();
-          })
-          .finally(() => {
-            loading.value = false;
-          });
-      }
-    }
-  });
-}
+
 
 function handleDelete(categoryId?: string) {
   let categoryIds: string[];
@@ -177,6 +98,12 @@ onMounted(() => {
 
 const cardFormRef = ref();
 const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
+
+// 新增、编辑对话框子组件
+const categoryFormDialogRef = ref();
+function openDialog(categoryId?: string) {
+  categoryFormDialogRef.value.openDialog(categoryId);
+}
 </script>
 
 <template>
@@ -299,40 +226,6 @@ const { cardHeight, tableHeight } = useCardHeight(cardFormRef);
       />
     </el-card>
 
-    <el-dialog
-      v-model="dialog.visible"
-      :title="dialog.title"
-      draggable
-      center
-      @close="closeDialog()"
-      width="400px"
-    >
-      <ElForm
-        ref="dataFormRef"
-        :model="formData"
-        :rules="rules"
-        label-width="120px"
-        :inline="true"
-      >
-        <el-form-item label="文章分类名称" prop="categoryName">
-          <el-input
-            v-model="formData.categoryName"
-            placeholder="请输入文章分类名称"
-          />
-        </el-form-item>
-
-        <div>
-          <el-form-item label="排序" prop="sort">
-            <el-input-number v-model="formData.sort" style="width: 200px" />
-          </el-form-item>
-        </div>
-      </ElForm>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button type="primary" @click="closeDialog()">取消</el-button>
-          <el-button type="primary" @click="handleSubmit()">确定</el-button>
-        </div>
-      </template>
-    </el-dialog>
+    <CategoryFormDialog ref="categoryFormDialogRef" @success="resetQuery" />
   </div>
 </template>
