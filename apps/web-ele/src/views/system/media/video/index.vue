@@ -141,7 +141,7 @@ onMounted(() => {
 
 <template>
   <div class="app-container">
-    <el-card ref="cardFormRef" class="mb-2">
+    <el-card ref="cardFormRef" class="mb-2" shadow="never">
       <ElForm
         :model="queryParams"
         ref="queryForm"
@@ -196,7 +196,7 @@ onMounted(() => {
       </ElForm>
     </el-card>
 
-    <el-card :style="{ height: cardHeight }">
+    <el-card :style="{ height: cardHeight }" shadow="never">
       <el-table
         v-loading="loading"
         :data="videoTableData"

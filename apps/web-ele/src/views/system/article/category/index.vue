@@ -108,7 +108,7 @@ function openDialog(categoryId?: string) {
 
 <template>
   <div class="app-container">
-    <el-card ref="cardFormRef" class="mb-2">
+    <el-card ref="cardFormRef" class="mb-2" shadow="never">
       <ElForm ref="queryFormRef" :model="queryParams" :inline="true">
         <el-form-item prop="categoryName">
           <el-input
@@ -159,7 +159,7 @@ function openDialog(categoryId?: string) {
       </ElForm>
     </el-card>
 
-    <el-card :style="{ height: cardHeight }">
+    <el-card :style="{ height: cardHeight }" shshadow="never">
       <el-table
         v-loading="loading"
         heighlight-current-row

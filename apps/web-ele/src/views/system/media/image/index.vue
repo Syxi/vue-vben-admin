@@ -144,7 +144,7 @@ function openUploadDialog() {
 
 <template>
   <div class="app-container">
-    <el-card ref="cardFormRef" class="mb-2">
+    <el-card ref="cardFormRef" class="mb-2" shadow="never">
       <ElForm
         :model="queryParams"
         ref="queryForm"
@@ -199,7 +199,7 @@ function openUploadDialog() {
       </ElForm>
     </el-card>
 
-    <el-card :tyle="{ height: cardHeight }">
+    <el-card :tyle="{ height: cardHeight }" shadow="never">
       <el-table
         v-loading="loading"
         :data="imageTableData"
