@@ -13,7 +13,7 @@ import {
 } from '@vben/request';
 import { useAccessStore } from '@vben/stores';
 
-import { ElMessage, ElMessageBox } from 'element-plus';
+import {ElMessage, ElMessageBox, ElNotification} from 'element-plus';
 
 import { refreshTokenApi } from '#/api/core';
 import { useAuthStore } from '#/store';
@@ -31,7 +31,6 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
    * 重新认证逻辑
    */
   function doReAuthenticate() {
-    console.warn('Access token or refresh token is invalid or expired. ');
     // const accessStore = useAccessStore();
     const authStore = useAuthStore();
     ElMessageBox.alert('回话已过期，请重新登录', '警告', {
@@ -56,11 +55,15 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
    * 刷新token逻辑
    */
   async function doRefreshToken() {
-    const accessStore = useAccessStore();
-    const response = await refreshTokenApi(accessStore.refreshToken);
-    const accessToken = response.data.data.accessToken;
-    accessStore.setAccessToken(accessToken);
-    return accessToken;
+    try {
+      const accessStore = useAccessStore();
+      const response = await refreshTokenApi(accessStore.refreshToken)
+      const accessToken = response.data.data.accessToken;
+      accessStore.setAccessToken(accessToken);
+      return accessToken;
+    } catch {
+      doReAuthenticate();
+    }
   }
 
   function formatToken(token: null | string) {
