@@ -94,7 +94,7 @@ export async function refreshTokenApi(refreshToken: string) {
  * @returns
  */
 export function logoutApi() {
-  return baseRequestClient.delete('/auth/logout');
+  return requestClient.delete('/auth/logout');
 }
 
 /**

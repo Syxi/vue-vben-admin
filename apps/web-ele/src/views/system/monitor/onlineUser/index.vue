@@ -46,22 +46,22 @@ async function resetQuery() {
   await handleQuery();
 }
 
-async function kickoutUser(username: string) {
-  ElMessageBox.confirm('确定要强制下线吗？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  })
-    .then(() => {
-      kickoutUserApi(username).then(() => {
-        ElMessage.success('强制下线成功！');
-        resetQuery();
-      });
-    })
-    .catch(() => {
-      ElMessage.error('强制下线失败！');
-    });
-}
+// async function kickoutUser(username: string) {
+//   ElMessageBox.confirm('确定要强制下线吗？', '提示', {
+//     confirmButtonText: '确定',
+//     cancelButtonText: '取消',
+//     type: 'warning',
+//   })
+//     .then(() => {
+//       kickoutUserApi(username).then(() => {
+//         ElMessage.success('强制下线成功！');
+//         resetQuery();
+//       });
+//     })
+//     .catch(() => {
+//       ElMessage.error('强制下线失败！');
+//     });
+// }
 
 onMounted(() => {
   handleQuery();
@@ -83,10 +83,11 @@ onMounted(() => {
             v-model="queryFormParams.username"
             clearable
             style="width: 240px"
+            @keyup.enter="handleQuery()"
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @keyup.enter="handleQuery()">
+          <el-button type="primary" @click="handleQuery()">
             查询
           </el-button>
         </el-form-item>
@@ -99,18 +100,18 @@ onMounted(() => {
       <el-table :data="onlineUserData" v-loading="loading">
         <el-table-column label="用户名" prop="username" />
         <el-table-column label="登录时间" prop="loginTime" />
-        <el-table-column label="操作">
-          <template #default="scope">
-            <el-button
-              type="danger"
-              size="small"
-              link
-              @click="kickoutUser(scope.row.username)"
-            >
-              <el-icon><Delete /></el-icon>强制下线
-            </el-button>
-          </template>
-        </el-table-column>
+<!--        <el-table-column label="操作">-->
+<!--          <template #default="scope">-->
+<!--            <el-button-->
+<!--              type="danger"-->
+<!--              size="small"-->
+<!--              link-->
+<!--              @click="kickoutUser(scope.row.username)"-->
+<!--            >-->
+<!--              <el-icon><Delete /></el-icon>强制下线-->
+<!--            </el-button>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
       </el-table>
 
       <el-pagination
