@@ -55,15 +55,11 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
    * 刷新token逻辑
    */
   async function doRefreshToken() {
-    try {
-      const accessStore = useAccessStore();
-      const response = await refreshTokenApi(accessStore.refreshToken)
-      const accessToken = response.data.data.accessToken;
-      accessStore.setAccessToken(accessToken);
-      return accessToken;
-    } catch {
-      doReAuthenticate();
-    }
+    const accessStore = useAccessStore();
+    const response = await refreshTokenApi(accessStore.refreshToken)
+    const accessToken = response.data.data.accessToken;
+    accessStore.setAccessToken(accessToken);
+    return accessToken;
   }
 
   function formatToken(token: null | string) {
