@@ -30,30 +30,46 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   /**
    * 重新认证逻辑
    */
-  function doReAuthenticate() {
-    const authStore = useAuthStore();
-    ElMessageBox.alert('回话已过期，请重新登录', '警告', {
-      confirmButtonText: '确认',
-      type: 'warning',
-      center: true,
-    }).then(() => {
-      authStore.logout();
-    });
+  function doReAuthenticate(): Promise<void> {
+    let isShowingAuthDialog = false;
+    let reAuthPromise: null | Promise<void> = null;
+
+    // 创建一个异步任务，但只允许一个实例运行
+    reAuthPromise = (async () => {
+      // 防止重复弹窗
+      if (isShowingAuthDialog) return;
+      isShowingAuthDialog = true;
+
+      const authStore = useAuthStore();
+
+      try {
+        await ElMessageBox.alert('会话已过期，请重新登录', '警告', {
+          confirmButtonText: '确认',
+          type: 'warning',
+          center: true,
+        });
+        await authStore.logout();
+      } catch {
+        // 用户可能点了取消，也强制登出（或跳转登录）
+        await authStore.logout();
+      } finally {
+        isShowingAuthDialog = false;
+        reAuthPromise = null;
+      }
+    })();
+
+    return reAuthPromise;
   }
 
   /**
    * 刷新token逻辑
    */
   async function doRefreshToken() {
-    try {
-      const accessStore = useAccessStore();
-      const response = await refreshTokenApi(accessStore.refreshToken)
-      const accessToken = response.data.data.accessToken;
-      accessStore.setAccessToken(accessToken);
-      return accessToken;
-    } catch {
-      doReAuthenticate();
-    }
+    const accessStore = useAccessStore();
+    const response = await refreshTokenApi(accessStore.refreshToken);
+    const accessToken = response.data.data.accessToken;
+    accessStore.setAccessToken(accessToken);
+    return accessToken;
   }
 
   function formatToken(token: null | string) {
