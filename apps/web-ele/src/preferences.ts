@@ -27,4 +27,8 @@ export const overridesPreferences = defineOverridesPreferences({
     icpLink: '',
     settingShow: false,
   },
+  tabbar: {
+    keepAlive: false, // 关闭标签页缓存
+    persist: false, // 关闭持久化标签
+  },
 });
