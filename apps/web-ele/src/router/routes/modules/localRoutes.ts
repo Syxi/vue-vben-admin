@@ -43,6 +43,18 @@ const localRoutes: RouteRecordStringComponent[] = [
       hideInMenu: true,
     },
   },
+
+  {
+    component: '/home/index.vue',
+    name: 'home',
+    path: '/home',
+    meta: {
+      icon: '',
+      title: '',
+      hideInMenu: true,
+      noBasicLayout: true,
+    },
+  },
 ];
 
 export default localRoutes;
